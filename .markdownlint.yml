@@ -1,0 +1,70 @@
+# Markdown Lint Configuration
+# See: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+
+# Default state for all rules
+default: true
+
+# Disable specific rules
+MD013: false  # Line length - handled by prettier/black
+MD033: false  # Allow inline HTML
+MD041: false  # First line in file should be a top level header
+
+# Configure specific rules
+MD003:
+  # Header style
+  style: "atx"
+
+MD007:
+  # Unordered list indentation
+  indent: 2
+
+MD009:
+  # Trailing spaces
+  br_spaces: 2
+
+MD010:
+  # Hard tabs
+  code_blocks: false
+
+MD012:
+  # Multiple consecutive blank lines
+  maximum: 2
+
+MD024:
+  # Multiple headers with the same content
+  allow_different_nesting: true
+
+MD025:
+  # Multiple top level headers in the same document
+  front_matter_title: "^\\s*title\\s*[:=]"
+
+MD026:
+  # Trailing punctuation in header
+  punctuation: ".,;:!?"
+
+MD029:
+  # Ordered list item prefix
+  style: "ordered"
+
+MD030:
+  # Spaces after list markers
+  ul_single: 1
+  ol_single: 1
+  ul_multi: 1
+  ol_multi: 1
+
+MD035:
+  # Horizontal rule style
+  style: "---"
+
+MD036:
+  # Emphasis used instead of a header
+  punctuation: ".,;:!?。，；：！？"
+
+MD046:
+  # Code block style
+  style: "fenced"
+
+MD048:
+  # Code fence style
+  style: "backtick"

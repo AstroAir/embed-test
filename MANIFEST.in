@@ -1,0 +1,55 @@
+# Include the README and license files
+include README.md
+include LICENSE
+include CHANGELOG.md
+
+# Include the entire package
+recursive-include pdf_vector_system *.py
+recursive-include pdf_vector_system *.pyi
+
+# Include examples
+recursive-include examples *.py
+recursive-include examples *.md
+
+# Include tests for source distributions
+recursive-include tests *.py
+recursive-include tests *.yaml
+recursive-include tests *.json
+
+# Include configuration files
+include pyproject.toml
+include pytest.ini
+
+# Exclude compiled Python files
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude __pycache__
+global-exclude *.so
+global-exclude *.dylib
+
+# Exclude development and build artifacts
+global-exclude .git*
+global-exclude .coverage
+global-exclude .pytest_cache
+global-exclude .mypy_cache
+global-exclude .ruff_cache
+global-exclude htmlcov
+global-exclude build
+global-exclude dist
+global-exclude *.egg-info
+
+# Exclude database and temporary files
+global-exclude chroma_db
+global-exclude *.db
+global-exclude *.sqlite
+global-exclude *.log
+global-exclude .env
+global-exclude .env.*
+
+# Exclude IDE and editor files
+global-exclude .vscode
+global-exclude .idea
+global-exclude *.swp
+global-exclude *.swo
+global-exclude *~

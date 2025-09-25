@@ -1,0 +1,144 @@
+name: Dependencies
+
+on:
+  schedule:
+    # Run weekly on Mondays at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-dependencies:
+    name: Update Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Update dependencies
+        run: |
+          uv lock --upgrade
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet uv.lock; then
+            echo "has-changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has-changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.has-changes == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update dependencies"
+          title: "chore: update dependencies"
+          body: |
+            This PR updates the project dependencies to their latest compatible versions.
+            
+            ## Changes
+            - Updated `uv.lock` with latest dependency versions
+            
+            ## Testing
+            - [ ] All tests pass
+            - [ ] No breaking changes introduced
+            - [ ] Security vulnerabilities addressed (if any)
+            
+            This PR was automatically created by the dependency update workflow.
+          branch: chore/update-dependencies
+          delete-branch: true
+          labels: |
+            dependencies
+            automated
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Install dependencies
+        run: |
+          uv sync --extra lint
+
+      - name: Run safety check
+        run: |
+          uv run safety check --json --output safety-report.json
+        continue-on-error: true
+
+      - name: Upload security report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit-report
+          path: safety-report.json
+
+      - name: Create security issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            try {
+              const report = JSON.parse(fs.readFileSync('safety-report.json', 'utf8'));
+              
+              if (report.vulnerabilities && report.vulnerabilities.length > 0) {
+                const vulnerabilities = report.vulnerabilities.map(vuln => 
+                  `- **${vuln.package_name}** (${vuln.installed_version}): ${vuln.vulnerability_id}\n  ${vuln.advisory}`
+                ).join('\n\n');
+                
+                const issueBody = `## Security Vulnerabilities Detected
+            
+            The following security vulnerabilities were found in our dependencies:
+            
+            ${vulnerabilities}
+            
+            ## Action Required
+            
+            Please review and update the affected dependencies as soon as possible.
+            
+            ## Report Details
+            
+            This issue was automatically created by the security audit workflow.
+            Full report is available in the workflow artifacts.
+            `;
+                
+                github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: `Security vulnerabilities detected - ${new Date().toISOString().split('T')[0]}`,
+                  body: issueBody,
+                  labels: ['security', 'high-priority', 'automated']
+                });
+              }
+            } catch (error) {
+              console.log('No security report found or error parsing report:', error);
+            }

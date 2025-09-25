@@ -1,0 +1,216 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint and Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Install dependencies
+        run: |
+          uv sync --extra lint
+
+      - name: Run ruff linter
+        run: |
+          uv run ruff check pdf_vector_system tests examples
+
+      - name: Run ruff formatter check
+        run: |
+          uv run ruff format --check pdf_vector_system tests examples
+
+      - name: Run black check
+        run: |
+          uv run black --check pdf_vector_system tests examples
+
+      - name: Run isort check
+        run: |
+          uv run isort --check-only pdf_vector_system tests examples
+
+      - name: Run mypy
+        run: |
+          uv run mypy pdf_vector_system
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Install dependencies
+        run: |
+          uv sync --extra lint
+
+      - name: Run bandit security linter
+        run: |
+          uv run bandit -r pdf_vector_system -f json -o bandit-report.json
+
+      - name: Run safety check
+        run: |
+          uv run safety check --json --output safety-report.json
+        continue-on-error: true
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports
+          path: |
+            bandit-report.json
+            safety-report.json
+
+  test:
+    name: Test Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Needed for version detection
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Install dependencies
+        run: |
+          uv sync --extra test
+
+      - name: Run tests
+        run: |
+          uv run pytest tests/ -v --cov=pdf_vector_system --cov-report=xml --cov-report=html --junitxml=junit.xml
+
+      - name: Upload coverage to Codecov
+        if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.os }}-${{ matrix.python-version }}
+          path: |
+            junit.xml
+            htmlcov/
+            coverage.xml
+
+  build:
+    name: Build Package
+    runs-on: ubuntu-latest
+    needs: [lint, security, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Install build dependencies
+        run: |
+          uv tool install build
+          uv tool install twine
+
+      - name: Build package
+        run: |
+          uvx build
+
+      - name: Check package
+        run: |
+          uvx twine check dist/*
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  integration-test:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Install package from wheel
+        run: |
+          pip install dist/*.whl
+
+      - name: Test CLI installation
+        run: |
+          pdf-vector --help
+
+      - name: Run integration tests
+        run: |
+          python -c "import pdf_vector_system; print(f'Version: {pdf_vector_system.__version__}')"
