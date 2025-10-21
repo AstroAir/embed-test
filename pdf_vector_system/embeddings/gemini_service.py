@@ -40,7 +40,9 @@ class GeminiEmbeddingService(EmbeddingService):
 
     # API endpoints
     GOOGLE_AI_BASE_URL: str = "https://generativelanguage.googleapis.com/v1beta"
-    VERTEX_AI_BASE_URL: str = "https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/google/models"
+    VERTEX_AI_BASE_URL: str = (
+        "https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/google/models"
+    )
 
     def __init__(
         self,

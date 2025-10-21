@@ -5,18 +5,23 @@ This directory contains utility functions and helpers used across the examples.
 ## Modules
 
 ### `sample_data_generator.py`
+
 Generates sample PDF files and test data for examples.
 
 ### `example_helpers.py`
+
 Common helper functions used across multiple examples.
 
 ### `performance_utils.py`
+
 Performance measurement and benchmarking utilities.
 
 ### `config_helpers.py`
+
 Configuration management helpers and templates.
 
 ### `logging_setup.py`
+
 Logging configuration for examples.
 
 ## Usage
@@ -40,22 +45,24 @@ print(f"Processing took {timer.elapsed:.2f} seconds")
 ## Common Patterns
 
 ### Example Setup
+
 ```python
 def setup_example():
     """Standard example setup pattern."""
     # Load configuration
     config = get_example_config()
-    
+
     # Set up logging
     setup_example_logging(config)
-    
+
     # Create sample data if needed
     ensure_sample_data_exists()
-    
+
     return config
 ```
 
 ### Error Handling
+
 ```python
 def run_example_safely(example_func):
     """Run example with proper error handling."""
@@ -67,6 +74,7 @@ def run_example_safely(example_func):
 ```
 
 ### Performance Measurement
+
 ```python
 @measure_performance
 def example_function():

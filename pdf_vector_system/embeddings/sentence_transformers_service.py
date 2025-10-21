@@ -241,9 +241,9 @@ class SentenceTransformersService(EmbeddingService):
                         embedding_result, texts=validated_texts
                     )
                     if embedding_result.metadata is not None:
-                        embedding_result.metadata[
-                            "quality_validation"
-                        ] = quality_report.to_dict()
+                        embedding_result.metadata["quality_validation"] = (
+                            quality_report.to_dict()
+                        )
                     self.logger.debug(
                         f"Quality validation completed. Overall score: {quality_report.overall_score:.3f}"
                     )

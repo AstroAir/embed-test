@@ -30,12 +30,12 @@ print_error() {
 # Check if Python is installed
 check_python() {
     print_status "Checking Python installation..."
-    
+
     if command -v python3 &> /dev/null; then
         PYTHON_VERSION=$(python3 --version | cut -d' ' -f2)
         PYTHON_MAJOR=$(echo $PYTHON_VERSION | cut -d'.' -f1)
         PYTHON_MINOR=$(echo $PYTHON_VERSION | cut -d'.' -f2)
-        
+
         if [ "$PYTHON_MAJOR" -eq 3 ] && [ "$PYTHON_MINOR" -ge 9 ]; then
             print_success "Python $PYTHON_VERSION found"
             PYTHON_CMD="python3"
@@ -47,7 +47,7 @@ check_python() {
         PYTHON_VERSION=$(python --version | cut -d' ' -f2)
         PYTHON_MAJOR=$(echo $PYTHON_VERSION | cut -d'.' -f1)
         PYTHON_MINOR=$(echo $PYTHON_VERSION | cut -d'.' -f2)
-        
+
         if [ "$PYTHON_MAJOR" -eq 3 ] && [ "$PYTHON_MINOR" -ge 9 ]; then
             print_success "Python $PYTHON_VERSION found"
             PYTHON_CMD="python"
@@ -64,7 +64,7 @@ check_python() {
 # Check if pip is installed
 check_pip() {
     print_status "Checking pip installation..."
-    
+
     if command -v pip3 &> /dev/null; then
         print_success "pip3 found"
         PIP_CMD="pip3"
@@ -80,7 +80,7 @@ check_pip() {
 # Install UV if available
 install_uv() {
     print_status "Checking for UV package manager..."
-    
+
     if command -v uv &> /dev/null; then
         print_success "UV found, using for faster installation"
         USE_UV=true
@@ -105,7 +105,7 @@ install_uv() {
 # Install PDF Vector System
 install_package() {
     print_status "Installing PDF Vector System..."
-    
+
     if [ "$USE_UV" = true ]; then
         if uv pip install pdf-vector-system; then
             print_success "PDF Vector System installed successfully with UV"
@@ -131,7 +131,7 @@ install_package() {
 # Verify installation
 verify_installation() {
     print_status "Verifying installation..."
-    
+
     if command -v pdf-vector &> /dev/null; then
         print_success "CLI command available"
         pdf-vector --version
@@ -139,7 +139,7 @@ verify_installation() {
         print_error "CLI command not found"
         exit 1
     fi
-    
+
     if $PYTHON_CMD -c "import pdf_vector_system; print(f'Version: {pdf_vector_system.__version__}')" 2>/dev/null; then
         print_success "Python package import successful"
     else
@@ -153,13 +153,13 @@ main() {
     echo "PDF Vector System Installation Script"
     echo "====================================="
     echo
-    
+
     check_python
     check_pip
     install_uv
     install_package
     verify_installation
-    
+
     echo
     print_success "Installation completed successfully!"
     echo

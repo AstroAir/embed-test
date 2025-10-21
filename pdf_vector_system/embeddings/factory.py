@@ -274,9 +274,9 @@ class BatchEmbeddingProcessor(LoggerMixin):
             if batch_size is not None
             else getattr(embedding_service, "batch_size", 32)
         )
-        self.processed_batches: list[
-            list[str]
-        ] = []  # Track processed batches for testing
+        self.processed_batches: list[list[str]] = (
+            []
+        )  # Track processed batches for testing
 
         self.logger.info(
             f"Initialized BatchEmbeddingProcessor with {max_workers} workers, "

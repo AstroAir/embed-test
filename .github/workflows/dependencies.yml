@@ -52,15 +52,15 @@ jobs:
           title: "chore: update dependencies"
           body: |
             This PR updates the project dependencies to their latest compatible versions.
-            
+
             ## Changes
             - Updated `uv.lock` with latest dependency versions
-            
+
             ## Testing
             - [ ] All tests pass
             - [ ] No breaking changes introduced
             - [ ] Security vulnerabilities addressed (if any)
-            
+
             This PR was automatically created by the dependency update workflow.
           branch: chore/update-dependencies
           delete-branch: true
@@ -106,31 +106,31 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            
+
             try {
               const report = JSON.parse(fs.readFileSync('safety-report.json', 'utf8'));
-              
+
               if (report.vulnerabilities && report.vulnerabilities.length > 0) {
-                const vulnerabilities = report.vulnerabilities.map(vuln => 
+                const vulnerabilities = report.vulnerabilities.map(vuln =>
                   `- **${vuln.package_name}** (${vuln.installed_version}): ${vuln.vulnerability_id}\n  ${vuln.advisory}`
                 ).join('\n\n');
-                
+
                 const issueBody = `## Security Vulnerabilities Detected
-            
+
             The following security vulnerabilities were found in our dependencies:
-            
+
             ${vulnerabilities}
-            
+
             ## Action Required
-            
+
             Please review and update the affected dependencies as soon as possible.
-            
+
             ## Report Details
-            
+
             This issue was automatically created by the security audit workflow.
             Full report is available in the workflow artifacts.
             `;
-                
+
                 github.rest.issues.create({
                   owner: context.repo.owner,
                   repo: context.repo.repo,

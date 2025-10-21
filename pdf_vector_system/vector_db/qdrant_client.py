@@ -397,7 +397,9 @@ class QdrantClient(VectorDBInterface, LoggerMixin):
                 limit=limit,
                 with_payload=True,
                 with_vectors=False,
-            )[0]  # Get points, ignore next_page_offset
+            )[
+                0
+            ]  # Get points, ignore next_page_offset
 
             search_results = []
             for result in results:

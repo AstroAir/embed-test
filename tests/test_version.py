@@ -24,8 +24,8 @@ class TestVersion:
         semver_pattern = r"^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$"
         dev_pattern = r"^(\d+)\.(\d+)\.dev\d+(?:\+([0-9A-Za-z.-]+))?$"
 
-        assert (
-            re.match(semver_pattern, __version__) or re.match(dev_pattern, __version__)
+        assert re.match(semver_pattern, __version__) or re.match(
+            dev_pattern, __version__
         ), f"Version '{__version__}' does not follow semantic versioning or dev version format"
 
     def test_version_components(self):

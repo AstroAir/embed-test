@@ -205,28 +205,33 @@ cp .env.example .env
 The system consists of several key components:
 
 ### 1. PDF Processor (`pdf_vector_system.pdf.processor`)
+
 - Extracts text from PDF files using PyMuPDF
 - Handles various PDF formats and structures
 - Provides metadata extraction and validation
 
 ### 2. Text Processor (`pdf_vector_system.pdf.text_processor`)
+
 - Cleans and normalizes extracted text
 - Implements intelligent chunking with LangChain's RecursiveCharacterTextSplitter
 - Configurable chunk size and overlap
 
 ### 3. Embedding Services (`pdf_vector_system.embeddings`)
+
 - **Sentence Transformers**: Local embedding generation
 - **OpenAI**: API-based embedding generation
 - Batch processing with progress tracking
 - Automatic retry logic and error handling
 
 ### 4. Vector Database (`pdf_vector_system.vector_db`)
+
 - ChromaDB integration with persistent storage
 - Comprehensive metadata support
 - Advanced search and filtering capabilities
 - Collection management utilities
 
 ### 5. Main Pipeline (`pdf_vector_system.pipeline`)
+
 - Orchestrates all components
 - Provides high-level API for PDF processing
 - Progress tracking and performance monitoring

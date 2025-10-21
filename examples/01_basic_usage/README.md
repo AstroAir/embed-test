@@ -5,15 +5,19 @@ This directory contains fundamental examples demonstrating the core functionalit
 ## Examples
 
 ### `simple_pdf_processing.py`
+
 Basic PDF processing with minimal configuration. Perfect for getting started.
 
 ### `configuration_basics.py`
+
 Demonstrates different ways to configure the system using environment variables, configuration objects, and .env files.
 
 ### `first_search.py`
+
 Shows how to process a PDF and perform basic similarity searches.
 
 ### `health_check.py`
+
 Demonstrates system health checking and component status monitoring.
 
 ## Prerequisites

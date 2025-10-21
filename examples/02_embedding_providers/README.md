@@ -5,30 +5,39 @@ This directory demonstrates all available embedding providers and their configur
 ## Examples
 
 ### `sentence_transformers_examples.py`
+
 Local embedding generation with various sentence-transformer models.
 
 ### `openai_embeddings.py`
+
 OpenAI API-based embeddings with different models and configurations.
 
 ### `cohere_embeddings.py`
+
 Cohere embedding service integration and usage patterns.
 
 ### `huggingface_embeddings.py`
+
 Hugging Face transformers for custom embedding models.
 
 ### `google_use_embeddings.py`
+
 Google Universal Sentence Encoder integration.
 
 ### `gemini_embeddings.py`
+
 Google Gemini embedding service examples.
 
 ### `provider_comparison.py`
+
 Side-by-side comparison of different embedding providers.
 
 ### `provider_health_monitoring.py`
+
 Health checking and monitoring for embedding providers.
 
 ### `adaptive_batch_processing.py`
+
 Advanced batch processing with adaptive sizing and performance optimization.
 
 ## Prerequisites

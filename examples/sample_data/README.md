@@ -5,15 +5,18 @@ This directory contains sample data files used by the examples.
 ## Contents
 
 ### PDF Files
+
 - `sample_research_paper.pdf` - Academic research paper for testing
 - `sample_technical_doc.pdf` - Technical documentation example
 - `sample_report.pdf` - Business report sample
 
 ### Configuration Templates
+
 - `.env.example` - Example environment configuration
 - `config_templates/` - Configuration templates for different scenarios
 
 ### Test Data
+
 - `test_texts/` - Sample text files for testing text processing
 - `embeddings_cache/` - Cached embeddings for faster testing
 
@@ -40,6 +43,7 @@ ln -s /path/to/your/pdfs/* examples/sample_data/
 ## File Descriptions
 
 ### sample_research_paper.pdf
+
 - **Type**: Academic research paper
 - **Content**: Machine learning research
 - **Size**: ~500KB
@@ -47,6 +51,7 @@ ln -s /path/to/your/pdfs/* examples/sample_data/
 - **Use Case**: Testing academic document processing
 
 ### sample_technical_doc.pdf
+
 - **Type**: Technical documentation
 - **Content**: Software documentation
 - **Size**: ~200KB
@@ -54,6 +59,7 @@ ln -s /path/to/your/pdfs/* examples/sample_data/
 - **Use Case**: Testing technical content extraction
 
 ### sample_report.pdf
+
 - **Type**: Business report
 - **Content**: Financial/business analysis
 - **Size**: ~300KB

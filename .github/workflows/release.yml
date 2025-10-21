@@ -126,12 +126,12 @@ jobs:
         id: release-notes
         run: |
           VERSION="${{ needs.validate-tag.outputs.version }}"
-          
+
           # Extract changelog section for this version
           if [ -f CHANGELOG.md ]; then
             # Get content between version headers
             sed -n "/## \[${VERSION#v}\]/,/## \[/p" CHANGELOG.md | sed '$d' > release_notes.md
-            
+
             # If no specific version found, use unreleased section
             if [ ! -s release_notes.md ]; then
               sed -n "/## \[Unreleased\]/,/## \[/p" CHANGELOG.md | sed '$d' > release_notes.md
@@ -171,17 +171,17 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
+
           # Switch to develop branch
           git checkout develop || git checkout -b develop
-          
+
           # Update version for next development cycle
           VERSION="${{ needs.validate-tag.outputs.version }}"
           NEXT_VERSION=$(echo $VERSION | sed 's/v//' | awk -F. '{$NF = $NF + 1; print}' | sed 's/ /./g')
-          
+
           # Update CHANGELOG.md with new unreleased section
           sed -i "s/## \[Unreleased\]/## [Unreleased]\n\n### Added\n\n### Changed\n\n### Fixed\n\n## [${VERSION#v}] - $(date +%Y-%m-%d)/" CHANGELOG.md
-          
+
           git add CHANGELOG.md
           git commit -m "chore: prepare for next development cycle after ${VERSION}" || true
           git push origin develop || true

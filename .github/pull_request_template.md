@@ -27,9 +27,9 @@ Fixes #
 
 <!-- Provide a detailed list of changes made -->
 
-- 
-- 
-- 
+-
+-
+-
 
 ## Testing
 
@@ -90,9 +90,9 @@ bandit -r pdf_vector_system
 
 <!-- If this is a breaking change, describe what breaks and how to migrate -->
 
-### What breaks:
+### What breaks
 
-### Migration guide:
+### Migration guide
 
 ## Performance Impact
 

@@ -5,47 +5,47 @@ rules:
   line-length:
     max: 120
     level: warning
-  
+
   indentation:
     spaces: 2
     indent-sequences: true
     check-multi-line-strings: false
-  
+
   truthy:
     allowed-values: ['true', 'false', 'yes', 'no']
     check-keys: true
-  
+
   comments:
     min-spaces-from-content: 1
-  
+
   comments-indentation: {}
-  
+
   document-start:
     present: false
-  
+
   document-end:
     present: false
-  
+
   empty-lines:
     max: 2
     max-start: 0
     max-end: 1
-  
+
   hyphens:
     max-spaces-after: 1
-  
+
   key-duplicates: {}
-  
+
   new-line-at-end-of-file: {}
-  
+
   octal-values:
     forbid-implicit-octal: true
     forbid-explicit-octal: true
-  
+
   quoted-strings:
     quote-type: any
     required: only-when-needed
-  
+
   trailing-spaces: {}
 
 ignore: |

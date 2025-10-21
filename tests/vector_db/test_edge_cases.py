@@ -320,7 +320,9 @@ class TestNumericalEdgeCases:
             -1e10,  # Very large negative
             1e-10,  # Very small positive
             -1e-10,  # Very small negative
-        ] + [0.0] * 378  # Fill to standard size
+        ] + [
+            0.0
+        ] * 378  # Fill to standard size
 
         chunk = DocumentChunk(
             id="extreme_embedding_chunk",

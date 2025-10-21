@@ -5,14 +5,18 @@ This directory contains comprehensive examples demonstrating all aspects of the 
 ## 📁 Directory Structure
 
 ### [01_basic_usage/](01_basic_usage/)
+
 Fundamental examples for getting started with the PDF Vector System.
+
 - Simple PDF processing
 - Basic configuration
 - First search operations
 - Health checking
 
 ### [02_embedding_providers/](02_embedding_providers/)
+
 Comprehensive examples for all available embedding providers.
+
 - Sentence Transformers (local)
 - OpenAI embeddings
 - Cohere embeddings
@@ -21,7 +25,9 @@ Comprehensive examples for all available embedding providers.
 - Provider comparison and monitoring
 
 ### [03_cli_usage/](03_cli_usage/)
+
 Complete command-line interface examples and automation scripts.
+
 - All CLI commands
 - Batch processing
 - Advanced search
@@ -29,49 +35,63 @@ Complete command-line interface examples and automation scripts.
 - Automation workflows
 
 ### [04_gui_applications/](04_gui_applications/)
+
 Graphical user interface examples and integration patterns.
+
 - Basic GUI usage
 - Custom integrations
 - Advanced features
 - GUI automation
 
 ### [05_vector_database/](05_vector_database/)
+
 Advanced vector database operations and search patterns.
+
 - Advanced search techniques
 - Collection management
 - Metadata filtering
 - Performance optimization
 
 ### [06_text_processing/](06_text_processing/)
+
 Text processing strategies and optimization techniques.
+
 - Chunking strategies
 - Text cleaning
 - Custom splitters
 - Quality assessment
 
 ### [07_configuration/](07_configuration/)
+
 Configuration management patterns for different environments.
+
 - Environment variables
 - Programmatic configuration
 - Production setups
 - Security considerations
 
 ### [08_integration/](08_integration/)
+
 Integration with external systems and workflow automation.
+
 - Batch processing workflows
 - API integrations
 - Cloud storage
 - Microservices
 
 ### [09_performance/](09_performance/)
+
 Performance optimization, monitoring, and benchmarking.
+
 - Benchmarking
 - Memory optimization
 - Parallel processing
 - Monitoring
 
 ### [10_production/](10_production/)
+
 Production deployment, monitoring, and maintenance.
+
 - Deployment patterns
 - Container orchestration
 - Monitoring and alerting
@@ -82,6 +102,7 @@ Production deployment, monitoring, and maintenance.
 ### Prerequisites
 
 1. **Install PDF Vector System**
+
    ```bash
    pip install pdf-vector-system
    # or
@@ -89,6 +110,7 @@ Production deployment, monitoring, and maintenance.
    ```
 
 2. **Set up environment** (for cloud providers)
+
    ```bash
    export OPENAI_API_KEY="your-openai-key"
    export COHERE_API_KEY="your-cohere-key"
@@ -96,6 +118,7 @@ Production deployment, monitoring, and maintenance.
    ```
 
 3. **Prepare sample data**
+
    ```bash
    # Create sample PDFs directory
    mkdir -p sample_pdfs
@@ -123,32 +146,40 @@ python sentence_transformers_examples.py
 This examples collection includes comprehensive quality assurance tools:
 
 ### Code Quality Review
+
 ```bash
 python code_quality_review.py
 ```
+
 - Checks coding standards compliance
 - Validates documentation completeness
 - Reviews code structure and style
 - Provides improvement recommendations
 
 ### Example Testing
+
 ```bash
 python test_all_examples.py
 ```
+
 - Validates syntax and imports
 - Tests functionality and execution
 - Checks documentation standards
 - Generates comprehensive reports
 
 ### Contributing Guidelines
+
 See `CONTRIBUTING.md` for:
+
 - Adding new examples
 - Quality standards
 - Review process
 - Testing requirements
 
 ### Quality Standards
+
 All examples follow strict quality standards:
+
 - ✅ Comprehensive documentation with required sections
 - ✅ Type hints and proper error handling
 - ✅ PEP 8 compliance and code formatting
@@ -158,16 +189,19 @@ All examples follow strict quality standards:
 ## 📚 Learning Path
 
 ### Beginner
+
 1. **01_basic_usage/** - Start here to understand core concepts
 2. **03_cli_usage/** - Learn command-line operations
 3. **02_embedding_providers/** - Explore different embedding options
 
 ### Intermediate
+
 4. **05_vector_database/** - Advanced search and database operations
 5. **06_text_processing/** - Optimize text processing
 6. **07_configuration/** - Master configuration management
 
 ### Advanced
+
 7. **08_integration/** - Build complex workflows
 8. **09_performance/** - Optimize for production
 9. **10_production/** - Deploy and maintain in production
@@ -175,6 +209,7 @@ All examples follow strict quality standards:
 ## 🔧 Configuration Templates
 
 ### Basic Configuration (.env)
+
 ```bash
 # Copy to .env and customize
 EMBEDDING__MODEL_TYPE=sentence-transformers
@@ -184,6 +219,7 @@ DEBUG=false
 ```
 
 ### Production Configuration
+
 ```bash
 EMBEDDING__MODEL_TYPE=openai
 EMBEDDING__MODEL_NAME=text-embedding-3-small
@@ -254,10 +290,10 @@ def main():
     # Configuration
     config = Config()
     # ... configuration code
-    
+
     # Example logic
     # ... implementation
-    
+
     # Results and cleanup
     # ... results handling
 

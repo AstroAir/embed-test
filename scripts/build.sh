@@ -85,13 +85,13 @@ clean_build() {
 # Check dependencies
 check_dependencies() {
     print_status "Checking build dependencies..."
-    
+
     # Check if we're in a git repository
     if ! git rev-parse --git-dir > /dev/null 2>&1; then
         print_error "Not in a git repository"
         exit 1
     fi
-    
+
     # Check for UV or pip
     if command -v uv &> /dev/null; then
         print_success "UV found"
@@ -103,7 +103,7 @@ check_dependencies() {
         print_error "No package manager found (uv or pip required)"
         exit 1
     fi
-    
+
     # Install build dependencies
     if [ "$PACKAGE_MANAGER" = "uv" ]; then
         uv sync --extra dev
@@ -116,7 +116,7 @@ check_dependencies() {
 run_quality_checks() {
     if [ "$CHECK_QUALITY" = true ]; then
         print_status "Running code quality checks..."
-        
+
         # Ruff linting
         print_status "Running ruff linter..."
         if [ "$PACKAGE_MANAGER" = "uv" ]; then
@@ -124,7 +124,7 @@ run_quality_checks() {
         else
             ruff check pdf_vector_system tests examples
         fi
-        
+
         # Ruff formatting
         print_status "Checking code formatting..."
         if [ "$PACKAGE_MANAGER" = "uv" ]; then
@@ -132,7 +132,7 @@ run_quality_checks() {
         else
             ruff format --check pdf_vector_system tests examples
         fi
-        
+
         # MyPy type checking
         print_status "Running type checks..."
         if [ "$PACKAGE_MANAGER" = "uv" ]; then
@@ -140,7 +140,7 @@ run_quality_checks() {
         else
             mypy pdf_vector_system
         fi
-        
+
         # Security checks
         print_status "Running security checks..."
         if [ "$PACKAGE_MANAGER" = "uv" ]; then
@@ -150,7 +150,7 @@ run_quality_checks() {
             bandit -r pdf_vector_system
             safety check
         fi
-        
+
         print_success "Code quality checks passed"
     fi
 }
@@ -159,13 +159,13 @@ run_quality_checks() {
 run_tests() {
     if [ "$RUN_TESTS" = true ]; then
         print_status "Running tests..."
-        
+
         if [ "$PACKAGE_MANAGER" = "uv" ]; then
             uv run pytest tests/ -v --cov=pdf_vector_system --cov-report=term-missing
         else
             pytest tests/ -v --cov=pdf_vector_system --cov-report=term-missing
         fi
-        
+
         print_success "Tests passed"
     fi
 }
@@ -174,7 +174,7 @@ run_tests() {
 build_documentation() {
     if [ "$BUILD_DOCS" = true ]; then
         print_status "Building documentation..."
-        
+
         if [ "$PACKAGE_MANAGER" = "uv" ]; then
             uv sync --extra docs
             uv run mkdocs build
@@ -182,7 +182,7 @@ build_documentation() {
             pip install -e ".[docs]"
             mkdocs build
         fi
-        
+
         print_success "Documentation built"
     fi
 }
@@ -190,7 +190,7 @@ build_documentation() {
 # Build package
 build_package() {
     print_status "Building package..."
-    
+
     # Install build tools
     if [ "$PACKAGE_MANAGER" = "uv" ]; then
         uv tool install build
@@ -198,21 +198,21 @@ build_package() {
     else
         pip install build twine
     fi
-    
+
     # Build the package
     if [ "$PACKAGE_MANAGER" = "uv" ]; then
         uvx build
     else
         python -m build
     fi
-    
+
     # Check the package
     if [ "$PACKAGE_MANAGER" = "uv" ]; then
         uvx twine check dist/*
     else
         twine check dist/*
     fi
-    
+
     print_success "Package built successfully"
 }
 
@@ -226,7 +226,7 @@ show_build_info() {
     echo "  Quality checks: $CHECK_QUALITY"
     echo "  Build docs: $BUILD_DOCS"
     echo
-    
+
     if [ -d "$BUILD_DIR" ]; then
         echo "Built packages:"
         ls -la $BUILD_DIR/
@@ -238,7 +238,7 @@ main() {
     echo "PDF Vector System Build Script"
     echo "=============================="
     echo
-    
+
     clean_build
     check_dependencies
     run_quality_checks
@@ -246,7 +246,7 @@ main() {
     build_documentation
     build_package
     show_build_info
-    
+
     print_success "Build completed successfully!"
     echo
     echo "Next steps:"

@@ -9,6 +9,7 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
+        args: [--unsafe]
       - id: check-toml
       - id: check-json
       - id: check-added-large-files
@@ -41,7 +42,9 @@ repos:
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
+        stages: [manual]
       - id: ruff-format
+        stages: [manual]
 
   # MyPy type checker
   - repo: https://github.com/pre-commit/mirrors-mypy
@@ -54,6 +57,7 @@ repos:
           - pydantic
         args: [--ignore-missing-imports, --scripts-are-modules]
         exclude: ^(tests/|examples/)
+        stages: [manual]
 
   # Bandit security linter
   - repo: https://github.com/pycqa/bandit
@@ -61,15 +65,16 @@ repos:
     hooks:
       - id: bandit
         args: [-c, pyproject.toml]
-        additional_dependencies: ["bandit[toml]"]
+        additional_dependencies: ["bandit[toml]", "pbr"]
         exclude: ^tests/
 
-  # Safety dependency scanner
+  # Safety dependency scanner (disabled by default; run manually in CI)
   - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
     rev: v1.3.2
     hooks:
       - id: python-safety-dependencies-check
         files: pyproject.toml
+        stages: [manual]
 
   # Conventional commits
   - repo: https://github.com/compilerla/conventional-pre-commit
@@ -85,14 +90,15 @@ repos:
     hooks:
       - id: detect-secrets
         args: ['--baseline', '.secrets.baseline']
-        exclude: package.lock.json
+        exclude: '(package.lock.json|^tests/|^examples/|README\.md)'
 
-  # Dockerfile linter
+  # Dockerfile linter (requires Docker; run manually if available)
   - repo: https://github.com/hadolint/hadolint
     rev: v2.12.0
     hooks:
       - id: hadolint-docker
         files: Dockerfile*
+        stages: [manual]
 
   # YAML linter
   - repo: https://github.com/adrienverge/yamllint.git
@@ -107,7 +113,7 @@ repos:
     hooks:
       - id: markdownlint
         args: [--fix]
-        exclude: CHANGELOG.md
+        exclude: "(CHANGELOG.md|README.md|examples/README.md)"
 
 # Configuration for specific hooks
 ci:

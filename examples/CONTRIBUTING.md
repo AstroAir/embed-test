@@ -74,31 +74,31 @@ from utils.performance_utils import measure_performance
 def main() -> None:
     """
     Main example function.
-    
+
     Demonstrates [specific functionality] with proper error handling
     and resource management.
     """
     print_section("Example: [Example Name]")
-    
+
     try:
         # Setup
         config = setup_example_environment()
-        
+
         # Configure for this example
         config.embedding.model_type = EmbeddingModelType.SENTENCE_TRANSFORMERS
         config.embedding.model_name = "all-MiniLM-L6-v2"
-        
+
         # Main example logic
         with measure_performance("example_operation") as timer:
             result = demonstrate_functionality(config)
-        
+
         # Display results
         if result:
             print(f"✅ Example completed successfully in {timer.elapsed:.2f}s")
             display_results(result)
         else:
             print("❌ Example failed")
-            
+
     except Exception as e:
         print(f"❌ Error running example: {e}")
         sys.exit(1)
@@ -107,10 +107,10 @@ def main() -> None:
 def demonstrate_functionality(config: Config) -> Optional[dict]:
     """
     Core example functionality.
-    
+
     Args:
         config: Configuration object
-        
+
     Returns:
         Results dictionary or None if failed
     """
@@ -121,7 +121,7 @@ def demonstrate_functionality(config: Config) -> Optional[dict]:
 def display_results(results: dict) -> None:
     """
     Display example results in a user-friendly format.
-    
+
     Args:
         results: Results dictionary from the example
     """

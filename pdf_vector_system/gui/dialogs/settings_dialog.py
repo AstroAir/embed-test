@@ -11,15 +11,9 @@ from typing import Optional
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QFontMetrics, QGuiApplication, QTextOption
-from PySide6.QtWidgets import (
-    QDialog,
-    QFrame,
-    QHBoxLayout,
-    QScrollArea,
-    QTabWidget,
-    QWidget,
-)
+from PySide6.QtWidgets import QDialog, QFrame, QHBoxLayout, QScrollArea, QTabWidget
 from PySide6.QtWidgets import QTextEdit as QtTextEdit
+from PySide6.QtWidgets import QWidget
 from qfluentwidgets import (
     BodyLabel,
     InfoBar,

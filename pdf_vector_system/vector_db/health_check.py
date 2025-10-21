@@ -309,9 +309,9 @@ class PineconeHealthChecker(HealthChecker):
                 status = HealthStatus.HEALTHY
             else:
                 status = HealthStatus.DEGRADED
-                details[
-                    "warning"
-                ] = f"Index '{self.pinecone_config.index_name}' does not exist"
+                details["warning"] = (
+                    f"Index '{self.pinecone_config.index_name}' does not exist"
+                )
 
             return self._create_result(status, response_time, details)
 

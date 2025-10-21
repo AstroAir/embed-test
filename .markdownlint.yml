@@ -6,6 +6,7 @@ default: true
 
 # Disable specific rules
 MD013: false  # Line length - handled by prettier/black
+MD024: false  # Allow duplicate headings (project docs intentionally reuse headings)
 MD033: false  # Allow inline HTML
 MD041: false  # First line in file should be a top level header
 
@@ -29,10 +30,6 @@ MD010:
 MD012:
   # Multiple consecutive blank lines
   maximum: 2
-
-MD024:
-  # Multiple headers with the same content
-  allow_different_nesting: true
 
 MD025:
   # Multiple top level headers in the same document

@@ -227,9 +227,9 @@ class SearchQuery:
     include_documents: bool = True
     max_results: Optional[int] = None  # Alias for n_results for backward compatibility
     min_score: Optional[float] = None  # Minimum similarity score threshold
-    filter_metadata: Optional[
-        dict[str, Any]
-    ] = None  # Alias for where for backward compatibility
+    filter_metadata: Optional[dict[str, Any]] = (
+        None  # Alias for where for backward compatibility
+    )
 
     def __post_init__(self) -> None:
         """Validate query after initialization."""
@@ -344,9 +344,9 @@ class DocumentInfo:
     filename: Optional[str] = None
     page_count: Optional[int] = None
     file_size_bytes: Optional[int] = None
-    created_at: Optional[
-        str
-    ] = None  # Changed to str for consistency with CollectionInfo
+    created_at: Optional[str] = (
+        None  # Changed to str for consistency with CollectionInfo
+    )
     metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
