@@ -11,16 +11,16 @@ Dialogs:
 - ProgressDialog: Long-running operation progress
 """
 
-from .about_dialog import AboutDialog
-from .settings_dialog import SettingsDialog
-from .confirm_dialog import ConfirmDialog
-from .error_dialog import ErrorDialog
-from .progress_dialog import ProgressDialog
+from pdf_vector_system.gui.dialogs.about_dialog import AboutDialog
+from pdf_vector_system.gui.dialogs.confirm_dialog import ConfirmDialog
+from pdf_vector_system.gui.dialogs.error_dialog import ErrorDialog
+from pdf_vector_system.gui.dialogs.progress_dialog import ProgressDialog
+from pdf_vector_system.gui.dialogs.settings_dialog import SettingsDialog
 
 __all__ = [
     "AboutDialog",
-    "SettingsDialog", 
     "ConfirmDialog",
     "ErrorDialog",
-    "ProgressDialog"
+    "ProgressDialog",
+    "SettingsDialog",
 ]

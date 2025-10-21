@@ -2,14 +2,14 @@
 
 import sys
 from pathlib import Path
-from typing import Optional, Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional
 
 from loguru import logger
 
 if TYPE_CHECKING:
     from loguru import Logger
 
-from ..config.settings import LoggingConfig, LogLevel
+from pdf_vector_system.config.settings import LoggingConfig
 
 
 def is_logging_configured() -> bool:
@@ -32,7 +32,8 @@ def ensure_logging_configured(config: Optional[LoggingConfig] = None) -> None:
         config: Optional logging configuration (uses default if None)
     """
     if not is_logging_configured():
-        from ..config.settings import LoggingConfig
+        from pdf_vector_system.config.settings import LoggingConfig
+
         setup_logging(config or LoggingConfig())
 
 
@@ -45,7 +46,7 @@ def setup_logging(config: LoggingConfig) -> None:
     """
     # Remove default handler
     logger.remove()
-    
+
     # Add console handler with color and formatting
     logger.add(
         sys.stderr,
@@ -55,13 +56,13 @@ def setup_logging(config: LoggingConfig) -> None:
         backtrace=True,
         diagnose=True,
     )
-    
+
     # Add file handler if file path is specified
     if config.file_path:
         # Ensure log directory exists
         log_dir = Path(config.file_path).parent
         log_dir.mkdir(parents=True, exist_ok=True)
-        
+
         logger.add(
             config.file_path,
             level=config.level.value,
@@ -72,7 +73,7 @@ def setup_logging(config: LoggingConfig) -> None:
             backtrace=True,
             diagnose=True,
         )
-    
+
     # Log the configuration
     logger.info(f"Logging configured with level: {config.level.value}")
     if config.file_path:
@@ -94,7 +95,7 @@ def get_logger(name: str) -> "Logger":
 
 class LoggerMixin:
     """Mixin class to add logging capabilities to any class."""
-    
+
     @property
     def logger(self) -> "Logger":
         """Get logger instance for this class."""
@@ -104,7 +105,7 @@ class LoggerMixin:
 def log_function_call(func_name: str, **kwargs: Any) -> None:
     """
     Log a function call with its parameters.
-    
+
     Args:
         func_name: Name of the function being called
         **kwargs: Function parameters to log
@@ -116,32 +117,34 @@ def log_function_call(func_name: str, **kwargs: Any) -> None:
 def log_performance(operation: str, duration: float, **metadata: Any) -> None:
     """
     Log performance metrics for an operation.
-    
+
     Args:
         operation: Name of the operation
         duration: Duration in seconds
         **metadata: Additional metadata to log
     """
     metadata_str = ", ".join(f"{k}={v}" for k, v in metadata.items())
-    logger.info(f"Performance: {operation} completed in {duration:.2f}s | {metadata_str}")
+    logger.info(
+        f"Performance: {operation} completed in {duration:.2f}s | {metadata_str}"
+    )
 
 
 def log_error(error: Exception, context: Optional[str] = None) -> None:
     """
     Log an error with context information.
-    
+
     Args:
         error: Exception that occurred
         context: Additional context information
     """
     context_str = f" | Context: {context}" if context else ""
-    logger.error(f"Error: {type(error).__name__}: {str(error)}{context_str}")
+    logger.error(f"Error: {type(error).__name__}: {error!s}{context_str}")
 
 
 def log_warning(message: str, **metadata: Any) -> None:
     """
     Log a warning message with metadata.
-    
+
     Args:
         message: Warning message
         **metadata: Additional metadata
@@ -156,7 +159,7 @@ def log_warning(message: str, **metadata: Any) -> None:
 def log_progress(operation: str, current: int, total: int, **metadata: Any) -> None:
     """
     Log progress information.
-    
+
     Args:
         operation: Name of the operation
         current: Current progress count

@@ -13,7 +13,7 @@ Main Components:
 - Utils: GUI utilities and helper functions
 """
 
-from .main_window import MainWindow
-from .app import PDFVectorGUIApp
+from pdf_vector_system.gui.app import PDFVectorGUIApp
+from pdf_vector_system.gui.main_window import MainWindow
 
 __all__ = ["MainWindow", "PDFVectorGUIApp"]

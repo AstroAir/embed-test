@@ -7,49 +7,54 @@ using QFluentWidgets FluentWindow.
 
 from typing import Optional
 
-from PySide6.QtWidgets import QWidget
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Signal
 from PySide6.QtGui import QCloseEvent, QKeySequence, QShortcut
-from qfluentwidgets import VBoxLayout, MessageBox, FluentWindow, FluentIcon
+from PySide6.QtWidgets import QWidget
+from qfluentwidgets import FluentIcon, FluentWindow, MessageBox
 
-from ..config.settings import Config
-from .controllers.main_controller import MainController
-from .widgets import (
-    ProcessingWidget, SearchWidget, DocumentWidget,
-    ConfigWidget, StatusWidget, LogWidget
+from pdf_vector_system.config.settings import Config
+from pdf_vector_system.gui.controllers.main_controller import MainController
+from pdf_vector_system.gui.utils.icons import IconType
+from pdf_vector_system.gui.utils.qt_utils import center_window, set_window_icon
+from pdf_vector_system.gui.widgets import (
+    ConfigWidget,
+    DocumentWidget,
+    LogWidget,
+    ProcessingWidget,
+    SearchWidget,
+    StatusWidget,
 )
-
-from .utils.qt_utils import center_window, set_window_icon
-from .utils.icons import IconType
 
 
 class MainWindow(FluentWindow):
     """Main application window with tabbed interface."""
-    
+
     # Signals
     closing = Signal()
-    
-    def __init__(self, config: Optional[Config] = None, parent: Optional[QWidget] = None):
+
+    def __init__(
+        self, config: Optional[Config] = None, parent: Optional[QWidget] = None
+    ):
         """
         Initialize the main window.
-        
+
         Args:
             config: Configuration object
             parent: Parent widget
         """
         super().__init__(parent)
-        
+
         self.config = config or Config()
         self.controller = MainController(self.config)
-        
+
         # Initialize UI
         self._setup_ui()
         self._setup_shortcuts()
         self._setup_connections()
-        
+
         # Center window on screen
         center_window(self)
-        
+
     def _setup_ui(self) -> None:
         """Set up the main user interface."""
         # Set window properties
@@ -62,13 +67,15 @@ class MainWindow(FluentWindow):
 
         # Create and add tabs using FluentWindow's interface system
         self._create_tabs()
-        
+
     def _create_tabs(self) -> None:
         """Create and add all tabs using FluentWindow's interface system."""
         # Processing tab
         self.processing_widget = ProcessingWidget(self.config)
         self.processing_widget.setObjectName("ProcessingWidget")
-        self.addSubInterface(self.processing_widget, FluentIcon.DOCUMENT, "Process PDFs")
+        self.addSubInterface(
+            self.processing_widget, FluentIcon.DOCUMENT, "Process PDFs"
+        )
 
         # Search tab
         self.search_widget = SearchWidget(self.config)
@@ -106,7 +113,9 @@ class MainWindow(FluentWindow):
 
         # Ctrl+O to switch to processing tab
         process_shortcut = QShortcut(QKeySequence.StandardKey.Open, self)
-        process_shortcut.activated.connect(lambda: self.switchTo(self.processing_widget))
+        process_shortcut.activated.connect(
+            lambda: self.switchTo(self.processing_widget)
+        )
 
         # Ctrl+, to switch to settings tab (on systems that support it)
         settings_shortcut = QShortcut(QKeySequence.StandardKey.Preferences, self)
@@ -115,13 +124,15 @@ class MainWindow(FluentWindow):
     def _connect_widget_signals(self) -> None:
         """Connect widget signals to main controller and each other."""
         # Connect config widget to update all other widgets when config changes
-        if hasattr(self.config_widget, 'config_changed'):
+        if hasattr(self.config_widget, "config_changed"):
             self.config_widget.config_changed.connect(self._on_config_changed)
 
         # Connect processing widget to update document widget when files are processed
-        if hasattr(self.processing_widget, 'controller'):
+        if hasattr(self.processing_widget, "controller"):
             self.processing_widget.controller.processing_completed.connect(
-                lambda successful, total: self.document_widget.refresh_documents() if successful > 0 else None
+                lambda successful, total: (
+                    self.document_widget.refresh_documents() if successful > 0 else None
+                )
             )
 
     def _setup_connections(self) -> None:
@@ -131,19 +142,23 @@ class MainWindow(FluentWindow):
         self.controller.status_message.connect(self._on_status_message)
 
         # Connect navigation change signal (FluentWindow uses stackedWidget)
-        if hasattr(self.stackedWidget, 'currentChanged'):
+        if hasattr(self.stackedWidget, "currentChanged"):
             self.stackedWidget.currentChanged.connect(self._on_tab_changed)
-        
 
-        
     def _on_config_changed(self, new_config: Config) -> None:
         """Handle configuration changes."""
         self.config = new_config
 
         # Update all widget controllers with new config
-        for widget in [self.processing_widget, self.search_widget, self.document_widget,
-                      self.status_widget]:
-            if hasattr(widget, 'controller') and hasattr(widget.controller, 'update_config'):
+        for widget in [
+            self.processing_widget,
+            self.search_widget,
+            self.document_widget,
+            self.status_widget,
+        ]:
+            if hasattr(widget, "controller") and hasattr(
+                widget.controller, "update_config"
+            ):
                 widget.controller.update_config(new_config)
 
         # Update main controller
@@ -167,13 +182,15 @@ class MainWindow(FluentWindow):
             message: Status message to display
         """
         # Forward status message to the status widget if it exists
-        if hasattr(self, 'status_widget') and hasattr(self.status_widget, 'emit_status'):
+        if hasattr(self, "status_widget") and hasattr(
+            self.status_widget, "emit_status"
+        ):
             self.status_widget.emit_status(message)
 
     def _on_tab_changed(self, index: int) -> None:
         """Handle tab change event."""
         widget = self.stackedWidget.widget(index)
-        if widget and hasattr(widget, 'on_tab_activated'):
+        if widget and hasattr(widget, "on_tab_activated"):
             widget.on_tab_activated()
 
     def closeEvent(self, event: QCloseEvent) -> None:

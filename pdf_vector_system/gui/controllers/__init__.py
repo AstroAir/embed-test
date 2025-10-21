@@ -13,18 +13,18 @@ Controllers:
 - StatusController: System status monitoring
 """
 
-from .main_controller import MainController
-from .processing_controller import ProcessingController
-from .search_controller import SearchController
-from .document_controller import DocumentController
-from .config_controller import ConfigController
-from .status_controller import StatusController
+from pdf_vector_system.gui.controllers.config_controller import ConfigController
+from pdf_vector_system.gui.controllers.document_controller import DocumentController
+from pdf_vector_system.gui.controllers.main_controller import MainController
+from pdf_vector_system.gui.controllers.processing_controller import ProcessingController
+from pdf_vector_system.gui.controllers.search_controller import SearchController
+from pdf_vector_system.gui.controllers.status_controller import StatusController
 
 __all__ = [
+    "ConfigController",
+    "DocumentController",
     "MainController",
     "ProcessingController",
-    "SearchController", 
-    "DocumentController",
-    "ConfigController",
-    "StatusController"
+    "SearchController",
+    "StatusController",
 ]

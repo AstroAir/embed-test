@@ -6,13 +6,9 @@ This module contains error display dialogs.
 
 from typing import Optional
 
-from PySide6.QtWidgets import QWidget, QHBoxLayout
-from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
-from qfluentwidgets import (
-    VBoxLayout, PushButton,
-    BodyLabel, TextEdit, MaskDialogBase
-)
+from PySide6.QtWidgets import QHBoxLayout, QWidget
+from qfluentwidgets import BodyLabel, MaskDialogBase, PushButton, TextEdit, VBoxLayout
 
 
 class ErrorDialog(MaskDialogBase):
@@ -22,12 +18,17 @@ class ErrorDialog(MaskDialogBase):
     Uses MaskDialogBase for consistent fluent design for error reporting
     with modern styling and theming support.
     """
-    
-    def __init__(self, title: str, message: str, details: Optional[str] = None, 
-                 parent: Optional[QWidget] = None):
+
+    def __init__(
+        self,
+        title: str,
+        message: str,
+        details: Optional[str] = None,
+        parent: Optional[QWidget] = None,
+    ):
         """
         Initialize the error dialog.
-        
+
         Args:
             title: Dialog title
             message: Error message
@@ -38,7 +39,7 @@ class ErrorDialog(MaskDialogBase):
         self.setWindowTitle(title)
         self.setModal(True)
         self._setup_ui(message, details)
-        
+
     def _setup_ui(self, message: str, details: Optional[str]) -> None:
         """Set up the user interface."""
         layout = VBoxLayout(self)
@@ -71,8 +72,8 @@ class ErrorDialog(MaskDialogBase):
         ok_btn = PushButton("OK")
         ok_btn.clicked.connect(self.accept)
         button_layout.addWidget(ok_btn)
-        
+
         layout.addLayout(button_layout)
-        
+
         # Set default button
         ok_btn.setDefault(True)

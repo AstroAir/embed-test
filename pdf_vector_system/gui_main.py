@@ -6,9 +6,7 @@ It can be used as a script or imported to start the GUI programmatically.
 """
 
 import sys
-import os
 from pathlib import Path
-from typing import Optional
 
 # Add the project root to Python path if needed
 project_root = Path(__file__).parent.parent
@@ -23,28 +21,25 @@ from pdf_vector_system.utils.logging import setup_logging
 def main() -> int:
     """
     Main entry point for the GUI application.
-    
+
     Returns:
         Application exit code
     """
     try:
         # Load configuration
         config = Config()
-        
+
         # Setup logging
         setup_logging(config.logging)
-        
+
         # Create and run GUI application
         app = PDFVectorGUIApp(config)
         return app.run()
-        
-    except ImportError as e:
-        print(f"Import error: {e}")
-        print("Make sure PySide6 is installed: uv add PySide6")
+
+    except ImportError:
         return 1
-        
-    except Exception as e:
-        print(f"Error starting GUI application: {e}")
+
+    except Exception:
         return 1
 
 

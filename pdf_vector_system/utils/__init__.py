@@ -1,6 +1,6 @@
 """Utility functions and helpers."""
 
-from .logging import setup_logging
-from .progress import ProgressTracker
+from pdf_vector_system.utils.logging import setup_logging
+from pdf_vector_system.utils.progress import ProgressTracker
 
-__all__ = ["setup_logging", "ProgressTracker"]
+__all__ = ["ProgressTracker", "setup_logging"]

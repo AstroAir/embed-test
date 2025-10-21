@@ -10,14 +10,14 @@ This package provides functionality to:
 """
 
 try:
-    from ._version import __version__
+    from pdf_vector_system._version import __version__
 except ImportError:
     # fallback for development installations
     __version__ = "0.1.0-dev"
 
 __author__ = "The Augster"
 
-from .config import Config
-from .pipeline import PDFVectorPipeline
+from pdf_vector_system.config import Config
+from pdf_vector_system.pipeline import PDFVectorPipeline
 
 __all__ = ["Config", "PDFVectorPipeline"]

@@ -5,15 +5,15 @@ This module provides common Qt utility functions for window management,
 dialogs, and other GUI operations.
 """
 
-from typing import Optional, Union
-from PySide6.QtWidgets import (
-    QWidget, QApplication
-)
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QIcon, QScreen
+from typing import TYPE_CHECKING, Optional
+
+from PySide6.QtWidgets import QApplication, QWidget
 from qfluentwidgets import MessageBox
 
-from .icons import get_icon, IconType
+from pdf_vector_system.gui.utils.icons import IconType, get_icon
+
+if TYPE_CHECKING:
+    from PySide6.QtGui import QIcon, QScreen
 
 
 def center_window(window: QWidget) -> None:
@@ -55,7 +55,7 @@ def show_error_message(
     parent: Optional[QWidget],
     title: str,
     message: str,
-    detailed_text: Optional[str] = None
+    detailed_text: Optional[str] = None,
 ) -> None:
     """
     Show an error message dialog using QFluentWidgets.
@@ -77,11 +77,7 @@ def show_error_message(
     w.exec()
 
 
-def show_info_message(
-    parent: Optional[QWidget],
-    title: str,
-    message: str
-) -> None:
+def show_info_message(parent: Optional[QWidget], title: str, message: str) -> None:
     """
     Show an information message dialog using QFluentWidgets.
 
@@ -96,11 +92,7 @@ def show_info_message(
     w.exec()
 
 
-def show_warning_message(
-    parent: Optional[QWidget],
-    title: str,
-    message: str
-) -> None:
+def show_warning_message(parent: Optional[QWidget], title: str, message: str) -> None:
     """
     Show a warning message dialog using QFluentWidgets.
 
@@ -115,11 +107,7 @@ def show_warning_message(
     w.exec()
 
 
-def show_question_dialog(
-    parent: Optional[QWidget],
-    title: str,
-    message: str
-) -> bool:
+def show_question_dialog(parent: Optional[QWidget], title: str, message: str) -> bool:
     """
     Show a yes/no question dialog using QFluentWidgets.
 
@@ -137,7 +125,6 @@ def show_question_dialog(
         w.cancelButton.setText("No")
         result = w.exec()
         return bool(result)  # Ensure boolean return type
-    except Exception as e:
+    except Exception:
         # Fallback to simple print if MessageBox fails
-        print(f"Error showing question dialog: {e}")
         return False

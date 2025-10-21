@@ -5,27 +5,27 @@ This package contains reusable widgets and components for the GUI application.
 
 Widgets:
 - ProcessingWidget: PDF file processing interface
-- SearchWidget: Search and results display interface  
+- SearchWidget: Search and results display interface
 - DocumentWidget: Document management interface
 - ConfigWidget: Configuration settings interface
 - StatusWidget: System status and health monitoring
 - LogWidget: Log display and monitoring
 """
 
-from .base import BaseWidget
-from .processing_widget import ProcessingWidget
-from .search_widget import SearchWidget
-from .document_widget import DocumentWidget
-from .config_widget import ConfigWidget
-from .status_widget import StatusWidget
-from .log_widget import LogWidget
+from pdf_vector_system.gui.widgets.base import BaseWidget
+from pdf_vector_system.gui.widgets.config_widget import ConfigWidget
+from pdf_vector_system.gui.widgets.document_widget import DocumentWidget
+from pdf_vector_system.gui.widgets.log_widget import LogWidget
+from pdf_vector_system.gui.widgets.processing_widget import ProcessingWidget
+from pdf_vector_system.gui.widgets.search_widget import SearchWidget
+from pdf_vector_system.gui.widgets.status_widget import StatusWidget
 
 __all__ = [
     "BaseWidget",
-    "ProcessingWidget", 
-    "SearchWidget",
-    "DocumentWidget",
     "ConfigWidget",
+    "DocumentWidget",
+    "LogWidget",
+    "ProcessingWidget",
+    "SearchWidget",
     "StatusWidget",
-    "LogWidget"
 ]

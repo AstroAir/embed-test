@@ -6,24 +6,27 @@ This module contains progress dialogs for long-running operations.
 
 from typing import Optional
 
-from PySide6.QtWidgets import QWidget, QHBoxLayout
 from PySide6.QtCore import Qt, Signal
+from PySide6.QtWidgets import QHBoxLayout, QWidget
 from qfluentwidgets import (
-    VBoxLayout, PushButton,
-    BodyLabel, ProgressBar, MaskDialogBase
+    BodyLabel,
+    MaskDialogBase,
+    ProgressBar,
+    PushButton,
+    VBoxLayout,
 )
 
 
 class ProgressDialog(MaskDialogBase):
     """Progress dialog for long-running operations using QFluentWidgets MaskDialogBase."""
-    
+
     # Signals
     cancelled: Signal = Signal()
-    
+
     def __init__(self, title: str, message: str, parent: Optional[QWidget] = None):
         """
         Initialize the progress dialog.
-        
+
         Args:
             title: Dialog title
             message: Progress message
@@ -33,7 +36,7 @@ class ProgressDialog(MaskDialogBase):
         self.setWindowTitle(title)
         self.setModal(True)
         self._setup_ui(message)
-        
+
     def _setup_ui(self, message: str) -> None:
         """Set up the user interface."""
         layout = VBoxLayout(self)
@@ -61,9 +64,9 @@ class ProgressDialog(MaskDialogBase):
         self.cancel_btn = PushButton("Cancel")
         self.cancel_btn.clicked.connect(self._on_cancel)
         button_layout.addWidget(self.cancel_btn)
-        
+
         layout.addLayout(button_layout)
-        
+
     def set_progress(self, value: int) -> None:
         """
         Set progress value.
@@ -71,7 +74,9 @@ class ProgressDialog(MaskDialogBase):
         Args:
             value: Progress value (0-100)
         """
-        self.progress_bar.setValue(max(0, min(100, value)))  # Ensure value is within valid range
+        self.progress_bar.setValue(
+            max(0, min(100, value))
+        )  # Ensure value is within valid range
 
     def set_status(self, status: str) -> None:
         """
@@ -90,7 +95,7 @@ class ProgressDialog(MaskDialogBase):
             message: Main message
         """
         self.message_label.setText(message)
-        
+
     def _on_cancel(self) -> None:
         """Handle cancel button click."""
         self.cancelled.emit()

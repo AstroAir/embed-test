@@ -4,25 +4,33 @@ System status widget for PDF Vector System GUI.
 This module contains the widget for system status and health monitoring.
 """
 
-from typing import Optional, Dict, Any
+from typing import Any, Optional
 
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QTableWidgetItem
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import QTimer
+from PySide6.QtWidgets import QHBoxLayout, QTableWidgetItem, QWidget
 from qfluentwidgets import (
-    VBoxLayout, PushButton, BodyLabel,
-    TableWidget, CardWidget,
-    TextEdit, ProgressBar
+    BodyLabel,
+    CardWidget,
+    FluentIcon,
+    InfoBadge,
+    ProgressBar,
+    PushButton,
+    TableWidget,
+    TextEdit,
+    VBoxLayout,
 )
 
-from ...config.settings import Config
-from .base import BaseWidget
-from ..controllers.status_controller import StatusController
+from pdf_vector_system.config.settings import Config
+from pdf_vector_system.gui.controllers.status_controller import StatusController
+from pdf_vector_system.gui.widgets.base import BaseWidget
 
 
 class StatusWidget(BaseWidget):
     """Widget for system status and health monitoring."""
-    
-    def __init__(self, config: Optional[Config] = None, parent: Optional[QWidget] = None):
+
+    def __init__(
+        self, config: Optional[Config] = None, parent: Optional[QWidget] = None
+    ):
         """
         Initialize the status widget.
 
@@ -39,7 +47,7 @@ class StatusWidget(BaseWidget):
         # Initialize controller after UI is set up
         self.controller = StatusController(self.config, self)
         self._connect_controller_signals()
-        
+
     def _setup_ui(self) -> None:
         """Set up the user interface."""
         layout = VBoxLayout(self)
@@ -47,8 +55,11 @@ class StatusWidget(BaseWidget):
         # Controls
         controls_layout = QHBoxLayout()
         self.health_check_btn = PushButton("Run Health Check")
+        self.health_check_btn.setIcon(FluentIcon.HEART.icon())
         self.refresh_btn = PushButton("Refresh Status")
+        self.refresh_btn.setIcon(FluentIcon.SYNC.icon())
         self.auto_refresh_btn = PushButton("Auto Refresh: OFF")
+        self.auto_refresh_btn.setIcon(FluentIcon.SYNC.icon())
         self.auto_refresh_btn.setCheckable(True)
 
         controls_layout.addWidget(self.health_check_btn)
@@ -62,26 +73,40 @@ class StatusWidget(BaseWidget):
         health_group = CardWidget()
         health_layout = VBoxLayout(health_group)
 
-        # Add title for the card
+        # Add title for the card with status badge
+        health_title_layout = QHBoxLayout()
         health_title = BodyLabel("System Health")
-        health_title.setStyleSheet("font-weight: bold; font-size: 14px; margin-bottom: 10px;")
-        health_layout.addWidget(health_title)
+        health_title.setStyleSheet(
+            "font-weight: bold; font-size: 14px; margin-bottom: 10px;"
+        )
+
+        # Add status badge
+        self.health_badge = InfoBadge.success("OK")
+        self.health_badge.setFixedSize(40, 20)
+
+        health_title_layout.addWidget(health_title)
+        health_title_layout.addWidget(self.health_badge)
+        health_title_layout.addStretch()
+
+        health_layout.addLayout(health_title_layout)
 
         self.health_table = TableWidget()
         self.health_table.setColumnCount(2)
         self.health_table.setHorizontalHeaderLabels(["Component", "Status"])
         self.health_table.setAlternatingRowColors(True)
         health_layout.addWidget(self.health_table)
-        
+
         layout.addWidget(health_group)
-        
+
         # System Information
         info_group = CardWidget()
         info_layout = VBoxLayout(info_group)
 
         # Add title for the card
         info_title = BodyLabel("System Information")
-        info_title.setStyleSheet("font-weight: bold; font-size: 14px; margin-bottom: 10px;")
+        info_title.setStyleSheet(
+            "font-weight: bold; font-size: 14px; margin-bottom: 10px;"
+        )
         info_layout.addWidget(info_title)
 
         self.info_table = TableWidget()
@@ -98,7 +123,9 @@ class StatusWidget(BaseWidget):
 
         # Add title for the card
         perf_title = BodyLabel("Performance Metrics")
-        perf_title.setStyleSheet("font-weight: bold; font-size: 14px; margin-bottom: 10px;")
+        perf_title.setStyleSheet(
+            "font-weight: bold; font-size: 14px; margin-bottom: 10px;"
+        )
         perf_layout.addWidget(perf_title)
 
         # Memory usage
@@ -120,16 +147,18 @@ class StatusWidget(BaseWidget):
         cpu_layout.addWidget(self.cpu_bar)
         cpu_layout.addWidget(self.cpu_label)
         perf_layout.addLayout(cpu_layout)
-        
+
         layout.addWidget(perf_group)
-        
+
         # Status Messages
         messages_group = CardWidget()
         messages_layout = VBoxLayout(messages_group)
 
         # Add title for the card
         messages_title = BodyLabel("Status Messages")
-        messages_title.setStyleSheet("font-weight: bold; font-size: 14px; margin-bottom: 10px;")
+        messages_title.setStyleSheet(
+            "font-weight: bold; font-size: 14px; margin-bottom: 10px;"
+        )
         messages_layout.addWidget(messages_title)
 
         self.messages_text = TextEdit()
@@ -138,7 +167,7 @@ class StatusWidget(BaseWidget):
         messages_layout.addWidget(self.messages_text)
 
         layout.addWidget(messages_group)
-        
+
         # Connect signals
         self._setup_connections()
 
@@ -149,7 +178,9 @@ class StatusWidget(BaseWidget):
         """Connect controller signals to widget slots."""
         self.controller.health_check_completed.connect(self._on_health_check_completed)
         self.controller.system_info_updated.connect(self._on_system_info_updated)
-        self.controller.performance_metrics_updated.connect(self._on_performance_metrics_updated)
+        self.controller.performance_metrics_updated.connect(
+            self._on_performance_metrics_updated
+        )
         self.controller.status_error.connect(self._on_status_error)
         self.controller.status_message.connect(self._on_status_message)
 
@@ -158,19 +189,19 @@ class StatusWidget(BaseWidget):
         self.health_check_btn.clicked.connect(self.run_health_check)
         self.refresh_btn.clicked.connect(self.update_status)
         self.auto_refresh_btn.toggled.connect(self.toggle_auto_refresh)
-        
+
     def run_health_check(self) -> None:
         """Run comprehensive health check."""
         # Check if controller is initialized before using it
-        if not hasattr(self, 'controller') or self.controller is None:
+        if not hasattr(self, "controller") or self.controller is None:
             return
 
         self.controller.run_health_check()
-        
+
     def update_status(self) -> None:
         """Update system status information."""
         # Check if controller is initialized before using it
-        if not hasattr(self, 'controller') or self.controller is None:
+        if not hasattr(self, "controller") or self.controller is None:
             return
 
         # Update system information
@@ -178,31 +209,31 @@ class StatusWidget(BaseWidget):
 
         # Update performance metrics
         self.controller.update_performance_metrics()
-        
-    def _update_health_table(self, health_data: Dict[str, str]) -> None:
+
+    def _update_health_table(self, health_data: dict[str, str]) -> None:
         """Update the health status table."""
         self.health_table.setRowCount(len(health_data))
-        
+
         for row, (component, status) in enumerate(health_data.items()):
             self.health_table.setItem(row, 0, QTableWidgetItem(component))
             self.health_table.setItem(row, 1, QTableWidgetItem(status))
-            
+
         self.health_table.resizeColumnsToContents()
-        
-    def _update_info_table(self, info_data: Dict[str, str]) -> None:
+
+    def _update_info_table(self, info_data: dict[str, str]) -> None:
         """Update the system information table."""
         self.info_table.setRowCount(len(info_data))
-        
+
         for row, (prop, value) in enumerate(info_data.items()):
             self.info_table.setItem(row, 0, QTableWidgetItem(prop))
             self.info_table.setItem(row, 1, QTableWidgetItem(value))
-            
+
         self.info_table.resizeColumnsToContents()
-        
+
     def toggle_auto_refresh(self, enabled: bool) -> None:
         """Toggle auto-refresh functionality."""
         # Check if controller is initialized before using it
-        if not hasattr(self, 'controller') or self.controller is None:
+        if not hasattr(self, "controller") or self.controller is None:
             return
 
         if enabled:
@@ -218,7 +249,7 @@ class StatusWidget(BaseWidget):
         """Perform automatic status refresh."""
         self.update_status()
 
-    def _on_health_check_completed(self, health_status: Dict[str, bool]) -> None:
+    def _on_health_check_completed(self, health_status: dict[str, bool]) -> None:
         """Handle health check completed signal."""
         # Convert boolean status to display strings
         health_data = {}
@@ -229,24 +260,24 @@ class StatusWidget(BaseWidget):
         self._update_health_table(health_data)
         self.messages_text.append("Health check completed")
 
-    def _on_system_info_updated(self, info: Dict[str, Any]) -> None:
+    def _on_system_info_updated(self, info: dict[str, Any]) -> None:
         """Handle system info updated signal."""
         # Convert info to display format
         info_data = {}
         for key, value in info.items():
-            info_data[key.replace('_', ' ').title()] = str(value)
+            info_data[key.replace("_", " ").title()] = str(value)
 
         self._update_info_table(info_data)
 
-    def _on_performance_metrics_updated(self, metrics: Dict[str, Any]) -> None:
+    def _on_performance_metrics_updated(self, metrics: dict[str, Any]) -> None:
         """Handle performance metrics updated signal."""
         # Update memory usage
-        memory_percent = metrics.get('memory_percent', 0)
+        memory_percent = metrics.get("memory_percent", 0)
         self.memory_bar.setValue(int(memory_percent))
         self.memory_label.setText(f"{memory_percent:.1f}%")
 
         # Update CPU usage
-        cpu_percent = metrics.get('cpu_percent', 0)
+        cpu_percent = metrics.get("cpu_percent", 0)
         self.cpu_bar.setValue(int(cpu_percent))
         self.cpu_label.setText(f"{cpu_percent:.1f}%")
 
@@ -254,6 +285,22 @@ class StatusWidget(BaseWidget):
         """Handle status error signal."""
         self.messages_text.append(f"Error: {error_message}")
         self.emit_status(f"Status error: {error_message}")
+        # Update health badge to show error
+        self.health_badge = InfoBadge.error("ERROR")
+
+    def update_health_badge(self, status: str, is_healthy: bool = True) -> None:
+        """
+        Update the health status badge.
+
+        Args:
+            status: Status text to display
+            is_healthy: Whether the system is healthy
+        """
+        if is_healthy:
+            self.health_badge = InfoBadge.success(status)
+        else:
+            self.health_badge = InfoBadge.error(status)
+        self.health_badge.setFixedSize(40, 20)
 
     def _on_status_message(self, message: str) -> None:
         """Handle status message signal."""

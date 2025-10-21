@@ -6,11 +6,17 @@ This module contains the About dialog showing application information.
 
 from typing import Optional
 
-from PySide6.QtWidgets import QWidget, QHBoxLayout
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QHBoxLayout, QWidget
 from qfluentwidgets import (
-    VBoxLayout, BodyLabel, PushButton, TextEdit, MaskDialogBase,
-    TitleLabel, SubtitleLabel, CardWidget
+    BodyLabel,
+    CardWidget,
+    MaskDialogBase,
+    PushButton,
+    SubtitleLabel,
+    TextEdit,
+    TitleLabel,
+    VBoxLayout,
 )
 
 
@@ -31,7 +37,7 @@ class AboutDialog(MaskDialogBase):
         """
         super().__init__(parent)
         self._setup_ui()
-        
+
     def _setup_ui(self) -> None:
         """Set up the user interface."""
         self.setWindowTitle("About PDF Vector System")
@@ -39,14 +45,16 @@ class AboutDialog(MaskDialogBase):
         self.setModal(True)
 
         # Apply consistent card title styling
-        self.setStyleSheet("""
+        self.setStyleSheet(
+            """
             SubtitleLabel[objectName="cardTitle"] {
                 font-weight: bold;
                 font-size: 14px;
                 margin-bottom: 10px;
                 color: palette(text);
             }
-        """)
+        """
+        )
 
         layout = VBoxLayout(self)
 
@@ -72,7 +80,9 @@ class AboutDialog(MaskDialogBase):
         info_layout.addWidget(version_label)
 
         # BodyLabel for regular descriptive text
-        description_label = BodyLabel("A comprehensive PDF content processing and vector storage system")
+        description_label = BodyLabel(
+            "A comprehensive PDF content processing and vector storage system"
+        )
         description_label.setWordWrap(True)
         info_layout.addWidget(description_label)
 
@@ -93,7 +103,8 @@ class AboutDialog(MaskDialogBase):
         # TextEdit from QFluentWidgets provides better theming support
         about_text = TextEdit()
         about_text.setReadOnly(True)
-        about_text.setHtml("""
+        about_text.setHtml(
+            """
         <h3>PDF Vector System</h3>
         <p>A powerful Python application for processing PDF documents and storing them in a vector database for semantic search and retrieval.</p>
 
@@ -112,7 +123,8 @@ class AboutDialog(MaskDialogBase):
 
         <h4>License:</h4>
         <p>MIT License</p>
-        """)
+        """
+        )
         about_layout.addWidget(about_text)
         layout.addWidget(about_card)
 
@@ -127,7 +139,8 @@ class AboutDialog(MaskDialogBase):
 
         deps_text = TextEdit()
         deps_text.setReadOnly(True)
-        deps_text.setHtml("""
+        deps_text.setHtml(
+            """
         <h3>Dependencies</h3>
         <p>This application is built using the following key libraries:</p>
 
@@ -152,7 +165,8 @@ class AboutDialog(MaskDialogBase):
             <li><b>mypy</b> - Type checking</li>
             <li><b>ruff</b> - Linting</li>
         </ul>
-        """)
+        """
+        )
         deps_layout.addWidget(deps_text)
         layout.addWidget(deps_card)
 
@@ -162,23 +176,28 @@ class AboutDialog(MaskDialogBase):
 
         # Add title for the card
         system_title = SubtitleLabel("System Information")
-        system_title.setObjectName("cardTitle")  # Use object name for consistent styling
+        system_title.setObjectName(
+            "cardTitle"
+        )  # Use object name for consistent styling
         system_layout.addWidget(system_title)
 
         system_text = TextEdit()
         system_text.setReadOnly(True)
 
         # Get system information
-        import sys
         import platform
+        import sys
+
         try:
             import PySide6
+
             pyside_version = PySide6.__version__
         except:
             pyside_version = "Unknown"
 
         try:
             import qfluentwidgets
+
             qfw_version = qfluentwidgets.__version__
         except:
             qfw_version = "Unknown"

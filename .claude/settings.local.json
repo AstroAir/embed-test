@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pytest:*)",
+      "Bash(uv sync:*)",
+      "Bash(uv pip:*)",
+      "Bash(python:*)",
+      "Bash(uv run:*)",
+      "Bash(grep:*)",
+      "Bash(python3 -m pytest:*)",
+      "Bash(py -m pytest:*)",
+      "Bash(ruff check:*)",
+      "Bash(ruff format:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

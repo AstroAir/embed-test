@@ -50,6 +50,11 @@ dependencies = [
     "tensorflow>=2.13.0,<3.0.0",
     "tensorflow-hub>=0.15.0,<1.0.0",
     "pyside6-fluent-widgets>=1.8.7",
+    "sentencepiece>=0.2.1",
+    "pymilvus>=2.6.2",
+    "pinecone>=7.3.0",
+    "qdrant-client>=1.12.1",
+    "weaviate-client>=4.0.0,<5.0.0",
 ]
 
 [project.urls]
@@ -195,6 +200,11 @@ module = [
     "sentence_transformers.*",
     "fitz.*",
     "langchain_text_splitters.*",
+    "numpy.*",
+    "loguru.*",
+    "sentencepiece.*",
+    "transformers.*",
+    "langdetect.*",
 ]
 ignore_missing_imports = true
 
@@ -202,6 +212,9 @@ ignore_missing_imports = true
 [tool.ruff]
 target-version = "py39"
 line-length = 88
+src = ["pdf_vector_system", "tests"]
+
+[tool.ruff.lint]
 select = [
     "E",  # pycodestyle errors
     "W",  # pycodestyle warnings
@@ -237,23 +250,21 @@ ignore = [
     "PLR0913", # too many arguments
     "PLR0912", # too many branches
     "PLR0915", # too many statements
-    "PD901",  # avoid using the generic variable name df for DataFrames
 ]
 unfixable = [
     "ERA001", # commented-out-code
 ]
-src = ["pdf_vector_system", "tests"]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/**/*" = ["PLR2004", "S101", "TID252"]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["pdf_vector_system"]
 
-[tool.ruff.flake8-tidy-imports]
+[tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
 
-[tool.ruff.pyupgrade]
+[tool.ruff.lint.pyupgrade]
 keep-runtime-typing = true
 
 # Pytest configuration
@@ -278,6 +289,11 @@ markers = [
     "slow: Tests that take a long time to run",
     "external: Tests that require external dependencies (APIs, databases)",
     "unit: Unit tests (default)",
+    "gui: GUI-related tests",
+    "widget: Widget tests",
+    "controller: Controller tests",
+    "dialog: Dialog tests",
+    "utils: Utility tests",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning",

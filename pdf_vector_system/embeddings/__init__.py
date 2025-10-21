@@ -1,79 +1,105 @@
 """Embedding generation module supporting multiple models."""
 
-from typing import Dict
+# Check availability of optional providers using importlib
+import importlib.util
 
-from .base import EmbeddingService, EmbeddingResult, EmbeddingBatch
-from .sentence_transformers_service import SentenceTransformersService
-from .openai_service import OpenAIEmbeddingService
-from .factory import EmbeddingServiceFactory, BatchEmbeddingProcessor, EnhancedBatchEmbeddingProcessor
-from .retry import RetryHandler, RetryConfig, ProviderCircuitBreaker
-from .health_check import HealthCheckManager, ProviderHealthChecker
+from pdf_vector_system.embeddings.base import (
+    EmbeddingBatch,
+    EmbeddingResult,
+    EmbeddingService,
+)
+from pdf_vector_system.embeddings.factory import (
+    BatchEmbeddingProcessor,
+    EmbeddingServiceFactory,
+    EnhancedBatchEmbeddingProcessor,
+)
+from pdf_vector_system.embeddings.health_check import (
+    HealthCheckManager,
+    ProviderHealthChecker,
+)
+from pdf_vector_system.embeddings.openai_service import OpenAIEmbeddingService
+from pdf_vector_system.embeddings.retry import (
+    ProviderCircuitBreaker,
+    RetryConfig,
+    RetryHandler,
+)
+from pdf_vector_system.embeddings.sentence_transformers_service import (
+    SentenceTransformersService,
+)
 
-# Optional imports for new providers (graceful degradation if dependencies not installed)
-try:
-    from .cohere_service import CohereEmbeddingService
-    _COHERE_AVAILABLE = True
-except ImportError:
-    _COHERE_AVAILABLE = False
-
-try:
-    from .huggingface_service import HuggingFaceEmbeddingService
-    _HUGGINGFACE_AVAILABLE = True
-except ImportError:
-    _HUGGINGFACE_AVAILABLE = False
-
-try:
-    from .google_use_service import GoogleUSEService
-    _GOOGLE_USE_AVAILABLE = True
-except ImportError:
-    _GOOGLE_USE_AVAILABLE = False
-
-try:
-    from .azure_openai_service import AzureOpenAIEmbeddingService
-    _AZURE_OPENAI_AVAILABLE = True
-except ImportError:
-    _AZURE_OPENAI_AVAILABLE = False
-
-try:
-    from .gemini_service import GeminiEmbeddingService
-    _GOOGLE_GEMINI_AVAILABLE = True
-except ImportError:
-    _GOOGLE_GEMINI_AVAILABLE = False
+_COHERE_AVAILABLE = (
+    importlib.util.find_spec("pdf_vector_system.embeddings.cohere_service") is not None
+)
+_HUGGINGFACE_AVAILABLE = (
+    importlib.util.find_spec("pdf_vector_system.embeddings.huggingface_service")
+    is not None
+)
+_GOOGLE_USE_AVAILABLE = (
+    importlib.util.find_spec("pdf_vector_system.embeddings.google_use_service")
+    is not None
+)
+_AZURE_OPENAI_AVAILABLE = (
+    importlib.util.find_spec("pdf_vector_system.embeddings.azure_openai_service")
+    is not None
+)
+_GOOGLE_GEMINI_AVAILABLE = (
+    importlib.util.find_spec("pdf_vector_system.embeddings.gemini_service") is not None
+)
 
 __all__ = [
-    "EmbeddingService",
-    "EmbeddingResult",
-    "EmbeddingBatch",
-    "SentenceTransformersService",
-    "OpenAIEmbeddingService",
-    "EmbeddingServiceFactory",
     "BatchEmbeddingProcessor",
+    "EmbeddingBatch",
+    "EmbeddingResult",
+    "EmbeddingService",
+    "EmbeddingServiceFactory",
     "EnhancedBatchEmbeddingProcessor",
-    "RetryHandler",
-    "RetryConfig",
-    "ProviderCircuitBreaker",
     "HealthCheckManager",
-    "ProviderHealthChecker"
+    "OpenAIEmbeddingService",
+    "ProviderCircuitBreaker",
+    "ProviderHealthChecker",
+    "RetryConfig",
+    "RetryHandler",
+    "SentenceTransformersService",
 ]
 
-# Add optional services to __all__ if available
+# Add optional services to __all__ if available and import them dynamically
 if _COHERE_AVAILABLE:
+    from pdf_vector_system.embeddings.cohere_service import (  # noqa: F401
+        CohereEmbeddingService,
+    )
+
     __all__.append("CohereEmbeddingService")
 
 if _HUGGINGFACE_AVAILABLE:
+    from pdf_vector_system.embeddings.huggingface_service import (  # noqa: F401
+        HuggingFaceEmbeddingService,
+    )
+
     __all__.append("HuggingFaceEmbeddingService")
 
 if _GOOGLE_USE_AVAILABLE:
+    from pdf_vector_system.embeddings.google_use_service import (  # noqa: F401
+        GoogleUSEService,
+    )
+
     __all__.append("GoogleUSEService")
 
 if _AZURE_OPENAI_AVAILABLE:
+    from pdf_vector_system.embeddings.azure_openai_service import (  # noqa: F401
+        AzureOpenAIEmbeddingService,
+    )
+
     __all__.append("AzureOpenAIEmbeddingService")
 
 if _GOOGLE_GEMINI_AVAILABLE:
+    from pdf_vector_system.embeddings.gemini_service import (  # noqa: F401
+        GeminiEmbeddingService,
+    )
+
     __all__.append("GeminiEmbeddingService")
 
 
-def get_available_providers() -> Dict[str, bool]:
+def get_available_providers() -> dict[str, bool]:
     """
     Get availability status of all embedding providers.
 
@@ -91,7 +117,7 @@ def get_available_providers() -> Dict[str, bool]:
     }
 
 
-def check_provider_dependencies() -> Dict[str, str]:
+def check_provider_dependencies() -> dict[str, str]:
     """
     Check which provider dependencies are missing.
 

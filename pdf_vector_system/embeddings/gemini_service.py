@@ -2,42 +2,46 @@
 
 import os
 import time
-from typing import List, Dict, Any, Optional, cast
+from typing import Any, Optional, cast
 
 import requests
 
-from .base import EmbeddingService, EmbeddingResult, EmbeddingServiceError
-from .retry import RetryHandler, RetryableError, FailureType
-from .provider_configs import ProviderRetryConfigs
-from ..utils.progress import PerformanceTimer
+from pdf_vector_system.embeddings.base import (
+    EmbeddingResult,
+    EmbeddingService,
+    EmbeddingServiceError,
+)
+from pdf_vector_system.embeddings.provider_configs import ProviderRetryConfigs
+from pdf_vector_system.embeddings.retry import FailureType, RetryableError, RetryHandler
+from pdf_vector_system.utils.progress import PerformanceTimer
 
 
 class GeminiEmbeddingService(EmbeddingService):
     """Embedding service using Google Gemini's embedding API."""
 
     # Model configurations
-    MODEL_CONFIGS: Dict[str, Dict[str, Any]] = {
+    MODEL_CONFIGS: dict[str, dict[str, Any]] = {
         "gemini-embedding-001": {
             "dimension": 768,
             "max_tokens": 2048,
-            "description": "Latest Gemini embedding model"
+            "description": "Latest Gemini embedding model",
         },
         "gemini-embedding-exp-03-07": {
             "dimension": 768,
             "max_tokens": 2048,
-            "description": "Experimental Gemini embedding model"
+            "description": "Experimental Gemini embedding model",
         },
         "text-embedding-004": {
             "dimension": 768,
             "max_tokens": 2048,
-            "description": "Text embedding model v4"
-        }
+            "description": "Text embedding model v4",
+        },
     }
 
     # API endpoints
     GOOGLE_AI_BASE_URL: str = "https://generativelanguage.googleapis.com/v1beta"
     VERTEX_AI_BASE_URL: str = "https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/google/models"
-    
+
     def __init__(
         self,
         model_name: str = "gemini-embedding-001",
@@ -49,11 +53,11 @@ class GeminiEmbeddingService(EmbeddingService):
         max_retries: int = 3,
         timeout: float = 60.0,
         batch_size: int = 100,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         """
         Initialize Gemini embedding service.
-        
+
         Args:
             model_name: Name of the Gemini embedding model
             api_key: Google AI API key (for Google AI API) or service account key (for Vertex AI)
@@ -76,7 +80,11 @@ class GeminiEmbeddingService(EmbeddingService):
         self.location: str = location
 
         # Get API key
-        self.api_key: Optional[str] = api_key or os.getenv("GOOGLE_GEMINI_API_KEY") or os.getenv("GOOGLE_AI_API_KEY")
+        self.api_key: Optional[str] = (
+            api_key
+            or os.getenv("GOOGLE_GEMINI_API_KEY")
+            or os.getenv("GOOGLE_AI_API_KEY")
+        )
         if not self.api_key:
             raise ValueError(
                 "Google Gemini API key is required. Set GOOGLE_GEMINI_API_KEY or GOOGLE_AI_API_KEY "
@@ -90,63 +98,70 @@ class GeminiEmbeddingService(EmbeddingService):
             if not project_id:
                 raise ValueError("project_id is required when using Vertex AI")
             self.base_url = self.VERTEX_AI_BASE_URL.format(
-                location=location,
-                project_id=project_id
+                location=location, project_id=project_id
             )
         else:
             self.base_url = self.GOOGLE_AI_BASE_URL
 
         # Initialize retry handler
         retry_config = ProviderRetryConfigs.get_google_gemini_config()
-        self.retry_handler: RetryHandler = RetryHandler(retry_config, f"GeminiService-{model_name}")
-        
+        self.retry_handler: RetryHandler = RetryHandler(
+            retry_config, f"GeminiService-{model_name}"
+        )
+
         # Validate model
         if model_name not in self.MODEL_CONFIGS:
             self.logger.warning(
                 f"Model {model_name} not in known configurations. "
                 f"Known models: {list(self.MODEL_CONFIGS.keys())}"
             )
-        
+
         self.logger.info(
             f"Initialized Gemini embedding service with model: {model_name}, "
             f"endpoint: {'Vertex AI' if use_vertex_ai else 'Google AI API'}"
         )
-    
-    def embed_texts(self, texts: List[str]) -> EmbeddingResult:
+
+    def embed_texts(self, texts: list[str]) -> EmbeddingResult:
         """
         Generate embeddings for a list of texts.
-        
+
         Args:
             texts: List of texts to embed
-            
+
         Returns:
             EmbeddingResult containing the generated embeddings
         """
         if not texts:
             raise ValueError("Texts list cannot be empty")
-        
+
         # Validate and preprocess texts
-        validated_texts: List[str] = self.validate_texts(texts)
+        validated_texts: list[str] = self.validate_texts(texts)
 
         start_time: float = time.time()
-        all_embeddings: List[List[float]] = []
+        all_embeddings: list[list[float]] = []
         total_tokens: int = 0
-        
+
         try:
             # Process texts in batches
-            with PerformanceTimer(f"Generating Gemini embeddings for {len(texts)} texts", log_result=False):
+            with PerformanceTimer(
+                f"Generating Gemini embeddings for {len(texts)} texts", log_result=False
+            ):
                 for i in range(0, len(validated_texts), self.batch_size):
-                    batch_texts: List[str] = validated_texts[i:i + self.batch_size]
+                    batch_texts: list[str] = validated_texts[i : i + self.batch_size]
 
-                    self.logger.debug(f"Processing batch {i//self.batch_size + 1} with {len(batch_texts)} texts")
+                    self.logger.debug(
+                        f"Processing batch {i // self.batch_size + 1} with {len(batch_texts)} texts"
+                    )
 
                     # Make API request with retry logic
-                    response_data: Dict[str, Any] = self.retry_handler.execute(
+                    response_data: dict[str, Any] = self.retry_handler.execute(
                         self._make_embedding_request, batch_texts
                     )
 
                     # Extract embeddings
-                    batch_embeddings: List[List[float]] = self._extract_embeddings(response_data)
+                    batch_embeddings: list[list[float]] = self._extract_embeddings(
+                        response_data
+                    )
                     all_embeddings.extend(batch_embeddings)
 
                     # Track token usage if available
@@ -160,7 +175,7 @@ class GeminiEmbeddingService(EmbeddingService):
 
             # Get embedding dimension
             embedding_dim: int = len(all_embeddings[0]) if all_embeddings else 0
-            
+
             result: EmbeddingResult = EmbeddingResult(
                 embeddings=all_embeddings,
                 model_name=self.model_name,
@@ -172,50 +187,55 @@ class GeminiEmbeddingService(EmbeddingService):
                     "endpoint_type": "vertex_ai" if self.use_vertex_ai else "google_ai",
                     "project_id": self.project_id,
                     "location": self.location,
-                    "batch_count": (len(texts) + self.batch_size - 1) // self.batch_size,
+                    "batch_count": (len(texts) + self.batch_size - 1)
+                    // self.batch_size,
                     "batch_size": self.batch_size,
                     "total_tokens": total_tokens,
-                    "tokens_per_text": total_tokens / len(texts) if total_tokens > 0 and texts else 0
-                }
+                    "tokens_per_text": (
+                        total_tokens / len(texts) if total_tokens > 0 and texts else 0
+                    ),
+                },
             )
-            
+
             self.logger.debug(
                 f"Generated {len(all_embeddings)} Gemini embeddings "
                 f"(dim: {embedding_dim}, tokens: {total_tokens}) in {processing_time:.2f}s"
             )
-            
+
             return result
-            
+
         except Exception as e:
-            error_msg: str = f"Failed to generate Gemini embeddings: {str(e)}"
+            error_msg: str = f"Failed to generate Gemini embeddings: {e!s}"
             self.logger.error(error_msg)
             raise EmbeddingServiceError(error_msg) from e
-    
-    def embed_single(self, text: str) -> List[float]:
+
+    def embed_single(self, text: str) -> list[float]:
         """
         Generate embedding for a single text.
-        
+
         Args:
             text: Text to embed
-            
+
         Returns:
             Embedding vector as list of floats
         """
         if not text or not text.strip():
             raise ValueError("Text cannot be empty")
-        
+
         try:
-            response_data: Dict[str, Any] = self.retry_handler.execute(
+            response_data: dict[str, Any] = self.retry_handler.execute(
                 self._make_embedding_request, [text.strip()]
             )
-            embeddings: List[List[float]] = self._extract_embeddings(response_data)
+            embeddings: list[list[float]] = self._extract_embeddings(response_data)
             return embeddings[0]
 
         except Exception as e:
-            error_msg: str = f"Failed to generate Gemini embedding for single text: {str(e)}"
+            error_msg: str = (
+                f"Failed to generate Gemini embedding for single text: {e!s}"
+            )
             self.logger.error(error_msg)
             raise EmbeddingServiceError(error_msg) from e
-    
+
     def get_embedding_dimension(self) -> int:
         """
         Get the dimension of embeddings produced by this service.
@@ -232,14 +252,14 @@ class GeminiEmbeddingService(EmbeddingService):
 
         # Fallback: generate a test embedding
         try:
-            test_embedding: List[float] = self.embed_single("test")
+            test_embedding: list[float] = self.embed_single("test")
             return len(test_embedding)
         except Exception as e:
-            error_msg: str = f"Failed to determine embedding dimension: {str(e)}"
+            error_msg: str = f"Failed to determine embedding dimension: {e!s}"
             self.logger.error(error_msg)
             raise EmbeddingServiceError(error_msg) from e
 
-    def _make_embedding_request(self, texts: List[str]) -> Dict[str, Any]:
+    def _make_embedding_request(self, texts: list[str]) -> dict[str, Any]:
         """
         Make an embedding request to Gemini API.
 
@@ -252,8 +272,7 @@ class GeminiEmbeddingService(EmbeddingService):
         try:
             if self.use_vertex_ai:
                 return self._make_vertex_ai_request(texts)
-            else:
-                return self._make_google_ai_request(texts)
+            return self._make_google_ai_request(texts)
 
         except Exception as e:
             # Classify the error for retry logic
@@ -261,40 +280,41 @@ class GeminiEmbeddingService(EmbeddingService):
 
             if "rate limit" in error_str or "429" in error_str:
                 raise RetryableError(str(e), FailureType.RATE_LIMIT) from e
-            elif "quota" in error_str or "limit" in error_str:
+            if "quota" in error_str or "limit" in error_str:
                 raise RetryableError(str(e), FailureType.QUOTA_EXCEEDED) from e
-            elif "timeout" in error_str:
+            if "timeout" in error_str:
                 raise RetryableError(str(e), FailureType.TIMEOUT) from e
-            elif "401" in error_str or "403" in error_str:
+            if "401" in error_str or "403" in error_str:
                 raise RetryableError(str(e), FailureType.AUTHENTICATION) from e
-            elif any(code in error_str for code in ["500", "502", "503", "504"]):
+            if any(code in error_str for code in ["500", "502", "503", "504"]):
                 raise RetryableError(str(e), FailureType.SERVER_ERROR) from e
-            elif "network" in error_str or "connection" in error_str:
+            if "network" in error_str or "connection" in error_str:
                 raise RetryableError(str(e), FailureType.NETWORK_ERROR) from e
-            else:
-                raise RetryableError(str(e), FailureType.UNKNOWN) from e
+            raise RetryableError(str(e), FailureType.UNKNOWN) from e
 
-    def _make_google_ai_request(self, texts: List[str]) -> Dict[str, Any]:
+    def _make_google_ai_request(self, texts: list[str]) -> dict[str, Any]:
         """Make request to Google AI API."""
         url: str = f"{self.base_url}/models/{self.model_name}:embedContent"
 
-        headers: Dict[str, str] = {
+        headers: dict[str, str] = {
             "Content-Type": "application/json",
-            "x-goog-api-key": cast(str, self.api_key)  # api_key is validated in __init__
+            "x-goog-api-key": cast(
+                "str", self.api_key
+            ),  # api_key is validated in __init__
         }
 
         # Prepare requests for each text
-        requests_data: List[Dict[str, Any]] = []
+        requests_data: list[dict[str, Any]] = []
         for text in texts:
-            requests_data.append({
-                "model": f"models/{self.model_name}",
-                "content": {
-                    "parts": [{"text": text}]
+            requests_data.append(
+                {
+                    "model": f"models/{self.model_name}",
+                    "content": {"parts": [{"text": text}]},
                 }
-            })
+            )
 
         # For batch requests, use the batch endpoint
-        payload: Dict[str, Any]
+        payload: dict[str, Any]
         if len(texts) > 1:
             payload = {"requests": requests_data}
             url = f"{self.base_url}:batchEmbedContents"
@@ -302,46 +322,40 @@ class GeminiEmbeddingService(EmbeddingService):
             payload = requests_data[0]
 
         response: requests.Response = requests.post(
-            url,
-            headers=headers,
-            json=payload,
-            timeout=self.timeout
+            url, headers=headers, json=payload, timeout=self.timeout
         )
 
         if not response.ok:
             raise Exception(f"Gemini API error {response.status_code}: {response.text}")
 
-        return cast(Dict[str, Any], response.json())
+        return cast("dict[str, Any]", response.json())
 
-    def _make_vertex_ai_request(self, texts: List[str]) -> Dict[str, Any]:
+    def _make_vertex_ai_request(self, texts: list[str]) -> dict[str, Any]:
         """Make request to Vertex AI API."""
         url: str = f"{self.base_url}/{self.model_name}:predict"
 
-        headers: Dict[str, str] = {
+        headers: dict[str, str] = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {cast(str, self.api_key)}"  # Assumes service account token
+            "Authorization": f"Bearer {cast('str', self.api_key)}",  # Assumes service account token
         }
 
         # Vertex AI format
-        instances: List[Dict[str, str]] = []
+        instances: list[dict[str, str]] = []
         for text in texts:
             instances.append({"content": text})
 
-        payload: Dict[str, List[Dict[str, str]]] = {"instances": instances}
+        payload: dict[str, list[dict[str, str]]] = {"instances": instances}
 
         response: requests.Response = requests.post(
-            url,
-            headers=headers,
-            json=payload,
-            timeout=self.timeout
+            url, headers=headers, json=payload, timeout=self.timeout
         )
 
         if not response.ok:
             raise Exception(f"Vertex AI error {response.status_code}: {response.text}")
 
-        return cast(Dict[str, Any], response.json())
+        return cast("dict[str, Any]", response.json())
 
-    def _extract_embeddings(self, response_data: Dict[str, Any]) -> List[List[float]]:
+    def _extract_embeddings(self, response_data: dict[str, Any]) -> list[list[float]]:
         """
         Extract embeddings from API response.
 
@@ -351,7 +365,7 @@ class GeminiEmbeddingService(EmbeddingService):
         Returns:
             List of embedding vectors
         """
-        embeddings: List[List[float]] = []
+        embeddings: list[list[float]] = []
 
         if self.use_vertex_ai:
             # Vertex AI response format
@@ -395,16 +409,16 @@ class GeminiEmbeddingService(EmbeddingService):
 
         return embeddings
 
-    def get_model_info(self) -> Dict[str, Any]:
+    def get_model_info(self) -> dict[str, Any]:
         """
         Get comprehensive information about the model.
 
         Returns:
             Dictionary containing model information
         """
-        base_info: Dict[str, Any] = super().get_model_info()
+        base_info: dict[str, Any] = super().get_model_info()
 
-        model_config: Dict[str, Any] = self.MODEL_CONFIGS.get(self.model_name, {})
+        model_config: dict[str, Any] = self.MODEL_CONFIGS.get(self.model_name, {})
         max_tokens: Optional[int] = None
         if "max_tokens" in model_config:
             max_tokens_value = model_config["max_tokens"]
@@ -435,7 +449,7 @@ class GeminiEmbeddingService(EmbeddingService):
         try:
             # Test with a simple text
             test_text: str = "This is a test."
-            embedding: List[float] = self.embed_single(test_text)
+            embedding: list[float] = self.embed_single(test_text)
 
             # Validate the result
             expected_dim: int = self.get_embedding_dimension()
@@ -443,11 +457,8 @@ class GeminiEmbeddingService(EmbeddingService):
                 return False
 
             # Check if embedding contains valid numbers
-            if not all(isinstance(x, (int, float)) for x in embedding):
-                return False
-
-            return True
+            return all(isinstance(x, (int, float)) for x in embedding)
 
         except Exception as e:
-            self.logger.error(f"Gemini health check failed: {str(e)}")
+            self.logger.error(f"Gemini health check failed: {e!s}")
             return False

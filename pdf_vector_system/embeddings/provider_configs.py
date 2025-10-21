@@ -1,12 +1,13 @@
 """Provider-specific configurations and retry strategies."""
 
-from typing import Dict, Any
-from .retry import RetryConfig, RetryStrategy, FailureType
+from typing import Any
+
+from pdf_vector_system.embeddings.retry import FailureType, RetryConfig, RetryStrategy
 
 
 class ProviderRetryConfigs:
     """Predefined retry configurations for different embedding providers."""
-    
+
     @staticmethod
     def get_openai_config() -> RetryConfig:
         """Get retry configuration optimized for OpenAI API."""
@@ -26,28 +27,28 @@ class ProviderRetryConfigs:
                     strategy=RetryStrategy.EXPONENTIAL_BACKOFF,
                     backoff_multiplier=2.5,
                     jitter=True,
-                    jitter_range=0.2
+                    jitter_range=0.2,
                 ),
                 FailureType.SERVER_ERROR: RetryConfig(
                     max_retries=4,
                     base_delay=1.0,
                     max_delay=30.0,
                     strategy=RetryStrategy.EXPONENTIAL_BACKOFF,
-                    backoff_multiplier=2.0
+                    backoff_multiplier=2.0,
                 ),
                 FailureType.NETWORK_ERROR: RetryConfig(
                     max_retries=3,
                     base_delay=0.5,
                     max_delay=10.0,
                     strategy=RetryStrategy.EXPONENTIAL_BACKOFF,
-                    backoff_multiplier=1.5
-                )
+                    backoff_multiplier=1.5,
+                ),
             },
             circuit_breaker_enabled=True,
             circuit_breaker_failure_threshold=5,
-            circuit_breaker_recovery_timeout=60.0
+            circuit_breaker_recovery_timeout=60.0,
         )
-    
+
     @staticmethod
     def get_cohere_config() -> RetryConfig:
         """Get retry configuration optimized for Cohere API."""
@@ -67,20 +68,20 @@ class ProviderRetryConfigs:
                     strategy=RetryStrategy.EXPONENTIAL_BACKOFF,
                     backoff_multiplier=2.0,
                     jitter=True,
-                    jitter_range=0.25
+                    jitter_range=0.25,
                 ),
                 FailureType.QUOTA_EXCEEDED: RetryConfig(
                     max_retries=2,
                     base_delay=10.0,
                     max_delay=60.0,
-                    strategy=RetryStrategy.LINEAR_BACKOFF
-                )
+                    strategy=RetryStrategy.LINEAR_BACKOFF,
+                ),
             },
             circuit_breaker_enabled=True,
             circuit_breaker_failure_threshold=4,
-            circuit_breaker_recovery_timeout=45.0
+            circuit_breaker_recovery_timeout=45.0,
         )
-    
+
     @staticmethod
     def get_azure_openai_config() -> RetryConfig:
         """Get retry configuration optimized for Azure OpenAI API."""
@@ -100,25 +101,25 @@ class ProviderRetryConfigs:
                     strategy=RetryStrategy.EXPONENTIAL_BACKOFF,
                     backoff_multiplier=2.0,
                     jitter=True,
-                    jitter_range=0.3
+                    jitter_range=0.3,
                 ),
                 FailureType.AUTHENTICATION: RetryConfig(
                     max_retries=1,
                     base_delay=1.0,
                     max_delay=5.0,
-                    strategy=RetryStrategy.FIXED_DELAY
+                    strategy=RetryStrategy.FIXED_DELAY,
                 ),
                 FailureType.SERVER_ERROR: RetryConfig(
                     max_retries=5,
                     base_delay=2.0,
                     max_delay=60.0,
                     strategy=RetryStrategy.EXPONENTIAL_BACKOFF,
-                    backoff_multiplier=1.8
-                )
+                    backoff_multiplier=1.8,
+                ),
             },
             circuit_breaker_enabled=True,
             circuit_breaker_failure_threshold=6,
-            circuit_breaker_recovery_timeout=90.0
+            circuit_breaker_recovery_timeout=90.0,
         )
 
     @staticmethod
@@ -135,36 +136,36 @@ class ProviderRetryConfigs:
                     max_retries=5,
                     base_delay=2.0,
                     max_delay=120.0,
-                    strategy=RetryStrategy.EXPONENTIAL_BACKOFF
+                    strategy=RetryStrategy.EXPONENTIAL_BACKOFF,
                 ),
                 FailureType.QUOTA_EXCEEDED: RetryConfig(
                     max_retries=3,
                     base_delay=5.0,
                     max_delay=300.0,
-                    strategy=RetryStrategy.EXPONENTIAL_BACKOFF
+                    strategy=RetryStrategy.EXPONENTIAL_BACKOFF,
                 ),
                 FailureType.TIMEOUT: RetryConfig(
                     max_retries=3,
                     base_delay=1.0,
                     max_delay=30.0,
-                    strategy=RetryStrategy.EXPONENTIAL_BACKOFF
+                    strategy=RetryStrategy.EXPONENTIAL_BACKOFF,
                 ),
                 FailureType.SERVER_ERROR: RetryConfig(
                     max_retries=4,
                     base_delay=2.0,
                     max_delay=60.0,
-                    strategy=RetryStrategy.EXPONENTIAL_BACKOFF
+                    strategy=RetryStrategy.EXPONENTIAL_BACKOFF,
                 ),
                 FailureType.NETWORK_ERROR: RetryConfig(
                     max_retries=3,
                     base_delay=1.0,
                     max_delay=30.0,
-                    strategy=RetryStrategy.EXPONENTIAL_BACKOFF
-                )
+                    strategy=RetryStrategy.EXPONENTIAL_BACKOFF,
+                ),
             },
             circuit_breaker_enabled=True,
             circuit_breaker_failure_threshold=5,
-            circuit_breaker_recovery_timeout=60.0
+            circuit_breaker_recovery_timeout=60.0,
         )
 
     @staticmethod
@@ -181,28 +182,28 @@ class ProviderRetryConfigs:
                     max_retries=1,
                     base_delay=1.0,
                     max_delay=10.0,
-                    strategy=RetryStrategy.FIXED_DELAY
+                    strategy=RetryStrategy.FIXED_DELAY,
                 ),
                 FailureType.UNKNOWN: RetryConfig(
                     max_retries=1,
                     base_delay=0.1,
                     max_delay=1.0,
-                    strategy=RetryStrategy.FIXED_DELAY
-                )
+                    strategy=RetryStrategy.FIXED_DELAY,
+                ),
             },
             circuit_breaker_enabled=True,
             circuit_breaker_failure_threshold=3,
-            circuit_breaker_recovery_timeout=30.0
+            circuit_breaker_recovery_timeout=30.0,
         )
-    
+
     @staticmethod
     def get_config_for_provider(provider: str) -> RetryConfig:
         """
         Get retry configuration for a specific provider.
-        
+
         Args:
             provider: Provider name
-            
+
         Returns:
             RetryConfig for the provider
         """
@@ -215,26 +216,25 @@ class ProviderRetryConfigs:
             "google_use": ProviderRetryConfigs.get_local_model_config,
             "sentence_transformers": ProviderRetryConfigs.get_local_model_config,
         }
-        
+
         config_func = provider_configs.get(provider.lower())
         if config_func:
             return config_func()
-        else:
-            # Default configuration
-            return RetryConfig()
+        # Default configuration
+        return RetryConfig()
 
 
 class ProviderBatchConfigs:
     """Batch processing configurations for different providers."""
-    
+
     @staticmethod
-    def get_batch_config(provider: str) -> Dict[str, Any]:
+    def get_batch_config(provider: str) -> dict[str, Any]:
         """
         Get batch configuration for a specific provider.
-        
+
         Args:
             provider: Provider name
-            
+
         Returns:
             Dictionary with batch configuration
         """
@@ -244,72 +244,80 @@ class ProviderBatchConfigs:
                 "optimal_batch_size": 50,
                 "max_tokens_per_batch": 8191 * 50,  # Rough estimate
                 "parallel_batches": 3,
-                "memory_limit_mb": 512
+                "memory_limit_mb": 512,
             },
             "cohere": {
                 "max_batch_size": 96,  # Cohere API limit
                 "optimal_batch_size": 48,
                 "max_tokens_per_batch": 2048 * 48,
                 "parallel_batches": 2,
-                "memory_limit_mb": 256
+                "memory_limit_mb": 256,
             },
             "azure_openai": {
                 "max_batch_size": 100,
                 "optimal_batch_size": 40,  # More conservative for Azure
                 "max_tokens_per_batch": 8191 * 40,
                 "parallel_batches": 2,
-                "memory_limit_mb": 512
+                "memory_limit_mb": 512,
             },
             "google_gemini": {
                 "max_batch_size": 100,  # Conservative estimate for Gemini API
                 "optimal_batch_size": 50,
                 "max_tokens_per_batch": 2048 * 50,  # Based on model max tokens
                 "parallel_batches": 3,
-                "memory_limit_mb": 512
+                "memory_limit_mb": 512,
             },
             "huggingface": {
                 "max_batch_size": 32,  # Depends on model and GPU memory
                 "optimal_batch_size": 16,
                 "max_tokens_per_batch": 512 * 16,
                 "parallel_batches": 1,  # Usually single GPU
-                "memory_limit_mb": 2048  # Higher for local models
+                "memory_limit_mb": 2048,  # Higher for local models
             },
             "google_use": {
                 "max_batch_size": 64,
                 "optimal_batch_size": 32,
                 "max_tokens_per_batch": 512 * 32,
                 "parallel_batches": 1,
-                "memory_limit_mb": 1024
+                "memory_limit_mb": 1024,
             },
             "sentence_transformers": {
                 "max_batch_size": 32,
                 "optimal_batch_size": 16,
                 "max_tokens_per_batch": 512 * 16,
                 "parallel_batches": 1,
-                "memory_limit_mb": 1024
-            }
+                "memory_limit_mb": 1024,
+            },
         }
-        
-        return configs.get(provider.lower(), {
-            "max_batch_size": 32,
-            "optimal_batch_size": 16,
-            "max_tokens_per_batch": 512 * 16,
-            "parallel_batches": 1,
-            "memory_limit_mb": 512
-        })
+
+        return configs.get(
+            provider.lower(),
+            {
+                "max_batch_size": 32,
+                "optimal_batch_size": 16,
+                "max_tokens_per_batch": 512 * 16,
+                "parallel_batches": 1,
+                "memory_limit_mb": 512,
+            },
+        )
+
+    @staticmethod
+    def get_batch_config_for_provider(provider: str) -> dict[str, Any]:
+        """Compatibility wrapper for legacy API name used in tests."""
+        return ProviderBatchConfigs.get_batch_config(provider)
 
 
 class ProviderHealthCheckConfigs:
     """Health check configurations for different providers."""
-    
+
     @staticmethod
-    def get_health_check_config(provider: str) -> Dict[str, Any]:
+    def get_health_check_config(provider: str) -> dict[str, Any]:
         """
         Get health check configuration for a specific provider.
-        
+
         Args:
             provider: Provider name
-            
+
         Returns:
             Dictionary with health check configuration
         """
@@ -319,56 +327,67 @@ class ProviderHealthCheckConfigs:
                 "timeout": 30.0,
                 "expected_dimension": None,  # Will be determined dynamically
                 "check_interval": 300.0,  # 5 minutes
-                "failure_threshold": 3
+                "failure_threshold": 3,
             },
             "cohere": {
                 "test_text": "Health check test.",
                 "timeout": 20.0,
                 "expected_dimension": None,
                 "check_interval": 300.0,
-                "failure_threshold": 3
+                "failure_threshold": 3,
             },
             "azure_openai": {
                 "test_text": "Health check test.",
                 "timeout": 45.0,
                 "expected_dimension": None,
                 "check_interval": 300.0,
-                "failure_threshold": 4
+                "failure_threshold": 4,
             },
             "google_gemini": {
                 "test_text": "Health check test.",
                 "timeout": 60.0,
                 "expected_dimension": 768,  # Gemini embedding dimension
                 "check_interval": 300.0,
-                "failure_threshold": 3
+                "failure_threshold": 3,
             },
             "huggingface": {
                 "test_text": "Health check test.",
                 "timeout": 60.0,  # Local models may take longer to load
                 "expected_dimension": None,
                 "check_interval": 600.0,  # 10 minutes
-                "failure_threshold": 2
+                "failure_threshold": 2,
             },
             "google_use": {
                 "test_text": "Health check test.",
                 "timeout": 45.0,
                 "expected_dimension": 512,  # USE typically has 512 dimensions
                 "check_interval": 600.0,
-                "failure_threshold": 2
+                "failure_threshold": 2,
             },
             "sentence_transformers": {
                 "test_text": "Health check test.",
                 "timeout": 30.0,
                 "expected_dimension": None,
                 "check_interval": 600.0,
-                "failure_threshold": 2
-            }
+                "failure_threshold": 2,
+            },
         }
-        
-        return configs.get(provider.lower(), {
-            "test_text": "Health check test.",
-            "timeout": 30.0,
-            "expected_dimension": None,
-            "check_interval": 300.0,
-            "failure_threshold": 3
-        })
+
+        return configs.get(
+            provider.lower(),
+            {
+                "test_text": "Health check test.",
+                "timeout": 30.0,
+                "expected_dimension": None,
+                "check_interval": 300.0,
+                "failure_threshold": 3,
+            },
+        )
+
+
+class ProviderHealthConfigs:
+    """Compatibility wrapper exposing health config API expected by tests."""
+
+    @staticmethod
+    def get_health_config_for_provider(provider: str) -> dict[str, Any]:
+        return ProviderHealthCheckConfigs.get_health_check_config(provider)
