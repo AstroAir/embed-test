@@ -338,7 +338,8 @@ class GeminiEmbeddingService(EmbeddingService):
 
         headers: dict[str, str] = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {cast('str', self.api_key)}",  # Assumes service account token
+            # Assumes service account token
+            "Authorization": f"Bearer {cast('str', self.api_key)}",
         }
 
         # Vertex AI format

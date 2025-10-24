@@ -36,10 +36,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
+from utils.example_helpers import example_context, print_section, print_subsection
+
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
-
-from utils.example_helpers import example_context, print_section, print_subsection
 
 
 @dataclass

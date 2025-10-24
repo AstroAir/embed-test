@@ -26,14 +26,10 @@ Learning Objectives:
 - Learn security best practices
 """
 
+import contextlib
 import os
 import sys
 from pathlib import Path
-
-# Add parent directory to path for imports
-sys.path.append(str(Path(__file__).parent.parent))
-
-import contextlib
 
 from pdf_vector_system import Config
 from pdf_vector_system.config.settings import (
@@ -48,6 +44,9 @@ from utils.example_helpers import (
     print_section,
     print_subsection,
 )
+
+# Add parent directory to path for imports
+sys.path.append(str(Path(__file__).parent.parent))
 
 
 def demonstrate_basic_configuration() -> None:

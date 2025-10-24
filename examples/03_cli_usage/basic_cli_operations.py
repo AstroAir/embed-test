@@ -34,11 +34,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
-# Add parent directory to path for imports
-sys.path.append(str(Path(__file__).parent.parent))
-
 from utils.example_helpers import example_context, print_section, print_subsection
 from utils.sample_data_generator import ensure_sample_data
+
+# Add parent directory to path for imports
+sys.path.append(str(Path(__file__).parent.parent))
 
 
 def run_cli_command(command: list[str], description: str) -> dict[str, Any]:
@@ -50,7 +50,8 @@ def run_cli_command(command: list[str], description: str) -> dict[str, Any]:
         )
 
         if result.stdout:
-            for _line in result.stdout.strip().split("\n")[:10]:  # Show first 10 lines
+            # Show first 10 lines
+            for _line in result.stdout.strip().split("\n")[:10]:
                 pass
             if len(result.stdout.strip().split("\n")) > 10:
                 pass

@@ -171,7 +171,8 @@ class TestBatchEmbeddingProcessor:
         assert result.embedding_dimension == 3
 
         # Should have processed in batches
-        assert len(processor.processed_batches) == 3  # [2, 2, 1] texts per batch
+        # [2, 2, 1] texts per batch
+        assert len(processor.processed_batches) == 3
 
     def test_process_texts_empty(self):
         """Test processing empty text list."""
@@ -252,7 +253,8 @@ class TestBatchEmbeddingProcessor:
 
         assert len(result.embeddings) == 6
         assert all(len(emb) == 3 for emb in result.embeddings)
-        assert len(processor.processed_batches) == 3  # [2, 2, 2] texts per batch
+        # [2, 2, 2] texts per batch
+        assert len(processor.processed_batches) == 3
 
     def test_performance_metrics(self):
         """Test that processor tracks performance metrics."""

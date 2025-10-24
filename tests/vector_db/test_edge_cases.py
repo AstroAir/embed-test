@@ -485,7 +485,8 @@ class TestConcurrencyEdgeCases:
             # First call succeeds, second fails with "already exists"
             mock_client.create_collection.side_effect = [
                 True,  # First call succeeds
-                VectorDBError("Collection already exists"),  # Second call fails
+                # Second call fails
+                VectorDBError("Collection already exists"),
             ]
             mock_create.return_value = mock_client
 

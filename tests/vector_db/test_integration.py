@@ -392,7 +392,8 @@ class TestConfigurationIntegration:
 
         # Invalid config (missing required field for Pinecone)
         with pytest.raises(ValueError):
-            PineconeConfig(api_key="", index_name="test_index")  # Empty API key
+            # Empty API key
+            PineconeConfig(api_key="", index_name="test_index")
 
     def test_config_serialization_integration(self, vector_db_temp_dir):
         """Test configuration serialization/deserialization integration."""

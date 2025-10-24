@@ -230,7 +230,8 @@ class SearchQuery:
     include_distances: bool = True
     include_metadata: bool = True
     include_documents: bool = True
-    max_results: Optional[int] = None  # Alias for n_results for backward compatibility
+    # Alias for n_results for backward compatibility
+    max_results: Optional[int] = None
     min_score: Optional[float] = None  # Minimum similarity score threshold
     filter_metadata: Optional[dict[str, Any]] = (
         None  # Alias for where for backward compatibility

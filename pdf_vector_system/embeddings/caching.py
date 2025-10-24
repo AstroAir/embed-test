@@ -19,6 +19,9 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
+from pdf_vector_system.embeddings.base import EmbeddingResult
+from pdf_vector_system.utils.logging import LoggerMixin
+
 REDIS_AVAILABLE = importlib.util.find_spec("redis") is not None
 
 try:
@@ -27,9 +30,6 @@ try:
     LZ4_AVAILABLE = True
 except ImportError:
     LZ4_AVAILABLE = False
-
-from pdf_vector_system.embeddings.base import EmbeddingResult
-from pdf_vector_system.utils.logging import LoggerMixin
 
 
 class CacheStrategy(Enum):

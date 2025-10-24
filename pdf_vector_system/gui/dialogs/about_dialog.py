@@ -97,7 +97,8 @@ class AboutDialog(MaskDialogBase):
 
         # Card title using SubtitleLabel for consistent typography
         about_title = SubtitleLabel("About")
-        about_title.setObjectName("cardTitle")  # Use object name for consistent styling
+        # Use object name for consistent styling
+        about_title.setObjectName("cardTitle")
         about_layout.addWidget(about_title)
 
         # TextEdit from QFluentWidgets provides better theming support
@@ -134,7 +135,8 @@ class AboutDialog(MaskDialogBase):
 
         # Add title for the card
         deps_title = SubtitleLabel("Dependencies")
-        deps_title.setObjectName("cardTitle")  # Use object name for consistent styling
+        # Use object name for consistent styling
+        deps_title.setObjectName("cardTitle")
         deps_layout.addWidget(deps_title)
 
         deps_text = TextEdit()

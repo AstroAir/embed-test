@@ -29,6 +29,7 @@ Learning Objectives:
 - Master error handling in workflows
 """
 
+import contextlib
 import queue
 import sys
 import threading
@@ -39,15 +40,13 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Callable, Optional
 
-# Add parent directory to path for imports
-sys.path.append(str(Path(__file__).parent.parent))
-
-import contextlib
-
 from pdf_vector_system import Config, PDFVectorPipeline
 from pdf_vector_system.config.settings import EmbeddingModelType
 from utils.example_helpers import example_context, print_section, print_subsection
 from utils.sample_data_generator import ensure_sample_data
+
+# Add parent directory to path for imports
+sys.path.append(str(Path(__file__).parent.parent))
 
 
 class WorkflowStatus(Enum):

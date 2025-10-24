@@ -481,7 +481,8 @@ class PineconeClient(VectorDBInterface, LoggerMixin):
                 match.id if hasattr(match, "id") else match.get("id")
                 for match in matches
             ]
-            chunk_ids = [cid for cid in chunk_ids if cid]  # Filter out None values
+            # Filter out None values
+            chunk_ids = [cid for cid in chunk_ids if cid]
 
             if chunk_ids:
                 # Delete all chunks for this document

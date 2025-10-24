@@ -138,9 +138,11 @@ def check_provider_dependencies() -> dict[str, str]:
         missing["google_use"] = "pip install tensorflow>=2.13.0 tensorflow-hub>=0.15.0"
 
     if not _AZURE_OPENAI_AVAILABLE:
-        missing["azure_openai"] = "pip install openai>=1.0.0"  # Same as regular OpenAI
+        # Same as regular OpenAI
+        missing["azure_openai"] = "pip install openai>=1.0.0"
 
     if not _GOOGLE_GEMINI_AVAILABLE:
-        missing["google_gemini"] = "pip install requests>=2.25.0"  # Basic HTTP client
+        # Basic HTTP client
+        missing["google_gemini"] = "pip install requests>=2.25.0"
 
     return missing

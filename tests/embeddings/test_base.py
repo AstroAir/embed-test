@@ -284,7 +284,8 @@ class TestEmbeddingErrorScenarios:
             EmbeddingBatch(texts="not_a_list", batch_size=10)
 
         with pytest.raises((ValueError, TypeError)):
-            EmbeddingBatch(texts=[123, 456], batch_size=10)  # Should be strings
+            # Should be strings
+            EmbeddingBatch(texts=[123, 456], batch_size=10)
 
     def test_mock_service_embed_single_empty_text(self):
         """Test MockEmbeddingService with empty text."""

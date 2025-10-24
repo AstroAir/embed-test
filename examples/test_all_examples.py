@@ -38,14 +38,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-# Add parent directory to path for imports
-sys.path.append(str(Path(__file__).parent.parent))
-
 from examples.utils.example_helpers import (
     example_context,
     print_section,
     print_subsection,
 )
+
+# Add parent directory to path for imports
+sys.path.append(str(Path(__file__).parent.parent))
 
 
 @dataclass
@@ -151,7 +151,8 @@ class ExampleTester:
                     success=False,
                     duration=duration,
                     message=f"Import errors found: {len(import_errors)}",
-                    details="\n".join(import_errors[:5]),  # Show first 5 errors
+                    # Show first 5 errors
+                    details="\n".join(import_errors[:5]),
                 )
             return TestResult(
                 file_path=file_path,

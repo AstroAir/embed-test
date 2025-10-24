@@ -124,7 +124,8 @@ class VectorDBConverter:
         params: dict[str, Any] = {
             "top_k": query.n_results,
             "include_metadata": query.include_metadata,
-            "include_values": query.include_distances,  # Include embeddings if distances needed
+            # Include embeddings if distances needed
+            "include_values": query.include_distances,
         }
 
         if query.where:

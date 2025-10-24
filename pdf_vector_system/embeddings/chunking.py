@@ -15,13 +15,13 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Optional
 
+from pdf_vector_system.embeddings.tokenization import BaseTokenizer
+from pdf_vector_system.utils.logging import LoggerMixin
+
 SENTENCE_TRANSFORMERS_AVAILABLE = (
     importlib.util.find_spec("sentence_transformers") is not None
 )
 SKLEARN_AVAILABLE = importlib.util.find_spec("sklearn") is not None
-
-from pdf_vector_system.embeddings.tokenization import BaseTokenizer
-from pdf_vector_system.utils.logging import LoggerMixin
 
 
 class ChunkingStrategy(Enum):

@@ -175,7 +175,8 @@ class TestProviderBatchConfigs:
             # Memory limit should be reasonable
             if "memory_limit_mb" in config:
                 assert config["memory_limit_mb"] > 0
-                assert config["memory_limit_mb"] <= 8192  # Reasonable upper bound
+                # Reasonable upper bound
+                assert config["memory_limit_mb"] <= 8192
 
 
 class TestProviderHealthConfigs:
