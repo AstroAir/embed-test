@@ -731,11 +731,12 @@ class PineconeClient(VectorDBInterface, LoggerMixin):
                 original_error=exc,
             ) from exc
 
-    def delete_collection(self, name: Optional[str] = None) -> bool:
+    def delete_collection(self, name: Optional[str] = None) -> None:
         """Delete a collection (index in Pinecone).
 
-        Returns:
-            True if index was deleted successfully
+        Raises:
+            CollectionNotFoundError: If index doesn't exist
+            VectorDBError: If deletion fails
         """
         index_name = name or self.config.index_name
 
@@ -745,7 +746,6 @@ class PineconeClient(VectorDBInterface, LoggerMixin):
                 self._index = None
 
             self.logger.info(f"Deleted Pinecone index: {index_name}")
-            return True
 
         except Exception as exc:
             # Check if it's a "not found" error
@@ -760,10 +760,11 @@ class PineconeClient(VectorDBInterface, LoggerMixin):
                 original_error=exc,
             ) from exc
 
-    def list_collections(self) -> list[str]:
+    def list_collections(self) -> list[CollectionInfo]:
         """List all collections (indexes in Pinecone)."""
         try:
-            return self._normalize_index_names(self.pinecone.list_indexes())
+            index_names = self._normalize_index_names(self.pinecone.list_indexes())
+            return [CollectionInfo(name=name) for name in index_names]
 
         except Exception as exc:
             raise VectorDBError(

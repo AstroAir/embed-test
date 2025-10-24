@@ -460,7 +460,18 @@ class PDFVectorPipeline(LoggerMixin):
             # Get all chunks and group by document_id
             # This is a simplified implementation - in production you might want
             # to store document metadata separately
-            chunks = self.vector_db.get_chunks()
+            # Use search_by_metadata with empty filter to get all chunks
+            search_results = self.vector_db.search_by_metadata({}, limit=10000)
+            # Convert SearchResults to DocumentChunks for processing
+            chunks = [
+                DocumentChunk(
+                    id=result.id,
+                    content=result.content,
+                    embedding=[],  # Empty embedding since we don't need it
+                    metadata=result.metadata,
+                )
+                for result in search_results
+            ]
 
             # Group chunks by document_id
             documents: dict[str, dict[str, Any]] = {}

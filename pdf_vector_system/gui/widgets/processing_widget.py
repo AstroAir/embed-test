@@ -54,7 +54,7 @@ class ProcessingWidget(BaseWidget):
         # Processing state tracking
         self._current_processing_mode = "standard"
         self._processing_state_tooltip: Optional[StateToolTip] = None
-        self._file_count_badge: Optional[InfoBadge] = None
+        self._file_count_badge: InfoBadge  # Initialized in _setup_ui
 
         # Initialize controller
         self.controller = ProcessingController(self.config, self)

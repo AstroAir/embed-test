@@ -175,6 +175,8 @@ class EmbeddingServiceFactory:
                 "all-mpnet-base-v2",
                 "all-distilroberta-v1",
                 "paraphrase-MiniLM-L6-v2",
+                "paraphrase-multilingual-MiniLM-L12-v2",
+                "multi-qa-MiniLM-L6-cos-v1",
             ],
             EmbeddingModelType.OPENAI: [
                 "text-embedding-3-small",
@@ -185,10 +187,31 @@ class EmbeddingServiceFactory:
                 "embed-english-v3.0",
                 "embed-multilingual-v3.0",
                 "embed-english-light-v3.0",
+                "embed-multilingual-light-v3.0",
+                "embed-english-v2.0",
+                "embed-multilingual-v2.0",
             ],
             EmbeddingModelType.HUGGINGFACE: [
                 "sentence-transformers/all-MiniLM-L6-v2",
                 "sentence-transformers/all-mpnet-base-v2",
+                "distilbert-base-uncased",
+                "bert-base-uncased",
+            ],
+            EmbeddingModelType.GOOGLE_USE: [
+                "universal-sentence-encoder",
+                "universal-sentence-encoder-large",
+                "universal-sentence-encoder-multilingual",
+                "universal-sentence-encoder-multilingual-large",
+            ],
+            EmbeddingModelType.GOOGLE_GEMINI: [
+                "gemini-embedding-001",
+                "gemini-embedding-exp-03-07",
+                "text-embedding-004",
+            ],
+            EmbeddingModelType.AZURE_OPENAI: [
+                "text-embedding-3-small",
+                "text-embedding-3-large",
+                "text-embedding-ada-002",
             ],
         }
 
@@ -940,3 +963,343 @@ class EnhancedBatchEmbeddingProcessor(LoggerMixin):
         self.memory_usage_history.clear()
         self.current_batch_size = self.initial_batch_size
         self.logger.info("Reset performance history and batch size")
+
+
+# Additional factory methods for provider validation and introspection
+class EmbeddingProviderRegistry:
+    """Registry for embedding provider information and validation."""
+
+    @staticmethod
+    def get_provider_info(provider: EmbeddingModelType) -> dict[str, Any]:
+        """
+        Get comprehensive information about a specific embedding provider.
+
+        Args:
+            provider: The embedding provider type
+
+        Returns:
+            Dictionary containing provider information including supported models,
+            required configuration, and capabilities
+        """
+        provider_info = {
+            EmbeddingModelType.SENTENCE_TRANSFORMERS: {
+                "name": "Sentence Transformers",
+                "type": "local",
+                "requires_api_key": False,
+                "supports_batch": True,
+                "supports_streaming": False,
+                "default_model": "all-MiniLM-L6-v2",
+                "supported_models": [
+                    "all-MiniLM-L6-v2",
+                    "all-mpnet-base-v2",
+                    "all-distilroberta-v1",
+                    "paraphrase-MiniLM-L6-v2",
+                    "paraphrase-multilingual-MiniLM-L12-v2",
+                    "multi-qa-MiniLM-L6-cos-v1",
+                ],
+                "required_packages": ["sentence-transformers", "torch"],
+                "install_command": "pip install sentence-transformers torch",
+                "config_params": [
+                    "model_name",
+                    "device",
+                    "cache_folder",
+                    "trust_remote_code",
+                ],
+                "typical_dimensions": [384, 768, 1024],
+                "max_sequence_length": 512,
+            },
+            EmbeddingModelType.OPENAI: {
+                "name": "OpenAI",
+                "type": "api",
+                "requires_api_key": True,
+                "supports_batch": True,
+                "supports_streaming": False,
+                "default_model": "text-embedding-3-small",
+                "supported_models": [
+                    "text-embedding-3-small",
+                    "text-embedding-3-large",
+                    "text-embedding-ada-002",
+                ],
+                "required_packages": ["openai"],
+                "install_command": "pip install openai",
+                "config_params": [
+                    "api_key",
+                    "model_name",
+                    "base_url",
+                    "max_retries",
+                    "timeout",
+                ],
+                "env_vars": ["OPENAI_API_KEY"],
+                "typical_dimensions": [1536, 3072],
+                "max_sequence_length": 8191,
+                "rate_limits": "Varies by tier",
+            },
+            EmbeddingModelType.COHERE: {
+                "name": "Cohere",
+                "type": "api",
+                "requires_api_key": True,
+                "supports_batch": True,
+                "supports_streaming": False,
+                "default_model": "embed-english-v3.0",
+                "supported_models": [
+                    "embed-english-v3.0",
+                    "embed-multilingual-v3.0",
+                    "embed-english-light-v3.0",
+                    "embed-multilingual-light-v3.0",
+                    "embed-english-v2.0",
+                    "embed-multilingual-v2.0",
+                ],
+                "required_packages": ["cohere"],
+                "install_command": "pip install cohere>=4.0.0",
+                "config_params": ["api_key", "model_name", "base_url", "input_type"],
+                "env_vars": ["COHERE_API_KEY"],
+                "typical_dimensions": [384, 768, 1024, 4096],
+                "max_sequence_length": 512,
+                "rate_limits": "Varies by tier",
+            },
+            EmbeddingModelType.HUGGINGFACE: {
+                "name": "Hugging Face Transformers",
+                "type": "local",
+                "requires_api_key": False,
+                "supports_batch": True,
+                "supports_streaming": False,
+                "default_model": "sentence-transformers/all-MiniLM-L6-v2",
+                "supported_models": [
+                    "sentence-transformers/all-MiniLM-L6-v2",
+                    "sentence-transformers/all-mpnet-base-v2",
+                    "distilbert-base-uncased",
+                    "bert-base-uncased",
+                    "roberta-base",
+                ],
+                "required_packages": ["transformers", "torch"],
+                "install_command": "pip install transformers torch",
+                "config_params": [
+                    "model_name",
+                    "device",
+                    "cache_dir",
+                    "trust_remote_code",
+                    "max_length",
+                ],
+                "typical_dimensions": [384, 768, 1024],
+                "max_sequence_length": 512,
+            },
+            EmbeddingModelType.GOOGLE_USE: {
+                "name": "Google Universal Sentence Encoder",
+                "type": "local",
+                "requires_api_key": False,
+                "supports_batch": True,
+                "supports_streaming": False,
+                "default_model": "universal-sentence-encoder",
+                "supported_models": [
+                    "universal-sentence-encoder",
+                    "universal-sentence-encoder-large",
+                    "universal-sentence-encoder-multilingual",
+                    "universal-sentence-encoder-multilingual-large",
+                ],
+                "required_packages": ["tensorflow", "tensorflow-hub"],
+                "install_command": "pip install tensorflow tensorflow-hub",
+                "config_params": ["model_name", "cache_dir", "version"],
+                "typical_dimensions": [512],
+                "max_sequence_length": "Variable",
+            },
+            EmbeddingModelType.GOOGLE_GEMINI: {
+                "name": "Google Gemini",
+                "type": "api",
+                "requires_api_key": True,
+                "supports_batch": True,
+                "supports_streaming": False,
+                "default_model": "gemini-embedding-001",
+                "supported_models": [
+                    "gemini-embedding-001",
+                    "gemini-embedding-exp-03-07",
+                    "text-embedding-004",
+                ],
+                "required_packages": ["requests"],
+                "install_command": "pip install requests",
+                "config_params": [
+                    "api_key",
+                    "model_name",
+                    "project_id",
+                    "location",
+                    "use_vertex_ai",
+                ],
+                "env_vars": ["GOOGLE_GEMINI_API_KEY", "GOOGLE_AI_API_KEY"],
+                "typical_dimensions": [768],
+                "max_sequence_length": 2048,
+                "rate_limits": "Varies by tier",
+            },
+            EmbeddingModelType.AZURE_OPENAI: {
+                "name": "Azure OpenAI",
+                "type": "api",
+                "requires_api_key": True,
+                "supports_batch": True,
+                "supports_streaming": False,
+                "default_model": "text-embedding-3-small",
+                "supported_models": [
+                    "text-embedding-3-small",
+                    "text-embedding-3-large",
+                    "text-embedding-ada-002",
+                ],
+                "required_packages": ["openai"],
+                "install_command": "pip install openai",
+                "config_params": [
+                    "api_key",
+                    "endpoint",
+                    "api_version",
+                    "deployment_name",
+                ],
+                "env_vars": ["AZURE_OPENAI_API_KEY", "AZURE_OPENAI_ENDPOINT"],
+                "typical_dimensions": [1536, 3072],
+                "max_sequence_length": 8191,
+                "rate_limits": "Varies by deployment",
+            },
+        }
+
+        return provider_info.get(provider, {})
+
+    @staticmethod
+    def validate_provider_config(config: EmbeddingConfig) -> tuple[bool, list[str]]:
+        """
+        Validate embedding configuration for a specific provider.
+
+        Args:
+            config: Embedding configuration to validate
+
+        Returns:
+            Tuple of (is_valid, list of error messages)
+        """
+        errors = []
+
+        # Get provider info
+        provider_info = EmbeddingProviderRegistry.get_provider_info(config.model_type)
+        if not provider_info:
+            errors.append(f"Unknown provider type: {config.model_type}")
+            return False, errors
+
+        # Check API key requirements
+        if provider_info.get("requires_api_key", False):
+            if config.model_type == EmbeddingModelType.OPENAI:
+                if not config.openai_api_key:
+                    errors.append("OpenAI API key is required but not provided")
+            elif config.model_type == EmbeddingModelType.COHERE:
+                if not config.cohere_api_key:
+                    errors.append("Cohere API key is required but not provided")
+            elif config.model_type == EmbeddingModelType.AZURE_OPENAI:
+                if not config.azure_openai_api_key:
+                    errors.append("Azure OpenAI API key is required but not provided")
+                if not config.azure_openai_endpoint:
+                    errors.append("Azure OpenAI endpoint is required but not provided")
+            elif config.model_type == EmbeddingModelType.GOOGLE_GEMINI:
+                if not config.google_gemini_api_key:
+                    errors.append("Google Gemini API key is required but not provided")
+
+        # Validate model name
+        supported_models = provider_info.get("supported_models", [])
+        if supported_models and config.model_name not in supported_models:
+            errors.append(
+                f"Model '{config.model_name}' is not in the list of known supported models for {provider_info['name']}. "
+                f"Supported models: {', '.join(supported_models)}"
+            )
+
+        # Validate batch size
+        if config.batch_size <= 0:
+            errors.append(f"Invalid batch size: {config.batch_size}")
+
+        return len(errors) == 0, errors
+
+    @staticmethod
+    def list_all_providers() -> list[dict[str, Any]]:
+        """
+        List all available embedding providers with their basic info.
+
+        Returns:
+            List of dictionaries containing provider information
+        """
+        providers = []
+        for provider_type in EmbeddingModelType:
+            info = EmbeddingProviderRegistry.get_provider_info(provider_type)
+            if info:
+                providers.append(
+                    {
+                        "type": provider_type.value,
+                        "name": info.get("name"),
+                        "is_local": info.get("type") == "local",
+                        "requires_api_key": info.get("requires_api_key"),
+                        "default_model": info.get("default_model"),
+                        "model_count": len(info.get("supported_models", [])),
+                    }
+                )
+        return providers
+
+    @staticmethod
+    def get_recommended_config(
+        use_case: str = "general",
+        prefer_local: bool = False,
+        max_cost: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """
+        Get recommended embedding configuration based on use case.
+
+        Args:
+            use_case: The use case (general, semantic_search, clustering, qa, etc.)
+            prefer_local: Whether to prefer local models over API-based
+            max_cost: Maximum acceptable cost level (free, low, medium, high)
+
+        Returns:
+            Dictionary with recommended configuration
+        """
+        recommendations = {
+            "general": {
+                "local": {
+                    "model_type": EmbeddingModelType.SENTENCE_TRANSFORMERS,
+                    "model_name": "all-MiniLM-L6-v2",
+                    "reason": "Fast, efficient, good general-purpose embeddings",
+                },
+                "api": {
+                    "model_type": EmbeddingModelType.OPENAI,
+                    "model_name": "text-embedding-3-small",
+                    "reason": "High quality, cost-effective API-based embeddings",
+                },
+            },
+            "semantic_search": {
+                "local": {
+                    "model_type": EmbeddingModelType.SENTENCE_TRANSFORMERS,
+                    "model_name": "all-mpnet-base-v2",
+                    "reason": "Excellent for semantic similarity tasks",
+                },
+                "api": {
+                    "model_type": EmbeddingModelType.COHERE,
+                    "model_name": "embed-english-v3.0",
+                    "reason": "Optimized for search and retrieval",
+                },
+            },
+            "multilingual": {
+                "local": {
+                    "model_type": EmbeddingModelType.GOOGLE_USE,
+                    "model_name": "universal-sentence-encoder-multilingual",
+                    "reason": "Strong multilingual support",
+                },
+                "api": {
+                    "model_type": EmbeddingModelType.COHERE,
+                    "model_name": "embed-multilingual-v3.0",
+                    "reason": "Excellent multilingual API-based embeddings",
+                },
+            },
+            "high_quality": {
+                "local": {
+                    "model_type": EmbeddingModelType.SENTENCE_TRANSFORMERS,
+                    "model_name": "all-mpnet-base-v2",
+                    "reason": "Best quality local model",
+                },
+                "api": {
+                    "model_type": EmbeddingModelType.OPENAI,
+                    "model_name": "text-embedding-3-large",
+                    "reason": "Highest quality embeddings available",
+                },
+            },
+        }
+
+        use_case_config = recommendations.get(use_case, recommendations["general"])
+        preference = "local" if prefer_local else "api"
+
+        return use_case_config.get(preference, use_case_config["local"])

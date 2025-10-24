@@ -10,6 +10,7 @@ from pdf_vector_system.embeddings.base import (
 )
 from pdf_vector_system.embeddings.factory import (
     BatchEmbeddingProcessor,
+    EmbeddingProviderRegistry,
     EmbeddingServiceFactory,
     EnhancedBatchEmbeddingProcessor,
 )
@@ -49,6 +50,7 @@ _GOOGLE_GEMINI_AVAILABLE = (
 __all__ = [
     "BatchEmbeddingProcessor",
     "EmbeddingBatch",
+    "EmbeddingProviderRegistry",
     "EmbeddingResult",
     "EmbeddingService",
     "EmbeddingServiceFactory",

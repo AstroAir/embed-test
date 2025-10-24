@@ -222,7 +222,7 @@ class ChromaDBHealthChecker(HealthChecker):
 
     def validate_configuration(self) -> dict[str, Any]:
         """Validate ChromaDB configuration."""
-        validation = {"valid": True, "issues": [], "warnings": []}
+        validation: dict[str, Any] = {"valid": True, "issues": [], "warnings": []}
 
         # Check persist directory
         if not self.chroma_config.persist_directory.parent.exists():
@@ -336,7 +336,7 @@ class PineconeHealthChecker(HealthChecker):
 
     def validate_configuration(self) -> dict[str, Any]:
         """Validate Pinecone configuration."""
-        validation = {"valid": True, "issues": [], "warnings": []}
+        validation: dict[str, Any] = {"valid": True, "issues": [], "warnings": []}
 
         # Check API key
         if not self.pinecone_config.api_key or len(self.pinecone_config.api_key) < 10:
@@ -470,7 +470,7 @@ class WeaviateHealthChecker(HealthChecker):
 
     def validate_configuration(self) -> dict[str, Any]:
         """Validate Weaviate configuration."""
-        validation = {"valid": True, "issues": [], "warnings": []}
+        validation: dict[str, Any] = {"valid": True, "issues": [], "warnings": []}
 
         # Check URL
         if not self.weaviate_config.url:
@@ -562,7 +562,7 @@ class QdrantHealthChecker(HealthChecker):
 
     def validate_configuration(self) -> dict[str, Any]:
         """Validate Qdrant configuration."""
-        validation = {"valid": True, "issues": [], "warnings": []}
+        validation: dict[str, Any] = {"valid": True, "issues": [], "warnings": []}
 
         # Check connection settings
         if not self.qdrant_config.url and not self.qdrant_config.host:
@@ -657,7 +657,7 @@ class MilvusHealthChecker(HealthChecker):
 
     def validate_configuration(self) -> dict[str, Any]:
         """Validate Milvus configuration."""
-        validation = {"valid": True, "issues": [], "warnings": []}
+        validation: dict[str, Any] = {"valid": True, "issues": [], "warnings": []}
 
         # Check host
         if not self.milvus_config.host:
@@ -719,7 +719,7 @@ class VectorDBHealthManager:
         if not checker_class:
             raise ValueError(f"No health checker available for {config.db_type}")
 
-        return checker_class(config)
+        return checker_class(config)  # type: ignore[abstract]
 
     @classmethod
     def get_health_checker(cls, config: VectorDBConfigType) -> HealthChecker:
@@ -767,10 +767,10 @@ class VectorDBHealthManager:
             return HealthCheckResult(
                 status=HealthStatus.UNKNOWN,
                 backend=config.db_type.value,
-                response_time_ms=0.0,
+                response_time=0.0,
                 timestamp=time.time(),
                 details={"error": "Health check failed"},
-                error_message=str(e),
+                error=str(e),
             )
 
     @classmethod

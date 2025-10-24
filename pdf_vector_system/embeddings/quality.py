@@ -196,7 +196,7 @@ class EmbeddingQualityValidator(LoggerMixin):
             and SKLEARN_AVAILABLE
             and cosine_similarity is not None
         ):
-            similarities = cosine_similarity(embeddings)  # type: ignore[operator]
+            similarities = cosine_similarity(embeddings)
             mask = ~np.eye(similarities.shape[0], dtype=bool)
             sim_values = similarities[mask]
             stats_dict.update(
@@ -285,18 +285,15 @@ class EmbeddingQualityValidator(LoggerMixin):
         scores: list[QualityScore] = []
         n_clusters = int(min(10, max(2, len(embeddings) // 20)))
         try:
-            kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)  # type: ignore[operator]
+            kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
             cluster_labels = kmeans.fit_predict(embeddings)
             intra = self._calculate_intra_cluster_coherence(
-                # type: ignore[attr-defined]
                 embeddings,
                 cluster_labels,
                 kmeans.cluster_centers_,
             )
             scores.append(intra)
-            inter = self._calculate_inter_cluster_separation(
-                kmeans.cluster_centers_  # type: ignore[attr-defined]
-            )
+            inter = self._calculate_inter_cluster_separation(kmeans.cluster_centers_)
             scores.append(inter)
         except Exception as e:
             self.logger.warning(f"Clustering metrics failed: {e}")
@@ -334,7 +331,7 @@ class EmbeddingQualityValidator(LoggerMixin):
                 score=0.0,
                 description="Insufficient clusters or sklearn unavailable",
             )
-        distances = euclidean_distances(centers)  # type: ignore[operator]
+        distances = euclidean_distances(centers)
         mask = ~np.eye(distances.shape[0], dtype=bool)
         inter_distances = distances[mask]
         mean_separation = float(np.mean(inter_distances))
@@ -374,7 +371,7 @@ class EmbeddingQualityValidator(LoggerMixin):
             text_sim = self._calculate_text_similarity(texts[idx1], texts[idx2])
             v1 = embeddings[idx1][np.newaxis, :]
             v2 = embeddings[idx2][np.newaxis, :]
-            emb_sim_matrix = cosine_similarity(v1, v2)  # type: ignore[operator]
+            emb_sim_matrix = cosine_similarity(v1, v2)
             emb_sim = float(emb_sim_matrix[0, 0])
             consistency_scores.append(abs(text_sim - emb_sim))
         if not consistency_scores:

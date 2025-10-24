@@ -5,7 +5,7 @@ import warnings
 from typing import Any, Optional, cast
 
 import numpy as np
-from sentence_transformers import SentenceTransformer  # type: ignore[import-untyped]
+from sentence_transformers import SentenceTransformer
 
 from pdf_vector_system.embeddings.base import (
     EmbeddingResult,
@@ -368,9 +368,7 @@ class SentenceTransformersService(EmbeddingService):
         Compute cosine similarity between two sets of embeddings.
         """
         try:
-            from sentence_transformers.util import (
-                cos_sim,  # type: ignore[import-untyped]
-            )
+            from sentence_transformers.util import cos_sim
 
             # Convert to torch tensors if necessary
             try:
@@ -491,7 +489,7 @@ class SentenceTransformersService(EmbeddingService):
                 tokenizer_obj = getattr(self.model, "tokenizer", None)
                 if tokenizer_obj is not None and hasattr(tokenizer_obj, "__len__"):
                     try:
-                        model_info["tokenizer_vocab_size"] = len(tokenizer_obj)  # type: ignore[arg-type]
+                        model_info["tokenizer_vocab_size"] = len(tokenizer_obj)
                     except Exception:
                         model_info["tokenizer_vocab_size"] = None
 

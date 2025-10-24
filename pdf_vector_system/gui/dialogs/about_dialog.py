@@ -192,14 +192,14 @@ class AboutDialog(MaskDialogBase):
             import PySide6
 
             pyside_version = PySide6.__version__
-        except:
+        except Exception:
             pyside_version = "Unknown"
 
         try:
             import qfluentwidgets
 
             qfw_version = qfluentwidgets.__version__
-        except:
+        except Exception:
             qfw_version = "Unknown"
 
         system_info = f"""

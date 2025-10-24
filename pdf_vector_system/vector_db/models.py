@@ -187,6 +187,11 @@ class SearchResult:
     metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
+    def similarity_score(self) -> float:
+        """Get the similarity score (alias for score for backward compatibility)."""
+        return self.score
+
+    @property
     def document_id(self) -> Optional[str]:
         """Get the document ID from metadata."""
         return self.metadata.get("document_id")

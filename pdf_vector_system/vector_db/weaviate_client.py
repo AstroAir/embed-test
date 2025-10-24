@@ -10,7 +10,7 @@ except ImportError:
     WeaviateClientLib = None
 
 from pdf_vector_system.utils.logging import LoggerMixin
-from pdf_vector_system.vector_db.config import WeaviateConfig
+from pdf_vector_system.vector_db.config import VectorDBType, WeaviateConfig
 from pdf_vector_system.vector_db.converters import VectorDBConverter
 from pdf_vector_system.vector_db.error_handler import handle_vector_db_errors
 from pdf_vector_system.vector_db.interface import VectorDBInterface
@@ -116,7 +116,7 @@ class WeaviateClient(VectorDBInterface, LoggerMixin):
         # Weaviate class names must start with uppercase (preserve rest of the case)
         return class_name[0].upper() + class_name[1:] if class_name else class_name
 
-    @handle_vector_db_errors(backend_type="weaviate", operation="add_chunks")
+    @handle_vector_db_errors(backend_type=VectorDBType.WEAVIATE, operation="add_chunks")
     def add_chunks(
         self, chunks: list[DocumentChunk], collection_name: Optional[str] = None
     ) -> None:
@@ -210,7 +210,7 @@ class WeaviateClient(VectorDBInterface, LoggerMixin):
                 original_error=e,
             ) from e
 
-    @handle_vector_db_errors(backend_type="weaviate", operation="search")
+    @handle_vector_db_errors(backend_type=VectorDBType.WEAVIATE, operation="search")
     def search(
         self,
         query: SearchQuery,
@@ -297,7 +297,7 @@ class WeaviateClient(VectorDBInterface, LoggerMixin):
             return conditions[0]
         return {"operator": "And", "operands": conditions}
 
-    @handle_vector_db_errors(backend_type="weaviate", operation="get_chunks")
+    @handle_vector_db_errors(backend_type=VectorDBType.WEAVIATE, operation="get_chunks")
     def get_chunks(
         self,
         chunk_ids: list[str],
@@ -373,7 +373,9 @@ class WeaviateClient(VectorDBInterface, LoggerMixin):
             raise DocumentNotFoundError(f"Chunk '{chunk_id}' not found")
         return chunks[0]
 
-    @handle_vector_db_errors(backend_type="weaviate", operation="update_chunks")
+    @handle_vector_db_errors(
+        backend_type=VectorDBType.WEAVIATE, operation="update_chunks"
+    )
     def update_chunks(
         self, chunks: list[DocumentChunk], collection_name: Optional[str] = None
     ) -> None:
@@ -403,14 +405,18 @@ class WeaviateClient(VectorDBInterface, LoggerMixin):
                 original_error=e,
             ) from e
 
-    @handle_vector_db_errors(backend_type="weaviate", operation="update_chunk")
+    @handle_vector_db_errors(
+        backend_type=VectorDBType.WEAVIATE, operation="update_chunk"
+    )
     def update_chunk(
         self, chunk: DocumentChunk, collection_name: Optional[str] = None
     ) -> None:
         """Update an existing document chunk."""
         self.update_chunks([chunk], collection_name)
 
-    @handle_vector_db_errors(backend_type="weaviate", operation="delete_chunks")
+    @handle_vector_db_errors(
+        backend_type=VectorDBType.WEAVIATE, operation="delete_chunks"
+    )
     def delete_chunks(
         self, chunk_ids: list[str], collection_name: Optional[str] = None
     ) -> None:
@@ -436,7 +442,9 @@ class WeaviateClient(VectorDBInterface, LoggerMixin):
                 original_error=e,
             ) from e
 
-    @handle_vector_db_errors(backend_type="weaviate", operation="delete_document")
+    @handle_vector_db_errors(
+        backend_type=VectorDBType.WEAVIATE, operation="delete_document"
+    )
     def delete_document(
         self, document_id: str, collection_name: Optional[str] = None
     ) -> int:
@@ -526,7 +534,9 @@ class WeaviateClient(VectorDBInterface, LoggerMixin):
             self.logger.error(error_msg)
             raise VectorDBError(error_msg) from e
 
-    @handle_vector_db_errors(backend_type="weaviate", operation="search_by_metadata")
+    @handle_vector_db_errors(
+        backend_type=VectorDBType.WEAVIATE, operation="search_by_metadata"
+    )
     def search_by_metadata(
         self,
         metadata_filter: dict[str, Any],
@@ -614,9 +624,8 @@ class WeaviateClient(VectorDBInterface, LoggerMixin):
                 document_id=document_id,
                 chunk_count=chunk_count,
                 total_characters=total_characters,
-                page_numbers=sorted(page_numbers),
-                created_at=min(created_times) if created_times else None,
-                updated_at=max(created_times) if created_times else None,
+                page_count=len(page_numbers) if page_numbers else None,
+                created_at=str(int(min(created_times))) if created_times else None,
             )
 
         except DocumentNotFoundError:

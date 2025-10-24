@@ -121,7 +121,7 @@ class VectorDBConverter:
         Returns:
             Dictionary of Pinecone query parameters
         """
-        params = {
+        params: dict[str, Any] = {
             "top_k": query.n_results,
             "include_metadata": query.include_metadata,
             "include_values": query.include_distances,  # Include embeddings if distances needed
@@ -168,10 +168,10 @@ class VectorDBConverter:
         Returns:
             Dictionary of Weaviate query parameters
         """
-        params = {"limit": query.n_results}
+        params: dict[str, Any] = {"limit": query.n_results}
 
         # Weaviate uses different field names for includes
-        additional = []
+        additional: list[str] = []
         if query.include_distances:
             additional.append("distance")
         if query.include_metadata:
@@ -217,7 +217,7 @@ class VectorDBConverter:
         Returns:
             Dictionary of Qdrant query parameters
         """
-        params = {
+        params: dict[str, Any] = {
             "limit": query.n_results,
             "with_payload": query.include_metadata,
             "with_vectors": query.include_distances,  # Include vectors if distances needed
@@ -229,7 +229,7 @@ class VectorDBConverter:
         return params
 
     @staticmethod
-    def chunks_to_milvus_format(chunks: list[DocumentChunk]) -> dict[str, list[Any]]:
+    def chunks_to_milvus_format(chunks: list[DocumentChunk]) -> dict[str, Any]:
         """
         Convert DocumentChunk list to Milvus format.
 
@@ -249,7 +249,7 @@ class VectorDBConverter:
         # Add metadata fields (Milvus requires flattened structure)
         if chunks:
             # Get all unique metadata keys
-            metadata_keys = set()
+            metadata_keys: set[str] = set()
             for chunk in chunks:
                 metadata_keys.update(chunk.metadata.keys())
 
@@ -270,10 +270,17 @@ class VectorDBConverter:
         Returns:
             Dictionary of Milvus query parameters
         """
-        params = {
+        params: dict[str, Any] = {
             "limit": query.n_results,
-            "output_fields": ["*"] if query.include_metadata else ["id", "content"],
         }
+
+        additional: list[str] = []
+        if query.include_metadata:
+            additional = ["*"]
+        else:
+            additional = ["id", "content"]
+
+        params["output_fields"] = additional
 
         if query.where:
             # Convert where clause to Milvus expression format

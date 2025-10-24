@@ -81,10 +81,13 @@ class PDFVectorGUIApp:
             self.initialize()
 
         # Show main window
-        self.main_window.show()
+        if self.main_window:
+            self.main_window.show()
 
         # Start event loop
-        return self.app.exec()
+        if self.app:
+            return self.app.exec()
+        return 0
 
     def quit(self) -> None:
         """Quit the application."""

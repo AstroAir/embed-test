@@ -3,7 +3,7 @@
 import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 import numpy as np
 
@@ -85,13 +85,8 @@ class EmbeddingBatch:
 
     texts: list[str]
     batch_id: Optional[str] = None
-    metadata: Optional[dict[str, Any]] = None
+    metadata: Optional[Union[dict[str, Any], list[dict[str, Any]]]] = None
     batch_size: Optional[int] = None
-
-    @property
-    def size(self) -> int:
-        """Get the size of the batch (number of texts)."""
-        return len(self.texts)
 
     def __post_init__(self) -> None:
         """Validate batch after initialization."""
@@ -134,13 +129,17 @@ class EmbeddingBatch:
             raise IndexError(f"Text index {index} out of range")
         return self.texts[index]
 
-    def get_metadata(self, index: int) -> Optional[dict[str, Any]]:
+    def get_metadata(self, index: int) -> dict[str, Any]:
         """Get metadata at specific index."""
         if self.metadata is None:
-            return None
-        if index < 0 or index >= len(self.metadata):
-            raise IndexError(f"Metadata index {index} out of range")
-        return self.metadata[index]
+            return {}
+        # Handle both dict (batch-level) and list (per-text) metadata
+        if isinstance(self.metadata, list):
+            if index < 0 or index >= len(self.metadata):
+                return {}
+            return self.metadata[index]
+        # For dict, return the same metadata for all texts
+        return self.metadata
 
 
 class EmbeddingService(ABC, LoggerMixin):

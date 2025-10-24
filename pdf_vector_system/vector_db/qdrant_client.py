@@ -9,11 +9,11 @@ try:
 
     QDRANT_AVAILABLE = True
 except ImportError:
-    QdrantClientLib = None  # type: ignore
-    qdrant_models = None  # type: ignore
-    Distance = None  # type: ignore
-    VectorParams = None  # type: ignore
-    PointStruct = None  # type: ignore
+    QdrantClientLib = None
+    qdrant_models = None
+    Distance = None
+    VectorParams = None
+    PointStruct = None
     QDRANT_AVAILABLE = False
 
 from pdf_vector_system.utils.logging import LoggerMixin
@@ -127,7 +127,7 @@ class QdrantClient(VectorDBInterface, LoggerMixin):
                 original_error=e,
             )
 
-    @handle_vector_db_errors(backend_type="qdrant", operation="search")
+    @handle_vector_db_errors(backend_type=VectorDBType.QDRANT, operation="search")
     def search(
         self,
         query: SearchQuery,
@@ -175,7 +175,7 @@ class QdrantClient(VectorDBInterface, LoggerMixin):
                 f"Search failed in Qdrant: {e!s}", backend="qdrant", original_error=e
             )
 
-    @handle_vector_db_errors(backend_type="qdrant", operation="get_chunks")
+    @handle_vector_db_errors(backend_type=VectorDBType.QDRANT, operation="get_chunks")
     def get_chunks(
         self,
         chunk_ids: list[str],
@@ -243,7 +243,9 @@ class QdrantClient(VectorDBInterface, LoggerMixin):
             raise DocumentNotFoundError(f"Chunk '{chunk_id}' not found")
         return chunks[0]
 
-    @handle_vector_db_errors(backend_type="qdrant", operation="update_chunks")
+    @handle_vector_db_errors(
+        backend_type=VectorDBType.QDRANT, operation="update_chunks"
+    )
     def update_chunks(
         self, chunks: list[DocumentChunk], collection_name: Optional[str] = None
     ) -> None:
@@ -259,7 +261,9 @@ class QdrantClient(VectorDBInterface, LoggerMixin):
         """
         self.update_chunks([chunk], collection_name)
 
-    @handle_vector_db_errors(backend_type="qdrant", operation="delete_chunks")
+    @handle_vector_db_errors(
+        backend_type=VectorDBType.QDRANT, operation="delete_chunks"
+    )
     def delete_chunks(
         self, chunk_ids: list[str], collection_name: Optional[str] = None
     ) -> None:
@@ -283,7 +287,9 @@ class QdrantClient(VectorDBInterface, LoggerMixin):
                 original_error=e,
             )
 
-    @handle_vector_db_errors(backend_type="qdrant", operation="delete_document")
+    @handle_vector_db_errors(
+        backend_type=VectorDBType.QDRANT, operation="delete_document"
+    )
     def delete_document(
         self, document_id: str, collection_name: Optional[str] = None
     ) -> int:
@@ -365,7 +371,9 @@ class QdrantClient(VectorDBInterface, LoggerMixin):
             self.logger.error(error_msg)
             raise VectorDBError(error_msg) from e
 
-    @handle_vector_db_errors(backend_type="qdrant", operation="search_by_metadata")
+    @handle_vector_db_errors(
+        backend_type=VectorDBType.QDRANT, operation="search_by_metadata"
+    )
     def search_by_metadata(
         self,
         metadata_filter: dict[str, Any],
@@ -537,38 +545,37 @@ class QdrantClient(VectorDBInterface, LoggerMixin):
                 original_error=e,
             )
 
-    def delete_collection(self, name: Optional[str] = None) -> bool:
+    def delete_collection(self, name: Optional[str] = None) -> None:
         """Delete a collection in Qdrant.
 
         Args:
             name: Collection name (uses default if None)
 
-        Returns:
-            True if collection was deleted successfully
+        Raises:
+            VectorDBError: If collection deletion fails
         """
         collection_name = name or self.config.collection_name
         try:
             # Try to delete the collection directly (positional argument)
             self.client.delete_collection(collection_name)
             self.logger.info(f"Deleted Qdrant collection: {collection_name}")
-            return True
 
         except Exception as e:
             # If collection doesn't exist, consider it success
             if "not found" in str(e).lower() or "does not exist" in str(e).lower():
                 self.logger.debug(f"Collection {collection_name} doesn't exist")
-                return True
+                return
             raise VectorDBError(
                 f"Failed to delete collection: {e!s}",
                 backend="qdrant",
                 original_error=e,
             )
 
-    def list_collections(self) -> list[str]:
+    def list_collections(self) -> list[CollectionInfo]:
         """List all collections in Qdrant.
 
         Returns:
-            List of collection names (strings)
+            List of CollectionInfo objects
         """
         try:
             response = self.client.get_collections()
@@ -582,14 +589,33 @@ class QdrantClient(VectorDBInterface, LoggerMixin):
                         # Get the name attribute - handle both real objects and mocks
                         if hasattr(col, "_mock_name"):
                             # This is a mock object, use its _mock_name
-                            result.append(col._mock_name)
+                            name = col._mock_name
                         elif hasattr(col, "name"):
                             name = col.name
                             # If name is callable (mock), call it; otherwise use it directly
-                            result.append(name() if callable(name) else name)
+                            name = name() if callable(name) else name
                         else:
                             # Fallback
-                            result.append(str(col))
+                            name = str(col)
+
+                        # Get point count if available
+                        point_count = 0
+                        if hasattr(col, "points_count"):
+                            point_count = (
+                                col.points_count
+                                if not callable(col.points_count)
+                                else col.points_count()
+                            )
+                        elif hasattr(col, "vectors_count"):
+                            point_count = (
+                                col.vectors_count
+                                if not callable(col.vectors_count)
+                                else col.vectors_count()
+                            )
+
+                        result.append(
+                            CollectionInfo(name=name, chunk_count=point_count)
+                        )
                     return result
                 except (TypeError, AttributeError):
                     # Mock object or other issue, return empty list

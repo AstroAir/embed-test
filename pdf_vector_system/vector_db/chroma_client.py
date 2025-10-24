@@ -161,12 +161,12 @@ class ChromaDBClient(VectorDBInterface, LoggerMixin):
             self.logger.error(error_msg)
             raise VectorDBError(error_msg) from e
 
-    def delete_collection(self, name: Optional[str] = None) -> bool:
+    def delete_collection(self, name: Optional[str] = None) -> None:
         """
         Delete a collection.
 
-        Returns:
-            True if collection was deleted successfully
+        Raises:
+            VectorDBError: If deletion fails
         """
         collection_name = name or self.config.collection_name
 
@@ -178,7 +178,6 @@ class ChromaDBClient(VectorDBInterface, LoggerMixin):
                 del self._collections[collection_name]
 
             self.logger.info(f"Deleted collection: {collection_name}")
-            return True
 
         except Exception as e:
             error_msg = f"Error deleting collection {collection_name}: {e!s}"
@@ -494,7 +493,7 @@ class ChromaDBClient(VectorDBInterface, LoggerMixin):
                 chunk_count=chunk_count,
                 total_characters=total_characters,
                 page_count=page_count,
-                created_at=created_at,
+                created_at=str(int(created_at)) if created_at else None,
             )
 
         except DocumentNotFoundError:

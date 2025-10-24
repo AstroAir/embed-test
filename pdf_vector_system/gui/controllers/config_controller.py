@@ -196,7 +196,8 @@ class ConfigController(QObject):
             serializable_dict = convert_paths(config_dict)
 
             # Save to file
-            with file_path.open("w", encoding="utf-8") as f:
+            path = Path(file_path)
+            with path.open("w", encoding="utf-8") as f:
                 json.dump(serializable_dict, f, indent=2)
 
             self.config_saved.emit(file_path)
@@ -220,7 +221,8 @@ class ConfigController(QObject):
         """
         try:
             # Load from file
-            with file_path.open(encoding="utf-8") as f:
+            path = Path(file_path)
+            with path.open(encoding="utf-8") as f:
                 config_dict = json.load(f)
 
             # Convert string paths back to Path objects

@@ -239,7 +239,7 @@ def handle_vector_db_errors(
                     raise vector_error from e
                 return None
 
-        return wrapper  # type: ignore
+        return wrapper
 
     # Normal usage with parentheses: @handle_vector_db_errors(...)
     backend = backend_type or VectorDBType.CHROMADB

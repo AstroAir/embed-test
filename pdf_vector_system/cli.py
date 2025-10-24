@@ -130,7 +130,8 @@ def process(
 
                 if result.success:
                     console.print(
-                        f"✅ Success: {result.chunks_processed} chunks in {result.processing_time:.2f}s",
+                        f"✅ Success: {result.chunks_processed} chunks "
+                        f"in {result.processing_time:.2f}s",
                         style="green",
                     )
                 else:
@@ -357,8 +358,9 @@ def delete(
 
         # Confirm deletion
         if not confirm:
+            collection = pipeline.config.chroma_db.collection_name
             confirmed = typer.confirm(
-                f"Delete document '{document_id}' from collection '{pipeline.config.chroma_db.collection_name}'?"
+                f"Delete document '{document_id}' from collection '{collection}'?"
             )
             if not confirmed:
                 console.print("❌ Deletion cancelled", style="yellow")

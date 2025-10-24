@@ -107,6 +107,8 @@ class SearchController(QObject):
             List of search results
         """
         try:
+            if self.pipeline is None:
+                raise Exception("Pipeline not initialized")
             return self.pipeline.search(
                 query_text=query,
                 n_results=max_results,
@@ -149,6 +151,8 @@ class SearchController(QObject):
             List of similar chunks
         """
         try:
+            if self.pipeline is None:
+                raise Exception("Pipeline not initialized")
             # Use vector database to find similar chunks
             vector_db = self.pipeline.vector_db
             if not vector_db:

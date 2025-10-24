@@ -77,6 +77,8 @@ class DocumentController(QObject):
             List of document information dictionaries
         """
         try:
+            if self.pipeline is None:
+                raise Exception("Pipeline not initialized")
             # Use vector database to get collection info which contains document statistics
             vector_db = self.pipeline.vector_db
             if not vector_db:
@@ -137,6 +139,8 @@ class DocumentController(QObject):
             Dictionary with deletion results
         """
         try:
+            if self.pipeline is None:
+                raise Exception("Pipeline not initialized")
             chunks_deleted = self.pipeline.delete_document(document_id)
 
             return {"document_id": document_id, "chunks_deleted": chunks_deleted}
@@ -174,6 +178,8 @@ class DocumentController(QObject):
             Dictionary with document information
         """
         try:
+            if self.pipeline is None:
+                raise Exception("Pipeline not initialized")
             return self.pipeline.get_document_info(document_id)
 
         except Exception as e:
@@ -205,6 +211,8 @@ class DocumentController(QObject):
             Dictionary with collection statistics
         """
         try:
+            if self.pipeline is None:
+                raise Exception("Pipeline not initialized")
             return self.pipeline.get_collection_stats()
 
         except Exception as e:

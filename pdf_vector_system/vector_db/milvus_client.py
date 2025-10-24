@@ -20,7 +20,7 @@ except ImportError:
     FieldSchema = None
 
 from pdf_vector_system.utils.logging import LoggerMixin
-from pdf_vector_system.vector_db.config import MilvusConfig
+from pdf_vector_system.vector_db.config import MilvusConfig, VectorDBType
 from pdf_vector_system.vector_db.converters import VectorDBConverter
 from pdf_vector_system.vector_db.error_handler import handle_vector_db_errors
 from pdf_vector_system.vector_db.interface import VectorDBInterface
@@ -170,7 +170,7 @@ class MilvusClient(VectorDBInterface, LoggerMixin):
                 original_error=e,
             ) from e
 
-    @handle_vector_db_errors(backend_type="milvus", operation="add_chunks")
+    @handle_vector_db_errors(backend_type=VectorDBType.MILVUS, operation="add_chunks")
     def add_chunks(
         self, chunks: list[DocumentChunk], collection_name: Optional[str] = None
     ) -> None:
@@ -207,7 +207,7 @@ class MilvusClient(VectorDBInterface, LoggerMixin):
                 original_error=e,
             )
 
-    @handle_vector_db_errors(backend_type="milvus", operation="search")
+    @handle_vector_db_errors(backend_type=VectorDBType.MILVUS, operation="search")
     def search(
         self,
         query: SearchQuery,
@@ -309,7 +309,7 @@ class MilvusClient(VectorDBInterface, LoggerMixin):
                 f"Search failed in Milvus: {e!s}", backend="milvus", original_error=e
             )
 
-    @handle_vector_db_errors(backend_type="milvus", operation="get_chunks")
+    @handle_vector_db_errors(backend_type=VectorDBType.MILVUS, operation="get_chunks")
     def get_chunks(
         self,
         chunk_ids: list[str],
@@ -395,7 +395,9 @@ class MilvusClient(VectorDBInterface, LoggerMixin):
             raise DocumentNotFoundError(f"Chunk '{chunk_id}' not found")
         return chunks[0]
 
-    @handle_vector_db_errors(backend_type="milvus", operation="update_chunks")
+    @handle_vector_db_errors(
+        backend_type=VectorDBType.MILVUS, operation="update_chunks"
+    )
     def update_chunks(
         self, chunks: list[DocumentChunk], collection_name: Optional[str] = None
     ) -> None:
@@ -437,7 +439,9 @@ class MilvusClient(VectorDBInterface, LoggerMixin):
         """
         self.update_chunks([chunk], collection_name)
 
-    @handle_vector_db_errors(backend_type="milvus", operation="delete_chunks")
+    @handle_vector_db_errors(
+        backend_type=VectorDBType.MILVUS, operation="delete_chunks"
+    )
     def delete_chunks(
         self, chunk_ids: list[str], collection_name: Optional[str] = None
     ) -> None:
@@ -466,7 +470,9 @@ class MilvusClient(VectorDBInterface, LoggerMixin):
                 original_error=e,
             )
 
-    @handle_vector_db_errors(backend_type="milvus", operation="delete_document")
+    @handle_vector_db_errors(
+        backend_type=VectorDBType.MILVUS, operation="delete_document"
+    )
     def delete_document(
         self, document_id: str, collection_name: Optional[str] = None
     ) -> int:
@@ -554,7 +560,9 @@ class MilvusClient(VectorDBInterface, LoggerMixin):
             self.logger.error(error_msg)
             raise VectorDBError(error_msg) from e
 
-    @handle_vector_db_errors(backend_type="milvus", operation="search_by_metadata")
+    @handle_vector_db_errors(
+        backend_type=VectorDBType.MILVUS, operation="search_by_metadata"
+    )
     def search_by_metadata(
         self,
         metadata_filter: dict[str, Any],
@@ -654,9 +662,8 @@ class MilvusClient(VectorDBInterface, LoggerMixin):
                 document_id=document_id,
                 chunk_count=chunk_count,
                 total_characters=total_characters,
-                page_numbers=sorted(page_numbers),
-                created_at=min(created_times) if created_times else None,
-                updated_at=max(created_times) if created_times else None,
+                page_count=len(page_numbers) if page_numbers else None,
+                created_at=str(int(min(created_times))) if created_times else None,
             )
 
         except DocumentNotFoundError:
@@ -757,11 +764,11 @@ class MilvusClient(VectorDBInterface, LoggerMixin):
                 original_error=e,
             )
 
-    def delete_collection(self, name: Optional[str] = None) -> bool:
+    def delete_collection(self, name: Optional[str] = None) -> None:
         """Delete a collection in Milvus.
 
-        Returns:
-            True if collection was deleted successfully
+        Raises:
+            VectorDBError: If deletion fails
         """
         collection_name = name or self.config.collection_name
         try:
@@ -773,7 +780,6 @@ class MilvusClient(VectorDBInterface, LoggerMixin):
 
             utility.drop_collection(collection_name)
             self.logger.info(f"Deleted Milvus collection: {collection_name}")
-            return True
 
         except Exception as e:
             raise VectorDBError(
@@ -782,11 +788,11 @@ class MilvusClient(VectorDBInterface, LoggerMixin):
                 original_error=e,
             )
 
-    def list_collections(self) -> list[str]:
+    def list_collections(self) -> list[CollectionInfo]:
         """List all collections in Milvus.
 
         Returns:
-            List of collection names
+            List of CollectionInfo objects
         """
         try:
             if utility is None:
@@ -795,7 +801,8 @@ class MilvusClient(VectorDBInterface, LoggerMixin):
                     backend="milvus",
                 )
 
-            return utility.list_collections()
+            collection_names = utility.list_collections()
+            return [CollectionInfo(name=name) for name in collection_names]
         except Exception as e:
             raise VectorDBError(
                 f"Failed to list collections: {e!s}", backend="milvus", original_error=e

@@ -312,7 +312,7 @@ class RetryHandler(LoggerMixin):
             delay = config.base_delay * self._get_fibonacci(attempt + 1)
         else:
             # Fallback to fixed delay for unknown strategies
-            delay = config.base_delay  # type: ignore[unreachable]
+            delay = config.base_delay
 
         # Apply maximum delay limit
         delay = min(delay, config.max_delay)
@@ -376,7 +376,7 @@ def with_retry(
             return retry_handler.execute(func, *args, **kwargs)
 
         # Attach retry handler for access to stats
-        wrapper.retry_handler = retry_handler  # type: ignore
+        wrapper.retry_handler = retry_handler  # type: ignore[attr-defined]
 
         return wrapper
 

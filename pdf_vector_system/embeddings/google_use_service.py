@@ -19,9 +19,9 @@ from pdf_vector_system.utils.progress import PerformanceTimer
 
 # Import TensorFlow Hub at module level for test mocking
 try:
-    import tensorflow_hub as hub  # type: ignore
+    import tensorflow_hub as hub
 except ImportError:
-    hub = None  # type: ignore
+    hub = None
 
 
 class GoogleUSEService(EmbeddingService):

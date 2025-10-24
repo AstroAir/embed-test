@@ -54,7 +54,7 @@ class ConfigWidget(BaseWidget):
     ):
         self._updating_ui = False
         self._provider_index: dict[EmbeddingModelType, int] = {}
-        self._provider_stack: Optional[QStackedWidget] = None
+        self._provider_stack: QStackedWidget  # Initialized in _setup_model_group
 
         # Enhanced UI state tracking
         self._current_nav_item = "general"

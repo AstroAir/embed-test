@@ -22,7 +22,7 @@ try:
 
     SENTENCEPIECE_AVAILABLE = True
 except ImportError:
-    spm: Any = None
+    spm = None
     SENTENCEPIECE_AVAILABLE = False
 
 try:
@@ -30,8 +30,8 @@ try:
 
     TRANSFORMERS_AVAILABLE = True
 except ImportError:
-    AutoTokenizer: Any = None
-    PreTrainedTokenizer: Any = None
+    AutoTokenizer = None
+    PreTrainedTokenizer = None
     TRANSFORMERS_AVAILABLE = False
 
 try:
@@ -39,7 +39,7 @@ try:
 
     LANGDETECT_AVAILABLE = True
 except ImportError:
-    langdetect: Any = None
+    langdetect = None
     LANGDETECT_AVAILABLE = False
 
 from pdf_vector_system.utils.logging import LoggerMixin
@@ -165,7 +165,7 @@ class BaseTokenizer(ABC, LoggerMixin):
 
     def _smart_lowercase(self, text: str) -> str:
         words = text.split()
-        processed_words = []
+        processed_words: list[str] = []
         for word in words:
             if (len(word) >= 2 and word.isupper()) or (
                 word[0].isupper() and len(processed_words) > 0

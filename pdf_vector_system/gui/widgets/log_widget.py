@@ -85,7 +85,7 @@ class LogWidget(BaseWidget):
         controls_group_layout.addWidget(controls_title)
 
         self.controls_layout = QFormLayout()
-        self.controls_layout.setRowWrapPolicy(QFormLayout.RowWrapPolicy.DontWrapRows)  # type: ignore[attr-defined]
+        self.controls_layout.setRowWrapPolicy(QFormLayout.RowWrapPolicy.DontWrapRows)
         self.controls_layout.setLabelAlignment(Qt.AlignmentFlag.AlignLeft)
         self.controls_layout.setFormAlignment(
             Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft
@@ -329,8 +329,8 @@ class LogWidget(BaseWidget):
             return
 
         if width < 640:
-            self.controls_layout.setRowWrapPolicy(QFormLayout.RowWrapPolicy.WrapAllRows)  # type: ignore[attr-defined]
+            self.controls_layout.setRowWrapPolicy(QFormLayout.RowWrapPolicy.WrapAllRows)
         else:
             self.controls_layout.setRowWrapPolicy(
                 QFormLayout.RowWrapPolicy.DontWrapRows
-            )  # type: ignore[attr-defined]
+            )

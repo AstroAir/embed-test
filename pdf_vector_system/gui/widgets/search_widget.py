@@ -65,7 +65,7 @@ class SearchWidget(BaseWidget):
         # Search state tracking
         self._current_search_type = "semantic"
         self._search_results: list[SearchResult] = []
-        self._result_count_badge: Optional[InfoBadge] = None
+        self._result_count_badge: InfoBadge  # Initialized in _setup_ui
         self._search_state_tooltip: Optional[StateToolTip] = None
 
         # Search debounce timer
@@ -383,16 +383,14 @@ class SearchWidget(BaseWidget):
 
         # Get search parameters
         max_results = self.max_results_spin.value()
-        similarity_threshold = self.similarity_threshold_spin.value() / 100.0
-        document_filter = self.document_filter.text().strip() or None
+        # similarity_threshold = self.similarity_threshold_spin.value() / 100.0  # Not supported by controller
+        document_id = self.document_filter.text().strip() or None
 
         # Perform search through controller
         self.controller.search(
             query=query,
-            search_type=self._current_search_type,
             max_results=max_results,
-            similarity_threshold=similarity_threshold,
-            document_filter=document_filter,
+            document_id=document_id,
         )
 
     def _clear_search(self) -> None:

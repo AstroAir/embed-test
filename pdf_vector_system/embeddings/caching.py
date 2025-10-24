@@ -22,7 +22,7 @@ from typing import Any, Optional
 REDIS_AVAILABLE = importlib.util.find_spec("redis") is not None
 
 try:
-    import lz4.frame  # type: ignore[import-not-found]
+    import lz4.frame
 
     LZ4_AVAILABLE = True
 except ImportError:

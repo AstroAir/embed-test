@@ -84,6 +84,8 @@ class StatusController(QObject):
             Dictionary with health status for each component
         """
         try:
+            if self.pipeline is None:
+                raise Exception("Pipeline not initialized")
             return self.pipeline.health_check()
 
         except Exception as e:
@@ -109,13 +111,13 @@ class StatusController(QObject):
                 import PySide6
 
                 info["pyside6_version"] = PySide6.__version__
-            except:
+            except Exception:
                 info["pyside6_version"] = "Unknown"
 
             info["application_version"] = "1.0.0"
             info["config_file"] = str(self.config.chroma_db.persist_directory)
-            info["debug_mode"] = self.config.debug
-            info["max_workers"] = self.config.max_workers
+            info["debug_mode"] = str(getattr(self.config, "debug", False))
+            info["max_workers"] = str(getattr(self.config, "max_workers", 4))
             info["embedding_model"] = self.config.embedding.model_name
             info["collection_name"] = self.config.chroma_db.collection_name
 
@@ -207,6 +209,8 @@ class StatusController(QObject):
             Dictionary with collection information
         """
         try:
+            if self.pipeline is None:
+                raise Exception("Pipeline not initialized")
             # Get collection statistics
             stats = self.pipeline.get_collection_stats()
 

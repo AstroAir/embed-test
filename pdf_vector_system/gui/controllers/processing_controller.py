@@ -5,7 +5,7 @@ This module contains the controller for PDF processing operations.
 """
 
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 from PySide6.QtCore import QObject, Signal
 
@@ -83,7 +83,9 @@ class ProcessingController(QObject):
             self._process_files_task, "pdf_processing", file_paths, clean_text
         )
 
-    def _process_files_task(self, file_paths: list[Path], clean_text: bool) -> dict:
+    def _process_files_task(
+        self, file_paths: list[Path], clean_text: bool
+    ) -> dict[str, Any]:
         """
         Background task for processing PDF files.
 
@@ -94,7 +96,12 @@ class ProcessingController(QObject):
         Returns:
             Processing results dictionary
         """
-        results = {"successful": 0, "failed": 0, "total": len(file_paths), "files": []}
+        results: dict[str, Any] = {
+            "successful": 0,
+            "failed": 0,
+            "total": len(file_paths),
+            "files": [],
+        }
 
         self.processing_started.emit([str(f) for f in file_paths])
 
@@ -105,6 +112,8 @@ class ProcessingController(QObject):
                 self.status_message.emit(f"Processing {file_path.name}...")
 
                 # Process the file
+                if self.pipeline is None:
+                    raise Exception("Pipeline not initialized")
                 result = self.pipeline.process_pdf(
                     pdf_path=file_path, clean_text=clean_text, show_progress=False
                 )

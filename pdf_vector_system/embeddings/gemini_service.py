@@ -4,7 +4,7 @@ import os
 import time
 from typing import Any, Optional, cast
 
-import requests
+import requests  # type: ignore[import-untyped]
 
 from pdf_vector_system.embeddings.base import (
     EmbeddingResult,

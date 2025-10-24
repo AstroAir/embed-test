@@ -255,7 +255,7 @@ class CohereEmbeddingService(EmbeddingService):
             # Normalize to List[List[float]]
             if not isinstance(embeddings_raw, list):
                 try:
-                    embeddings_iter = list(embeddings_raw)  # type: ignore
+                    embeddings_iter = list(embeddings_raw)
                 except TypeError as err:
                     raise RetryableError(
                         "Embeddings response not iterable", FailureType.UNKNOWN
