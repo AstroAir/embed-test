@@ -7,8 +7,8 @@ import pytest
 from pdf_vector_system.gui.controllers.main_controller import MainController
 
 
-@pytest.mark.gui()
-@pytest.mark.controller()
+@pytest.mark.gui
+@pytest.mark.controller
 class TestMainController:
     """Test cases for MainController."""
 
@@ -61,8 +61,8 @@ class TestMainController:
 
 
 # Template for other controller tests
-@pytest.mark.gui()
-@pytest.mark.controller()
+@pytest.mark.gui
+@pytest.mark.controller
 class TestSearchController:
     """Test cases for SearchController - Template."""
 
@@ -79,8 +79,8 @@ class TestSearchController:
         # TODO: Test results processing, signal emission
 
 
-@pytest.mark.gui()
-@pytest.mark.controller()
+@pytest.mark.gui
+@pytest.mark.controller
 class TestDocumentController:
     """Test cases for DocumentController - Template."""
 
@@ -101,8 +101,8 @@ class TestDocumentController:
         # TODO: Test get_document_info method
 
 
-@pytest.mark.gui()
-@pytest.mark.controller()
+@pytest.mark.gui
+@pytest.mark.controller
 class TestConfigController:
     """Test cases for ConfigController - Template."""
 
@@ -123,8 +123,8 @@ class TestConfigController:
         # TODO: Test load_config method
 
 
-@pytest.mark.gui()
-@pytest.mark.controller()
+@pytest.mark.gui
+@pytest.mark.controller
 class TestStatusController:
     """Test cases for StatusController - Template."""
 

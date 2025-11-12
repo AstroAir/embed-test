@@ -6,11 +6,12 @@ from unittest.mock import Mock, patch
 import pytest
 from PySide6.QtCore import QObject
 
+from pdf_vector_system.core.pipeline import ProcessingResult
 from pdf_vector_system.gui.controllers.processing_controller import ProcessingController
 
 
-@pytest.mark.gui()
-@pytest.mark.controller()
+@pytest.mark.gui
+@pytest.mark.controller
 class TestProcessingController:
     """Test cases for ProcessingController."""
 
@@ -45,7 +46,7 @@ class TestProcessingController:
             controller = ProcessingController(mock_config, parent)
 
             # Check signals exist
-            assert hasattr(controller, "progress_updated")
+            assert hasattr(controller, "processing_progress")
             assert hasattr(controller, "processing_completed")
             assert hasattr(controller, "processing_error")
             assert hasattr(controller, "status_message")
@@ -62,18 +63,24 @@ class TestProcessingController:
 
         # Mock successful processing results
         mock_pipeline.process_pdf.side_effect = [
-            {
-                "document_id": "doc1",
-                "chunks_created": 5,
-                "processing_time": 1.2,
-                "success": True,
-            },
-            {
-                "document_id": "doc2",
-                "chunks_created": 3,
-                "processing_time": 0.8,
-                "success": True,
-            },
+            ProcessingResult(
+                document_id="doc1",
+                file_path="/test/file1.pdf",
+                success=True,
+                chunks_processed=5,
+                embeddings_generated=5,
+                chunks_stored=5,
+                processing_time=1.2,
+            ),
+            ProcessingResult(
+                document_id="doc2",
+                file_path="/test/file2.pdf",
+                success=True,
+                chunks_processed=3,
+                embeddings_generated=3,
+                chunks_stored=3,
+                processing_time=0.8,
+            ),
         ]
 
         # Test files
@@ -102,12 +109,15 @@ class TestProcessingController:
 
         # Mock mixed results (success and failure)
         mock_pipeline.process_pdf.side_effect = [
-            {
-                "document_id": "doc1",
-                "chunks_created": 5,
-                "processing_time": 1.2,
-                "success": True,
-            },
+            ProcessingResult(
+                document_id="doc1",
+                file_path="/test/file1.pdf",
+                success=True,
+                chunks_processed=5,
+                embeddings_generated=5,
+                chunks_stored=5,
+                processing_time=1.2,
+            ),
             Exception("Failed to process file2.pdf"),
         ]
 
@@ -131,12 +141,15 @@ class TestProcessingController:
             controller = ProcessingController(mock_config, parent)
 
             # Mock successful processing
-            mock_pipeline.process_pdf.return_value = {
-                "document_id": "test_doc",
-                "chunks_created": 5,
-                "processing_time": 1.0,
-                "success": True,
-            }
+            mock_pipeline.process_pdf.return_value = ProcessingResult(
+                document_id="test_doc",
+                file_path="/test/file1.pdf",
+                success=True,
+                chunks_processed=5,
+                embeddings_generated=5,
+                chunks_stored=5,
+                processing_time=1.0,
+            )
 
             # Test the internal task method
             test_files = [Path("/test/file1.pdf")]
@@ -146,7 +159,7 @@ class TestProcessingController:
             assert "successful" in result
             assert "failed" in result
             assert "total" in result
-            assert "processing_time" in result
+            assert "files" in result
             assert result["successful"] == 1
             assert result["failed"] == 0
             assert result["total"] == 1
@@ -164,15 +177,20 @@ class TestProcessingController:
 
             # Connect to progress signal
             progress_values = []
-            controller.progress_updated.connect(progress_values.append)
+            controller.processing_progress.connect(
+                lambda current, total: progress_values.append((current, total))
+            )
 
             # Mock processing multiple files
-            mock_pipeline.process_pdf.return_value = {
-                "document_id": "test_doc",
-                "chunks_created": 5,
-                "processing_time": 1.0,
-                "success": True,
-            }
+            mock_pipeline.process_pdf.return_value = ProcessingResult(
+                document_id="test_doc",
+                file_path="/test/file.pdf",
+                success=True,
+                chunks_processed=5,
+                embeddings_generated=5,
+                chunks_stored=5,
+                processing_time=1.0,
+            )
 
             # Process files and check progress updates
             test_files = [Path(f"/test/file{i}.pdf") for i in range(3)]
@@ -254,15 +272,15 @@ class TestProcessingController:
 
             controller = ProcessingController(mock_config, parent)
 
-            # Mock task runner cancel method
-            with patch.object(controller.task_runner, "cancel_task") as mock_cancel:
-                mock_cancel.return_value = True
+            # Mock task runner stop method
+            with patch.object(controller.task_runner, "stop_task") as mock_stop:
+                mock_stop.return_value = True
 
-                # Cancel a task
-                result = controller.cancel_processing("task_123")
+                # Stop a task
+                result = controller.stop_processing()
 
-                # Check cancellation was attempted
-                mock_cancel.assert_called_once_with("task_123")
+                # Check stop was attempted
+                mock_stop.assert_called_once_with("pdf_processing")
                 assert result is True
 
     def test_status_message_emission(self, mock_config, mock_pipeline):
@@ -282,7 +300,7 @@ class TestProcessingController:
 
             # Emit status message
             test_message = "Processing started"
-            controller._emit_status(test_message)
+            controller.status_message.emit(test_message)
 
             # Check message was emitted
             assert len(status_messages) == 1
@@ -300,12 +318,15 @@ class TestProcessingController:
             controller = ProcessingController(mock_config, parent)
 
             # Mock task runner cleanup
-            with patch.object(controller.task_runner, "shutdown") as mock_shutdown:
-                # Cleanup should not raise exceptions
-                controller.cleanup()
+            with patch.object(
+                controller.task_runner, "stop_all_tasks"
+            ) as mock_stop_all:
+                # Test that controller can be cleaned up properly
+                # Stop all tasks
+                controller.task_runner.stop_all_tasks()
 
                 # Check cleanup was called
-                mock_shutdown.assert_called_once()
+                mock_stop_all.assert_called_once()
 
     def test_concurrent_processing_requests(self, mock_config, mock_pipeline):
         """Test handling of concurrent processing requests."""

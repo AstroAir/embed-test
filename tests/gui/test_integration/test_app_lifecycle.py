@@ -10,8 +10,8 @@ from pdf_vector_system.gui.app import PDFVectorGUIApp
 from pdf_vector_system.gui.main_window import MainWindow
 
 
-@pytest.mark.gui()
-@pytest.mark.integration()
+@pytest.mark.gui
+@pytest.mark.integration
 class TestAppLifecycle:
     """Test cases for GUI application lifecycle."""
 

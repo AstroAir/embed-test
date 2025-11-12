@@ -10,8 +10,8 @@ from pdf_vector_system.gui.controllers.processing_controller import ProcessingCo
 from pdf_vector_system.gui.widgets.processing_widget import ProcessingWidget
 
 
-@pytest.mark.gui()
-@pytest.mark.widget()
+@pytest.mark.gui
+@pytest.mark.widget
 class TestProcessingWidget:
     """Test cases for ProcessingWidget."""
 

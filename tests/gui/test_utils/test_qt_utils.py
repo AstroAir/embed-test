@@ -15,8 +15,8 @@ from pdf_vector_system.gui.utils.qt_utils import (
 )
 
 
-@pytest.mark.gui()
-@pytest.mark.utils()
+@pytest.mark.gui
+@pytest.mark.utils
 class TestQtUtils:
     """Test cases for Qt utility functions."""
 

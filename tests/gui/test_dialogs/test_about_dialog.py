@@ -10,8 +10,8 @@ import pytest
 # from pdf_vector_system.gui.dialogs.progress_dialog import ProgressDialog
 
 
-@pytest.mark.gui()
-@pytest.mark.dialog()
+@pytest.mark.gui
+@pytest.mark.dialog
 class TestAboutDialog:
     """Test cases for AboutDialog - Template."""
 
@@ -33,8 +33,8 @@ class TestAboutDialog:
         # TODO: Test modal display, close behavior
 
 
-@pytest.mark.gui()
-@pytest.mark.dialog()
+@pytest.mark.gui
+@pytest.mark.dialog
 class TestSettingsDialog:
     """Test cases for SettingsDialog - Template."""
 
@@ -55,8 +55,8 @@ class TestSettingsDialog:
         # TODO: Test OK/Cancel buttons, return values
 
 
-@pytest.mark.gui()
-@pytest.mark.dialog()
+@pytest.mark.gui
+@pytest.mark.dialog
 class TestConfirmDialog:
     """Test cases for ConfirmDialog - Template."""
 
@@ -77,8 +77,8 @@ class TestConfirmDialog:
         # TODO: Test return values for different button clicks
 
 
-@pytest.mark.gui()
-@pytest.mark.dialog()
+@pytest.mark.gui
+@pytest.mark.dialog
 class TestErrorDialog:
     """Test cases for ErrorDialog - Template."""
 
@@ -99,8 +99,8 @@ class TestErrorDialog:
         # TODO: Test show/hide details functionality
 
 
-@pytest.mark.gui()
-@pytest.mark.dialog()
+@pytest.mark.gui
+@pytest.mark.dialog
 class TestProgressDialog:
     """Test cases for ProgressDialog - Template."""
 
@@ -159,9 +159,9 @@ class DialogTestUtils:
 
 
 # Integration tests for dialog interactions
-@pytest.mark.gui()
-@pytest.mark.dialog()
-@pytest.mark.integration()
+@pytest.mark.gui
+@pytest.mark.dialog
+@pytest.mark.integration
 class TestDialogIntegration:
     """Integration tests for dialog interactions."""
 

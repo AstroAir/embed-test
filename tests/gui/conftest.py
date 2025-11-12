@@ -11,10 +11,10 @@ from PySide6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 # Import GUI components
-from pdf_vector_system.config.settings import Config
+from pdf_vector_system.core.config.settings import Config
+from pdf_vector_system.core.pipeline import PDFVectorPipeline
 from pdf_vector_system.gui.app import PDFVectorGUIApp
 from pdf_vector_system.gui.main_window import MainWindow
-from pdf_vector_system.pipeline import PDFVectorPipeline
 
 
 @pytest.fixture(scope="session")
@@ -36,13 +36,13 @@ def qapp():
         app.quit()
 
 
-@pytest.fixture()
+@pytest.fixture
 def qtbot(qapp, request):
     """Create QtBot instance for widget testing."""
     return QtBot(request)
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_pipeline():
     """Create a mock PDFVectorPipeline for testing."""
     mock = Mock(spec=PDFVectorPipeline)
@@ -115,7 +115,7 @@ def mock_pipeline():
     return mock
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_config(temp_dir):
     """Create a mock configuration for testing."""
     config = Mock(spec=Config)
@@ -158,7 +158,7 @@ def mock_config(temp_dir):
     return config
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_file_dialog():
     """Mock file dialog for testing file selection."""
     with patch("PySide6.QtWidgets.QFileDialog") as mock:
@@ -177,7 +177,7 @@ def mock_file_dialog():
         yield mock
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_message_box():
     """Mock message box for testing dialogs."""
     with patch("PySide6.QtWidgets.QMessageBox") as mock:
@@ -190,13 +190,13 @@ def mock_message_box():
         yield mock
 
 
-@pytest.fixture()
+@pytest.fixture
 def gui_app(qapp, mock_config):
     """Create GUI application instance for testing."""
     return PDFVectorGUIApp(config=mock_config)
 
 
-@pytest.fixture()
+@pytest.fixture
 def main_window(qtbot, mock_config):
     """Create main window instance for testing."""
     window = MainWindow(config=mock_config)
@@ -204,14 +204,14 @@ def main_window(qtbot, mock_config):
     return window
 
 
-@pytest.fixture()
+@pytest.fixture
 def widget_test_timeout():
     """Timeout for widget operations in milliseconds."""
     return 1000
 
 
 # Mock system resources for status monitoring
-@pytest.fixture()
+@pytest.fixture
 def mock_system_resources():
     """Mock system resource monitoring."""
     with (

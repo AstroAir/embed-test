@@ -25,11 +25,12 @@ from qfluentwidgets import (
     VBoxLayout,
 )
 
-from pdf_vector_system.config.settings import Config
+from pdf_vector_system.core.config.settings import Config
+from pdf_vector_system.gui.utils.adaptive_ui import AdaptiveMargins, AdaptiveSpacing
 
 
 class EnhancedBaseWidget(QWidget):
-    """Enhanced base widget class with modern QFluentWidgets support."""
+    """Enhanced base widget class with modern QFluentWidgets support and adaptive layouts."""
 
     # Signals
     status_changed: Signal = Signal(str)
@@ -61,6 +62,9 @@ class EnhancedBaseWidget(QWidget):
         self._info_bar_timer.setSingleShot(True)
         self._info_bar_timer.timeout.connect(self._hide_auto_info_bars)
 
+        # Track current width for adaptive adjustments
+        self._current_width = 0
+
         self._setup_ui()
 
     def _setup_ui(self) -> None:
@@ -71,6 +75,47 @@ class EnhancedBaseWidget(QWidget):
 
     def on_tab_activated(self) -> None:
         """Called when this widget's tab is activated. Override in subclasses."""
+
+    def _on_window_resize(self, width: int) -> None:
+        """
+        Handle window resize for adaptive layout adjustments.
+        Override in subclasses for custom adaptive behavior.
+
+        Args:
+            width: New window width
+        """
+        self._current_width = width
+        self._apply_adaptive_spacing(width)
+
+    def _apply_adaptive_spacing(self, width: int) -> None:
+        """
+        Apply adaptive spacing based on window width.
+
+        Args:
+            width: Current window width
+        """
+        if self.layout():
+            spacing = AdaptiveSpacing.get_spacing_for_width(width)
+            self.layout().setSpacing(spacing)
+
+            margins = AdaptiveMargins.get_margins_for_width(width)
+            self.layout().setContentsMargins(*margins)
+
+    def get_adaptive_column_count(self, min_column_width: int = 300) -> int:
+        """
+        Get recommended number of columns for current width.
+
+        Args:
+            min_column_width: Minimum width per column
+
+        Returns:
+            Number of columns
+        """
+        if self._current_width == 0:
+            self._current_width = self.width()
+
+        columns = max(1, self._current_width // min_column_width)
+        return min(columns, 4)
 
     # Enhanced status and feedback methods
     def emit_status(self, message: str) -> None:

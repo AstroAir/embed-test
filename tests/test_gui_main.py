@@ -206,7 +206,7 @@ class TestGuiMain:
         assert len(sig.parameters) == 0
 
         # Should return int
-        assert sig.return_annotation == int
+        assert sig.return_annotation is int
 
     @patch("pdf_vector_system.gui_main.PDFVectorGUIApp")
     @patch("pdf_vector_system.gui_main.setup_logging")

@@ -7,13 +7,14 @@ using QFluentWidgets FluentWindow.
 
 from typing import Optional
 
-from PySide6.QtCore import Signal
+from PySide6.QtCore import QEvent, Signal
 from PySide6.QtGui import QCloseEvent, QKeySequence, QShortcut
-from PySide6.QtWidgets import QWidget
-from qfluentwidgets import FluentIcon, FluentWindow, MessageBox
+from PySide6.QtWidgets import QApplication, QWidget
+from qfluentwidgets import FluentIcon, FluentWindow, MessageBox, NavigationItemPosition
 
-from pdf_vector_system.config.settings import Config
+from pdf_vector_system.core.config.settings import Config
 from pdf_vector_system.gui.controllers.main_controller import MainController
+from pdf_vector_system.gui.utils.adaptive_ui import AdaptiveWindow
 from pdf_vector_system.gui.utils.icons import IconType
 from pdf_vector_system.gui.utils.qt_utils import center_window, set_window_icon
 from pdf_vector_system.gui.widgets import (
@@ -56,51 +57,89 @@ class MainWindow(FluentWindow):
         center_window(self)
 
     def _setup_ui(self) -> None:
-        """Set up the main user interface."""
+        """Set up the main user interface with adaptive sizing."""
         # Set window properties
-        self.setWindowTitle("PDF Vector System")
-        self.setMinimumSize(1200, 800)
-        self.resize(1400, 900)
+        self.setWindowTitle("PDF Vector System - Intelligent Document Processing")
+
+        # Get adaptive window sizing based on screen
+        screen = QApplication.primaryScreen().geometry()
+        adaptive_size = AdaptiveWindow.get_adaptive_window_size(
+            screen.width(), screen.height()
+        )
+        min_size = AdaptiveWindow.get_minimum_size_for_resolution(
+            screen.width(), screen.height()
+        )
+
+        self.setMinimumSize(min_size)
+        self.resize(adaptive_size)
 
         # Set window icon
         set_window_icon(self, IconType.APP)
+
+        # Enable mica effect for modern look (Windows 11)
+        self.setMicaEffectEnabled(True)
 
         # Create and add tabs using FluentWindow's interface system
         self._create_tabs()
 
     def _create_tabs(self) -> None:
         """Create and add all tabs using FluentWindow's interface system."""
-        # Processing tab
+        # Processing tab - Primary action
         self.processing_widget = ProcessingWidget(self.config)
         self.processing_widget.setObjectName("ProcessingWidget")
         self.addSubInterface(
-            self.processing_widget, FluentIcon.DOCUMENT, "Process PDFs"
+            self.processing_widget,
+            FluentIcon.DOCUMENT,
+            "Process",
+            NavigationItemPosition.TOP,
         )
 
         # Search tab
         self.search_widget = SearchWidget(self.config)
         self.search_widget.setObjectName("SearchWidget")
-        self.addSubInterface(self.search_widget, FluentIcon.SEARCH, "Search")
+        self.addSubInterface(
+            self.search_widget, FluentIcon.SEARCH, "Search", NavigationItemPosition.TOP
+        )
 
         # Document management tab
         self.document_widget = DocumentWidget(self.config)
         self.document_widget.setObjectName("DocumentWidget")
-        self.addSubInterface(self.document_widget, FluentIcon.FOLDER, "Documents")
+        self.addSubInterface(
+            self.document_widget,
+            FluentIcon.FOLDER,
+            "Documents",
+            NavigationItemPosition.TOP,
+        )
 
-        # Configuration tab
-        self.config_widget = ConfigWidget(self.config)
-        self.config_widget.setObjectName("ConfigWidget")
-        self.addSubInterface(self.config_widget, FluentIcon.SETTING, "Settings")
+        # Add separator for utility items
+        self.navigationInterface.addSeparator()
 
-        # System status tab
+        # System status tab - Utility
         self.status_widget = StatusWidget(self.config)
         self.status_widget.setObjectName("StatusWidget")
-        self.addSubInterface(self.status_widget, FluentIcon.HEART, "Status")
+        self.addSubInterface(
+            self.status_widget,
+            FluentIcon.HEART,
+            "Status",
+            NavigationItemPosition.BOTTOM,
+        )
 
-        # Log viewer tab
+        # Configuration tab - Settings at bottom
+        self.config_widget = ConfigWidget(self.config)
+        self.config_widget.setObjectName("ConfigWidget")
+        self.addSubInterface(
+            self.config_widget,
+            FluentIcon.SETTING,
+            "Settings",
+            NavigationItemPosition.BOTTOM,
+        )
+
+        # Log viewer tab - Debug utility at bottom
         self.log_widget = LogWidget(self.config)
         self.log_widget.setObjectName("LogWidget")
-        self.addSubInterface(self.log_widget, FluentIcon.HISTORY, "Logs")
+        self.addSubInterface(
+            self.log_widget, FluentIcon.HISTORY, "Logs", NavigationItemPosition.BOTTOM
+        )
 
         # Connect widget signals to main controller
         self._connect_widget_signals()
@@ -192,6 +231,22 @@ class MainWindow(FluentWindow):
         widget = self.stackedWidget.widget(index)
         if widget and hasattr(widget, "on_tab_activated"):
             widget.on_tab_activated()
+
+    def resizeEvent(self, event: QEvent) -> None:
+        """Handle window resize for adaptive layouts."""
+        super().resizeEvent(event)
+        # Notify widgets of resize for adaptive adjustments
+        current_width = self.width()
+        for widget in [
+            self.processing_widget,
+            self.search_widget,
+            self.document_widget,
+            self.config_widget,
+            self.status_widget,
+            self.log_widget,
+        ]:
+            if hasattr(widget, "_on_window_resize"):
+                widget._on_window_resize(current_width)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """Handle window close event."""

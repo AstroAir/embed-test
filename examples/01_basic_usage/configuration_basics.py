@@ -31,18 +31,19 @@ import os
 import sys
 from pathlib import Path
 
+from utils.example_helpers import (
+    example_context,
+    get_available_providers,
+    print_section,
+    print_subsection,
+)
+
 from pdf_vector_system import Config
 from pdf_vector_system.config.settings import (
     EmbeddingConfig,
     EmbeddingModelType,
     LogLevel,
     TextProcessingConfig,
-)
-from utils.example_helpers import (
-    example_context,
-    get_available_providers,
-    print_section,
-    print_subsection,
 )
 
 # Add parent directory to path for imports

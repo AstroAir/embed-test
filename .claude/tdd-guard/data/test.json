@@ -1,0 +1,34 @@
+{
+  "testModules": [
+    {
+      "moduleId": "tests/gui",
+      "tests": [
+        {
+          "name": "collection_error_tests/gui",
+          "fullName": "tests/gui",
+          "state": "failed",
+          "errors": [
+            {
+              "message": "C:\\Users\\Max Qian\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\importlib\\__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1204: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1176: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1147: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:690: in _load_unlocked\n    ???\nC:\\Users\\Max Qian\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\_pytest\\assertion\\rewrite.py:186: in exec_module\n    exec(co, module.__dict__)\ntests\\gui\\conftest.py:11: in <module>\n    from pytestqt.qtbot import QtBot\nE   ModuleNotFoundError: No module named 'pytestqt'"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": "tests/vector_db/test_pinecone_client.py",
+      "tests": [
+        {
+          "name": "collection_error_tests/vector_db/test_pinecone_client.py",
+          "fullName": "tests/vector_db/test_pinecone_client.py",
+          "state": "failed",
+          "errors": [
+            {
+              "message": "tests\\vector_db\\test_pinecone_client.py:13: in <module>\n    from pdf_vector_system.vector_db.pinecone_client import PineconeClient\npdf_vector_system\\vector_db\\pinecone_client.py:7: in <module>\n    import pinecone\nC:\\Users\\Max Qian\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\pinecone\\__init__.py:5: in <module>\n    raise Exception(\nE   Exception: The official Pinecone python package has been renamed from `pinecone-client` to `pinecone`. Please remove `pinecone-client` from your project dependencies and add `pinecone` instead. See the README at https://github.com/pinecone-io/pinecone-python-client for more information on using the python SDK."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

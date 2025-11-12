@@ -10,8 +10,8 @@ from PySide6.QtWidgets import QLineEdit
 # )
 
 
-@pytest.mark.gui()
-@pytest.mark.utils()
+@pytest.mark.gui
+@pytest.mark.utils
 class TestConfigValidator:
     """Test cases for ConfigValidator - Template."""
 
@@ -36,8 +36,8 @@ class TestConfigValidator:
         # TODO: Test error message generation
 
 
-@pytest.mark.gui()
-@pytest.mark.utils()
+@pytest.mark.gui
+@pytest.mark.utils
 class TestFilePathValidator:
     """Test cases for FilePathValidator - Template."""
 
@@ -62,8 +62,8 @@ class TestFilePathValidator:
         # TODO: Test existing vs non-existing file validation
 
 
-@pytest.mark.gui()
-@pytest.mark.utils()
+@pytest.mark.gui
+@pytest.mark.utils
 class TestNumberRangeValidator:
     """Test cases for NumberRangeValidator - Template."""
 
@@ -88,8 +88,8 @@ class TestNumberRangeValidator:
         # TODO: Test min/max boundary conditions
 
 
-@pytest.mark.gui()
-@pytest.mark.utils()
+@pytest.mark.gui
+@pytest.mark.utils
 class TestEmailValidator:
     """Test cases for EmailValidator - Template."""
 
@@ -110,8 +110,8 @@ class TestEmailValidator:
         # TODO: Test edge cases in email validation
 
 
-@pytest.mark.gui()
-@pytest.mark.utils()
+@pytest.mark.gui
+@pytest.mark.utils
 class TestURLValidator:
     """Test cases for URLValidator - Template."""
 
@@ -133,9 +133,9 @@ class TestURLValidator:
 
 
 # Validator integration tests
-@pytest.mark.gui()
-@pytest.mark.utils()
-@pytest.mark.integration()
+@pytest.mark.gui
+@pytest.mark.utils
+@pytest.mark.integration
 class TestValidatorIntegration:
     """Integration tests for validators with Qt widgets."""
 

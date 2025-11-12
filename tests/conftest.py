@@ -10,7 +10,7 @@ from unittest.mock import Mock
 import pytest
 from loguru import logger
 
-from pdf_vector_system.config.settings import (
+from pdf_vector_system.core.config.settings import (
     ChromaDBConfig,
     Config,
     EmbeddingConfig,
@@ -20,7 +20,7 @@ from pdf_vector_system.config.settings import (
     PDFConfig,
     TextProcessingConfig,
 )
-from pdf_vector_system.vector_db.models import DocumentChunk, SearchResult
+from pdf_vector_system.core.vector_db.models import DocumentChunk, SearchResult
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -36,7 +36,7 @@ def setup_test_logging():
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def temp_dir() -> Generator[Path, None, None]:
     """Create a temporary directory for test files."""
     temp_path = Path(tempfile.mkdtemp())
@@ -46,7 +46,7 @@ def temp_dir() -> Generator[Path, None, None]:
         shutil.rmtree(temp_path, ignore_errors=True)
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_pdf_file(temp_dir: Path) -> Path:
     """Create a mock PDF file for testing."""
     pdf_path = temp_dir / "test_document.pdf"
@@ -55,7 +55,7 @@ def mock_pdf_file(temp_dir: Path) -> Path:
     return pdf_path
 
 
-@pytest.fixture()
+@pytest.fixture
 def sample_text() -> str:
     """Provide sample text for testing."""
     return """
@@ -73,7 +73,7 @@ def sample_text() -> str:
     """.strip()
 
 
-@pytest.fixture()
+@pytest.fixture
 def sample_chunks() -> list[str]:
     """Provide sample text chunks for testing."""
     return [
@@ -84,7 +84,7 @@ def sample_chunks() -> list[str]:
     ]
 
 
-@pytest.fixture()
+@pytest.fixture
 def sample_embeddings() -> list[list[float]]:
     """Provide sample embeddings for testing."""
     return [
@@ -95,13 +95,13 @@ def sample_embeddings() -> list[list[float]]:
     ]
 
 
-@pytest.fixture()
+@pytest.fixture
 def pdf_config() -> PDFConfig:
     """Create a test PDF configuration."""
     return PDFConfig(max_file_size_mb=50, timeout_seconds=120, extract_images=False)
 
 
-@pytest.fixture()
+@pytest.fixture
 def text_processing_config() -> TextProcessingConfig:
     """Create a test text processing configuration."""
     return TextProcessingConfig(
@@ -112,7 +112,7 @@ def text_processing_config() -> TextProcessingConfig:
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def embedding_config() -> EmbeddingConfig:
     """Create a test embedding configuration."""
     return EmbeddingConfig(
@@ -123,7 +123,7 @@ def embedding_config() -> EmbeddingConfig:
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def chroma_config(temp_dir: Path) -> ChromaDBConfig:
     """Create a test ChromaDB configuration."""
     return ChromaDBConfig(
@@ -133,7 +133,7 @@ def chroma_config(temp_dir: Path) -> ChromaDBConfig:
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def logging_config(temp_dir: Path) -> LoggingConfig:
     """Create a test logging configuration."""
     return LoggingConfig(
@@ -145,7 +145,7 @@ def logging_config(temp_dir: Path) -> LoggingConfig:
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def test_config(
     pdf_config: PDFConfig,
     text_processing_config: TextProcessingConfig,
@@ -165,7 +165,7 @@ def test_config(
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def sample_document_chunks(
     sample_chunks: list[str], sample_embeddings: list[list[float]]
 ) -> list[DocumentChunk]:
@@ -185,7 +185,7 @@ def sample_document_chunks(
     return chunks
 
 
-@pytest.fixture()
+@pytest.fixture
 def sample_search_results() -> list[SearchResult]:
     """Create sample SearchResult objects for testing."""
     return [
@@ -204,7 +204,7 @@ def sample_search_results() -> list[SearchResult]:
     ]
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_chromadb_client():
     """Create a mock ChromaDB client for testing."""
     mock_client = Mock()
@@ -224,7 +224,7 @@ def mock_chromadb_client():
     return mock_client
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_embedding_service():
     """Create a mock embedding service for testing."""
     mock_service = Mock()
@@ -242,7 +242,7 @@ def mock_embedding_service():
     return mock_service
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_pdf_document():
     """Create a mock PyMuPDF document for testing."""
     mock_doc = Mock()
@@ -267,7 +267,7 @@ def mock_pdf_document():
     return mock_doc
 
 
-@pytest.fixture()
+@pytest.fixture
 def env_vars() -> Generator[dict[str, str], None, None]:
     """Provide environment variables for testing."""
     test_env = {

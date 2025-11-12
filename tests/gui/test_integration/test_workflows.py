@@ -8,8 +8,8 @@ from PySide6.QtCore import Qt
 from pdf_vector_system.gui.main_window import MainWindow
 
 
-@pytest.mark.gui()
-@pytest.mark.integration()
+@pytest.mark.gui
+@pytest.mark.integration
 class TestPDFProcessingWorkflow:
     """Test complete PDF processing workflow."""
 
@@ -97,8 +97,8 @@ class TestPDFProcessingWorkflow:
             # (Implementation would depend on how errors are displayed)
 
 
-@pytest.mark.gui()
-@pytest.mark.integration()
+@pytest.mark.gui
+@pytest.mark.integration
 class TestSearchWorkflow:
     """Test complete search workflow."""
 
@@ -166,8 +166,8 @@ class TestSearchWorkflow:
             # )
 
 
-@pytest.mark.gui()
-@pytest.mark.integration()
+@pytest.mark.gui
+@pytest.mark.integration
 class TestDocumentManagementWorkflow:
     """Test complete document management workflow."""
 
@@ -231,8 +231,8 @@ class TestDocumentManagementWorkflow:
             # mock_pipeline.delete_document.assert_called_with('selected_doc_id')
 
 
-@pytest.mark.gui()
-@pytest.mark.integration()
+@pytest.mark.gui
+@pytest.mark.integration
 class TestConfigurationWorkflow:
     """Test complete configuration workflow."""
 
@@ -279,8 +279,8 @@ class TestConfigurationWorkflow:
         # (Implementation would depend on error display mechanism)
 
 
-@pytest.mark.gui()
-@pytest.mark.integration()
+@pytest.mark.gui
+@pytest.mark.integration
 class TestStatusMonitoringWorkflow:
     """Test complete status monitoring workflow."""
 
@@ -334,8 +334,8 @@ class TestStatusMonitoringWorkflow:
         assert not window.status_widget.refresh_timer.isActive()
 
 
-@pytest.mark.gui()
-@pytest.mark.integration()
+@pytest.mark.gui
+@pytest.mark.integration
 class TestCrossTabWorkflow:
     """Test workflows that span multiple tabs."""
 

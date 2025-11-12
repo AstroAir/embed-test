@@ -36,7 +36,8 @@ from qfluentwidgets import (
     VBoxLayout,
 )
 
-from pdf_vector_system.config.settings import Config
+from pdf_vector_system.core.config.settings import Config
+from pdf_vector_system.core.vector_db.models import SearchResult
 from pdf_vector_system.gui.controllers.search_controller import SearchController
 from pdf_vector_system.gui.utils.styling import (
     apply_card_title_style,
@@ -44,7 +45,6 @@ from pdf_vector_system.gui.utils.styling import (
     get_fluent_icon_for_action,
 )
 from pdf_vector_system.gui.widgets.base import BaseWidget
-from pdf_vector_system.vector_db.models import SearchResult
 
 
 class SearchWidget(BaseWidget):
@@ -120,13 +120,13 @@ class SearchWidget(BaseWidget):
         # Create segmented widget for search types
         self.search_type_selector = SegmentedWidget(self)
         self.search_type_selector.addItem(
-            "semantic", "Semantic", get_fluent_icon_for_action("search")
+            "semantic", "Semantic", None, get_fluent_icon_for_action("search")
         )
         self.search_type_selector.addItem(
-            "keyword", "Keyword", get_fluent_icon_for_action("tag")
+            "keyword", "Keyword", None, get_fluent_icon_for_action("tag")
         )
         self.search_type_selector.addItem(
-            "hybrid", "Hybrid", get_fluent_icon_for_action("code")
+            "hybrid", "Hybrid", None, get_fluent_icon_for_action("code")
         )
 
         # Set current type

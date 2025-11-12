@@ -10,7 +10,7 @@ from typing import Any, Optional
 from PySide6.QtCore import QObject
 from PySide6.QtGui import QValidator
 
-from pdf_vector_system.config.settings import Config
+from pdf_vector_system.core.config.settings import Config
 
 
 class PathValidator(QValidator):

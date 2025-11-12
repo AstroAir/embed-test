@@ -26,7 +26,7 @@ from qfluentwidgets import (
     VBoxLayout,
 )
 
-from pdf_vector_system.config.settings import Config
+from pdf_vector_system.core.config.settings import Config
 from pdf_vector_system.gui.controllers.processing_controller import ProcessingController
 from pdf_vector_system.gui.utils.styling import (
     create_styled_card_widget,

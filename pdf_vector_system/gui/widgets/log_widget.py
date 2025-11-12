@@ -21,7 +21,7 @@ from qfluentwidgets import (
     VBoxLayout,
 )
 
-from pdf_vector_system.config.settings import Config, LogLevel
+from pdf_vector_system.core.config.settings import Config, LogLevel
 from pdf_vector_system.gui.widgets.base import BaseWidget
 
 
@@ -49,8 +49,8 @@ class LogWidget(BaseWidget):
     def _setup_ui(self) -> None:
         """Set up the user interface."""
         layout = VBoxLayout(self)
-        layout.setContentsMargins(24, 24, 24, 24)
-        layout.setSpacing(18)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(16)
 
         # Header
         title_label = BodyLabel("Log Monitor")
@@ -247,9 +247,7 @@ class LogWidget(BaseWidget):
         cursor.movePosition(cursor.MoveOperation.End)
         self.log_display.setTextCursor(cursor)
 
-        self.status_label.setText(
-            f"Showing {len(filtered_logs)} log entries (placeholder data)"
-        )
+        self.status_label.setText(f"Showing {len(filtered_logs)} log entries")
         self.emit_status("Log refresh completed")
 
     def _apply_level_filter(self, logs: list) -> list:

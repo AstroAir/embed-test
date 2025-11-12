@@ -9,9 +9,9 @@ from typing import Any, Optional
 
 from PySide6.QtCore import QObject, Signal
 
-from pdf_vector_system.config.settings import Config
+from pdf_vector_system.core.config.settings import Config
+from pdf_vector_system.core.pipeline import PDFVectorPipeline
 from pdf_vector_system.gui.utils.threading import TaskRunner
-from pdf_vector_system.pipeline import PDFVectorPipeline
 
 
 class ProcessingController(QObject):

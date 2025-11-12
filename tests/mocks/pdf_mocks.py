@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any, Optional
 from unittest.mock import Mock
 
-from pdf_vector_system.pdf.text_processor import TextChunk, TextCleaningStats
+from pdf_vector_system.core.pdf.text_processor import TextChunk, TextCleaningStats
 
 
 class MockPDFDocument:

@@ -104,7 +104,7 @@ lint = [
 ]
 
 [project.scripts]
-pdf-vector = "pdf_vector_system.cli:main"
+pdf-vector = "pdf_vector_system.cli.main:main"
 pdf-vector-gui = "pdf_vector_system.gui_main:main"
 
 [build-system]

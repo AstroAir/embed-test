@@ -30,7 +30,7 @@ Complete command-line interface examples and automation scripts.
 
 - All CLI commands
 - Batch processing
-- Advanced search
+- Search operations
 - Collection management
 - Automation workflows
 
@@ -40,14 +40,14 @@ Graphical user interface examples and integration patterns.
 
 - Basic GUI usage
 - Custom integrations
-- Advanced features
+- GUI features
 - GUI automation
 
 ### [05_vector_database/](05_vector_database/)
 
-Advanced vector database operations and search patterns.
+Vector database operations and search patterns.
 
-- Advanced search techniques
+- Search techniques
 - Collection management
 - Metadata filtering
 - Performance optimization
@@ -196,15 +196,15 @@ All examples follow strict quality standards:
 
 ### Intermediate
 
-4. **05_vector_database/** - Advanced search and database operations
-5. **06_text_processing/** - Optimize text processing
-6. **07_configuration/** - Master configuration management
+1. **05_vector_database/** - Search and database operations
+2. **06_text_processing/** - Optimize text processing
+3. **07_configuration/** - Master configuration management
 
-### Advanced
+### Expert
 
-7. **08_integration/** - Build complex workflows
-8. **09_performance/** - Optimize for production
-9. **10_production/** - Deploy and maintain in production
+1. **08_integration/** - Build complex workflows
+2. **09_performance/** - Optimize for production
+3. **10_production/** - Deploy and maintain in production
 
 ## 🔧 Configuration Templates
 

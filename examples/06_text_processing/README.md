@@ -60,7 +60,7 @@ Assessing and improving text quality for better search results.
 - Special character handling
 - Encoding issues resolution
 
-### Advanced Cleaning
+### Additional Cleaning
 
 - OCR error correction
 - Language detection

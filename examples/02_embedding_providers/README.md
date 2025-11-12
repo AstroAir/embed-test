@@ -38,7 +38,7 @@ Health checking and monitoring for embedding providers.
 
 ### `adaptive_batch_processing.py`
 
-Advanced batch processing with adaptive sizing and performance optimization.
+Batch processing with adaptive sizing and performance optimization.
 
 ## Prerequisites
 

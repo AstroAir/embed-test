@@ -12,7 +12,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication
 from qfluentwidgets import FluentThemeColor, Theme, setTheme, setThemeColor
 
-from pdf_vector_system.config.settings import Config
+from pdf_vector_system.core.config.settings import Config
 from pdf_vector_system.gui.main_window import MainWindow
 from pdf_vector_system.gui.utils.icons import IconType, get_icon
 from pdf_vector_system.gui.utils.styling import get_app_style

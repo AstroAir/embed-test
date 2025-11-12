@@ -17,25 +17,28 @@ from qfluentwidgets import (
     ColorSettingCard,
     ComboBox,
     ExpandSettingCard,
+    FluentIcon,
     InfoBadge,
     InfoLevel,
     LineEdit,
+    ListWidget,
     MessageBox,
-    NavigationWidget,
     PrimaryPushButton,
     PushButton,
     RangeSettingCard,
     SettingCard,
     SettingCardGroup,
     SmoothScrollArea,
+    SpinBox,
     StateToolTip,
+    SwitchButton,
     SwitchSettingCard,
     Theme,
     VBoxLayout,
     qconfig,
 )
 
-from pdf_vector_system.config.settings import Config, EmbeddingModelType, LogLevel
+from pdf_vector_system.core.config.settings import Config, EmbeddingModelType, LogLevel
 from pdf_vector_system.gui.controllers.config_controller import ConfigController
 from pdf_vector_system.gui.utils.styling import (
     create_styled_card_widget,
@@ -87,52 +90,20 @@ class ConfigWidget(BaseWidget):
         nav_card = create_styled_card_widget("Configuration Categories", self)
         nav_layout = VBoxLayout(nav_card)
 
-        # Create navigation widget
-        self.nav_widget = NavigationWidget(self)
-        self.nav_widget.setExpandWidth(280)
+        # Create navigation list widget
+        self.nav_widget = ListWidget(self)
+        self.nav_widget.setFixedWidth(280)
 
         # Add navigation items
-        self.nav_widget.addItem(
-            routeKey="general",
-            icon=get_fluent_icon_for_action("settings"),
-            text="General Settings",
-            onClick=lambda: self._switch_to_category("general"),
-        )
+        self.nav_widget.addItem("General Settings")
+        self.nav_widget.addItem("Embedding Models")
+        self.nav_widget.addItem("Text Processing")
+        self.nav_widget.addItem("Database Settings")
+        self.nav_widget.addItem("Appearance & Theme")
+        self.nav_widget.addItem("Advanced Options")
 
-        self.nav_widget.addItem(
-            routeKey="embedding",
-            icon=get_fluent_icon_for_action("code"),
-            text="Embedding Models",
-            onClick=lambda: self._switch_to_category("embedding"),
-        )
-
-        self.nav_widget.addItem(
-            routeKey="processing",
-            icon=get_fluent_icon_for_action("play"),
-            text="Text Processing",
-            onClick=lambda: self._switch_to_category("processing"),
-        )
-
-        self.nav_widget.addItem(
-            routeKey="database",
-            icon=get_fluent_icon_for_action("document"),
-            text="Database Settings",
-            onClick=lambda: self._switch_to_category("database"),
-        )
-
-        self.nav_widget.addItem(
-            routeKey="appearance",
-            icon=get_fluent_icon_for_action("heart"),
-            text="Appearance & Theme",
-            onClick=lambda: self._switch_to_category("appearance"),
-        )
-
-        self.nav_widget.addItem(
-            routeKey="advanced",
-            icon=get_fluent_icon_for_action("warning"),
-            text="Advanced Options",
-            onClick=lambda: self._switch_to_category("advanced"),
-        )
+        # Connect selection change signal
+        self.nav_widget.currentRowChanged.connect(self._on_category_changed)
 
         nav_layout.addWidget(self.nav_widget)
         layout.addWidget(nav_card)
@@ -236,7 +207,7 @@ class ConfigWidget(BaseWidget):
 
         startup_layout.addWidget(self.restore_session_cb)
         startup_layout.addWidget(self.check_updates_cb)
-        self.startup_card.setContent(startup_content)
+        self.startup_card.setWidget(startup_content)
         app_group.addSettingCard(self.startup_card)
 
         layout.addWidget(app_group)
@@ -283,7 +254,7 @@ class ConfigWidget(BaseWidget):
         self.log_file_path_card.hBoxLayout.addWidget(browse_btn)
 
         log_layout.addWidget(self.log_file_path_card)
-        self.log_file_card.setContent(log_content)
+        self.log_file_card.setWidget(log_content)
         log_group.addSettingCard(self.log_file_card)
 
         layout.addWidget(log_group)
@@ -329,7 +300,7 @@ class ConfigWidget(BaseWidget):
         # Create stacked widget for model-specific settings
         self._provider_stack = QStackedWidget()
         self._create_model_provider_pages()
-        self.model_settings_card.setContent(self._provider_stack)
+        self.model_settings_card.setWidget(self._provider_stack)
         model_group.addSettingCard(self.model_settings_card)
 
         layout.addWidget(model_group)
@@ -376,7 +347,7 @@ class ConfigWidget(BaseWidget):
 
         cache_layout.addWidget(self.enable_cache_cb)
         cache_layout.addWidget(self.cache_size_card)
-        self.cache_card.setContent(cache_content)
+        self.cache_card.setWidget(cache_content)
         perf_group.addSettingCard(self.cache_card)
 
         layout.addWidget(perf_group)
@@ -453,7 +424,7 @@ class ConfigWidget(BaseWidget):
         cleaning_layout.addWidget(self.remove_whitespace_cb)
         cleaning_layout.addWidget(self.normalize_unicode_cb)
         cleaning_layout.addWidget(self.remove_headers_cb)
-        self.cleaning_card.setContent(cleaning_content)
+        self.cleaning_card.setWidget(cleaning_content)
         text_group.addSettingCard(self.cleaning_card)
 
         layout.addWidget(text_group)
@@ -521,7 +492,7 @@ class ConfigWidget(BaseWidget):
 
         maintenance_layout.addWidget(self.auto_backup_cb)
         maintenance_layout.addWidget(self.backup_interval_card)
-        self.maintenance_card.setContent(maintenance_content)
+        self.maintenance_card.setWidget(maintenance_content)
         db_group.addSettingCard(self.maintenance_card)
 
         layout.addWidget(db_group)
@@ -606,7 +577,7 @@ class ConfigWidget(BaseWidget):
         appearance_layout.addWidget(self.animations_cb)
         appearance_layout.addWidget(self.transparency_cb)
         appearance_layout.addWidget(self.compact_mode_cb)
-        self.appearance_advanced_card.setContent(appearance_content)
+        self.appearance_advanced_card.setWidget(appearance_content)
         theme_group.addSettingCard(self.appearance_advanced_card)
 
         layout.addWidget(theme_group)
@@ -677,7 +648,7 @@ class ConfigWidget(BaseWidget):
 
         memory_layout.addWidget(self.memory_limit_card)
         memory_layout.addWidget(self.gc_threshold_card)
-        self.memory_card.setContent(memory_content)
+        self.memory_card.setWidget(memory_content)
         advanced_group.addSettingCard(self.memory_card)
 
         # Experimental features
@@ -706,13 +677,18 @@ class ConfigWidget(BaseWidget):
 
         experimental_layout.addWidget(self.parallel_processing_cb)
         experimental_layout.addWidget(self.gpu_acceleration_cb)
-        self.experimental_card.setContent(experimental_content)
+        self.experimental_card.setWidget(experimental_content)
         advanced_group.addSettingCard(self.experimental_card)
 
         layout.addWidget(advanced_group)
         layout.addStretch()
 
         self.content_stack.addWidget(scroll_area)
+
+    def _on_category_changed(self, index: int) -> None:
+        """Handle category selection change."""
+        if index >= 0:
+            self.content_stack.setCurrentIndex(index)
 
     def _switch_to_category(self, category: str) -> None:
         """Switch to a specific configuration category."""
@@ -823,15 +799,230 @@ class ConfigWidget(BaseWidget):
 
     def _create_model_provider_pages(self) -> None:
         """Create model provider-specific configuration pages."""
-        # This method creates the stacked widget pages for different model providers
-        # For now, we'll create a simple placeholder
-        placeholder_widget = QWidget()
-        placeholder_layout = VBoxLayout(placeholder_widget)
-        placeholder_label = BodyLabel(
-            "Model-specific settings will be displayed here based on the selected provider."
+
+        # Page 0: OpenAI Configuration
+        openai_widget = QWidget()
+        openai_layout = VBoxLayout(openai_widget)
+        openai_layout.setContentsMargins(0, 0, 0, 0)
+        openai_layout.setSpacing(8)
+
+        openai_api_key_edit = LineEdit()
+        openai_api_key_edit.setPlaceholderText("sk-...")
+        openai_api_key_edit.setEchoMode(LineEdit.EchoMode.Password)
+        openai_api_card = SettingCard(
+            FluentIcon.FINGERPRINT,
+            "API Key",
+            "Your OpenAI API key for authentication",
+            openai_widget,
         )
-        placeholder_layout.addWidget(placeholder_label)
-        self._provider_stack.addWidget(placeholder_widget)
+        openai_api_card.hBoxLayout.addWidget(openai_api_key_edit)
+        openai_layout.addWidget(openai_api_card)
+
+        openai_model_combo = ComboBox()
+        openai_model_combo.addItems(
+            [
+                "text-embedding-ada-002",
+                "text-embedding-3-small",
+                "text-embedding-3-large",
+            ]
+        )
+        openai_model_card = SettingCard(
+            FluentIcon.BOOK_SHELF,
+            "Model",
+            "OpenAI embedding model to use",
+            openai_widget,
+        )
+        openai_model_card.hBoxLayout.addWidget(openai_model_combo)
+        openai_layout.addWidget(openai_model_card)
+
+        openai_layout.addStretch(1)
+        self._provider_stack.addWidget(openai_widget)
+
+        # Page 1: Cohere Configuration
+        cohere_widget = QWidget()
+        cohere_layout = VBoxLayout(cohere_widget)
+        cohere_layout.setContentsMargins(0, 0, 0, 0)
+        cohere_layout.setSpacing(8)
+
+        cohere_api_key_edit = LineEdit()
+        cohere_api_key_edit.setPlaceholderText("Enter Cohere API key")
+        cohere_api_key_edit.setEchoMode(LineEdit.EchoMode.Password)
+        cohere_api_card = SettingCard(
+            FluentIcon.FINGERPRINT,
+            "API Key",
+            "Your Cohere API key for authentication",
+            cohere_widget,
+        )
+        cohere_api_card.hBoxLayout.addWidget(cohere_api_key_edit)
+        cohere_layout.addWidget(cohere_api_card)
+
+        cohere_model_combo = ComboBox()
+        cohere_model_combo.addItems(
+            [
+                "embed-english-v3.0",
+                "embed-multilingual-v3.0",
+                "embed-english-light-v3.0",
+            ]
+        )
+        cohere_model_card = SettingCard(
+            FluentIcon.BOOK_SHELF,
+            "Model",
+            "Cohere embedding model to use",
+            cohere_widget,
+        )
+        cohere_model_card.hBoxLayout.addWidget(cohere_model_combo)
+        cohere_layout.addWidget(cohere_model_card)
+
+        cohere_input_combo = ComboBox()
+        cohere_input_combo.addItems(
+            ["search_document", "search_query", "classification", "clustering"]
+        )
+        cohere_input_card = SettingCard(
+            FluentIcon.TAG,
+            "Input Type",
+            "Type of input text for Cohere embeddings",
+            cohere_widget,
+        )
+        cohere_input_card.hBoxLayout.addWidget(cohere_input_combo)
+        cohere_layout.addWidget(cohere_input_card)
+
+        cohere_layout.addStretch(1)
+        self._provider_stack.addWidget(cohere_widget)
+
+        # Page 2: Sentence Transformers Configuration
+        st_widget = QWidget()
+        st_layout = VBoxLayout(st_widget)
+        st_layout.setContentsMargins(0, 0, 0, 0)
+        st_layout.setSpacing(8)
+
+        st_model_edit = LineEdit()
+        st_model_edit.setPlaceholderText("all-MiniLM-L6-v2")
+        st_model_card = SettingCard(
+            FluentIcon.BOOK_SHELF,
+            "Model Name",
+            "HuggingFace model identifier for Sentence Transformers",
+            st_widget,
+        )
+        st_model_card.hBoxLayout.addWidget(st_model_edit)
+        st_layout.addWidget(st_model_card)
+
+        st_device_combo = ComboBox()
+        st_device_combo.addItems(["cuda", "cpu", "mps"])
+        st_device_card = SettingCard(
+            FluentIcon.DEVELOPER_TOOLS,
+            "Device",
+            "Compute device for model inference",
+            st_widget,
+        )
+        st_device_card.hBoxLayout.addWidget(st_device_combo)
+        st_layout.addWidget(st_device_card)
+
+        st_normalize_switch = SwitchButton()
+        st_normalize_switch.setChecked(True)
+        st_normalize_card = SettingCard(
+            FluentIcon.ALIGNMENT,
+            "Normalize Embeddings",
+            "Whether to normalize embedding vectors to unit length",
+            st_widget,
+        )
+        st_normalize_card.hBoxLayout.addWidget(st_normalize_switch)
+        st_layout.addWidget(st_normalize_card)
+
+        st_max_seq_spin = SpinBox()
+        st_max_seq_spin.setRange(128, 8192)
+        st_max_seq_spin.setValue(512)
+        st_max_seq_card = SettingCard(
+            FluentIcon.MENU,
+            "Max Sequence Length",
+            "Maximum token sequence length for the model",
+            st_widget,
+        )
+        st_max_seq_card.hBoxLayout.addWidget(st_max_seq_spin)
+        st_layout.addWidget(st_max_seq_card)
+
+        st_layout.addStretch(1)
+        self._provider_stack.addWidget(st_widget)
+
+        # Page 3: HuggingFace Configuration
+        hf_widget = QWidget()
+        hf_layout = VBoxLayout(hf_widget)
+        hf_layout.setContentsMargins(0, 0, 0, 0)
+        hf_layout.setSpacing(8)
+
+        hf_model_edit = LineEdit()
+        hf_model_edit.setPlaceholderText("sentence-transformers/all-mpnet-base-v2")
+        hf_model_card = SettingCard(
+            FluentIcon.BOOK_SHELF,
+            "Model Name",
+            "HuggingFace model identifier",
+            hf_widget,
+        )
+        hf_model_card.hBoxLayout.addWidget(hf_model_edit)
+        hf_layout.addWidget(hf_model_card)
+
+        hf_tokenizer_edit = LineEdit()
+        hf_tokenizer_edit.setPlaceholderText(
+            "Leave empty to use model's default tokenizer"
+        )
+        hf_tokenizer_card = SettingCard(
+            FluentIcon.CODE,
+            "Tokenizer",
+            "Custom tokenizer identifier (optional)",
+            hf_widget,
+        )
+        hf_tokenizer_card.hBoxLayout.addWidget(hf_tokenizer_edit)
+        hf_layout.addWidget(hf_tokenizer_card)
+
+        hf_fast_switch = SwitchButton()
+        hf_fast_switch.setChecked(True)
+        hf_fast_card = SettingCard(
+            FluentIcon.SPEED_HIGH,
+            "Use Fast Tokenizer",
+            "Use Rust-based fast tokenizer when available",
+            hf_widget,
+        )
+        hf_fast_card.hBoxLayout.addWidget(hf_fast_switch)
+        hf_layout.addWidget(hf_fast_card)
+
+        hf_layout.addStretch(1)
+        self._provider_stack.addWidget(hf_widget)
+
+        # Page 4: Google USE Configuration
+        use_widget = QWidget()
+        use_layout = VBoxLayout(use_widget)
+        use_layout.setContentsMargins(0, 0, 0, 0)
+        use_layout.setSpacing(8)
+
+        use_version_combo = ComboBox()
+        use_version_combo.addItems(
+            [
+                "universal-sentence-encoder",
+                "universal-sentence-encoder-large",
+                "universal-sentence-encoder-multilingual",
+            ]
+        )
+        use_version_card = SettingCard(
+            FluentIcon.BOOK_SHELF,
+            "Model Version",
+            "Google Universal Sentence Encoder version",
+            use_widget,
+        )
+        use_version_card.hBoxLayout.addWidget(use_version_combo)
+        use_layout.addWidget(use_version_card)
+
+        use_cache_edit = LineEdit()
+        use_cache_edit.setPlaceholderText("~/.tfhub_cache")
+        use_cache_card = SettingCard(
+            FluentIcon.FOLDER,
+            "Cache Directory",
+            "Directory for caching downloaded models",
+            use_widget,
+        )
+        use_cache_card.hBoxLayout.addWidget(use_cache_edit)
+        use_layout.addWidget(use_cache_card)
+
+        use_layout.addStretch(1)
+        self._provider_stack.addWidget(use_widget)
 
     def _setup_connections(self) -> None:
         """Set up signal/slot connections."""

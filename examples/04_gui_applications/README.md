@@ -16,9 +16,9 @@ How to integrate PDF Vector System into your own GUI applications.
 
 Programmatic control of GUI components for testing and automation.
 
-### `advanced_gui_features.py`
+### `gui_features.py`
 
-Advanced GUI features including drag-and-drop, progress monitoring, and real-time updates.
+GUI features including drag-and-drop, progress monitoring, and real-time updates.
 
 ### `gui_configuration.py`
 
@@ -38,7 +38,7 @@ Directory containing example GUI plugins and extensions.
 - Document management
 - Configuration settings
 
-### Advanced Features
+### Additional Features
 
 - Batch processing with progress tracking
 - Real-time search results

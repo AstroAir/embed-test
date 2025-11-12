@@ -10,7 +10,7 @@ from typing import Any, Optional
 
 from PySide6.QtCore import QObject, Signal
 
-from pdf_vector_system.config.settings import Config
+from pdf_vector_system.core.config.settings import Config
 from pdf_vector_system.gui.utils.validators import ConfigValidator
 
 
@@ -21,6 +21,7 @@ class ConfigController(QObject):
     config_updated = Signal(object)  # new_config
     config_saved = Signal(str)  # file_path
     config_loaded = Signal(object)  # loaded_config
+    config_error = Signal(str)  # error_message (for ConfigWidget compatibility)
     validation_error = Signal(str)  # error_message
     operation_error = Signal(str)  # error_message
     status_message = Signal(str)  # status_message
@@ -262,6 +263,42 @@ class ConfigController(QObject):
 
         except Exception as e:
             self.operation_error.emit(f"Failed to load configuration: {e!s}")
+            return False
+
+    def save_config(self, config: Config) -> bool:
+        """
+        Save configuration (compatibility method for ConfigWidget).
+
+        This method updates the current configuration without saving to file.
+        For file-based saving, use save_to_file().
+
+        Args:
+            config: Configuration object to save
+
+        Returns:
+            True if save was successful
+        """
+        try:
+            # Validate the config
+            is_valid, errors = ConfigValidator.validate_config(config)
+
+            if not is_valid:
+                error_msg = f"Configuration validation failed: {'; '.join(errors)}"
+                self.validation_error.emit(error_msg)
+                self.config_error.emit(error_msg)
+                return False
+
+            # Update current config
+            self.config = config
+            self.config_updated.emit(self.config)
+            self.status_message.emit("Configuration updated successfully")
+
+            return True
+
+        except Exception as e:
+            error_msg = f"Failed to save configuration: {e!s}"
+            self.operation_error.emit(error_msg)
+            self.config_error.emit(error_msg)
             return False
 
     def get_current_config(self) -> Config:

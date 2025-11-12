@@ -6,21 +6,21 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.config.settings import (
+from pdf_vector_system.core.config.settings import (
     ChromaDBConfig,
     Config,
     EmbeddingConfig,
     PDFConfig,
     TextProcessingConfig,
 )
-from pdf_vector_system.pipeline import PDFVectorPipeline
-from pdf_vector_system.vector_db.models import SearchQuery
+from pdf_vector_system.core.pipeline import PDFVectorPipeline
+from pdf_vector_system.core.vector_db.models import SearchQuery
 from tests.mocks.chromadb_mocks import MockChromaDBClient
 from tests.mocks.embedding_mocks import MockEmbeddingService
 from tests.mocks.pdf_mocks import create_mock_pdf_document
 
 
-@pytest.mark.integration()
+@pytest.mark.integration
 class TestPDFToVectorIntegration:
     """Test integration from PDF processing to vector storage."""
 
@@ -169,7 +169,7 @@ class TestPDFToVectorIntegration:
                     )
 
 
-@pytest.mark.integration()
+@pytest.mark.integration
 class TestConfigurationIntegration:
     """Test configuration integration across components."""
 
@@ -227,7 +227,7 @@ class TestConfigurationIntegration:
         assert config.embedding.openai_api_key == "test-api-key"
 
 
-@pytest.mark.integration()
+@pytest.mark.integration
 class TestErrorHandlingIntegration:
     """Test error handling integration across components."""
 
@@ -311,7 +311,7 @@ class TestErrorHandlingIntegration:
                     assert result.chunks_created == 0
 
 
-@pytest.mark.integration()
+@pytest.mark.integration
 class TestPerformanceIntegration:
     """Test performance characteristics of integrated components."""
 
@@ -429,7 +429,7 @@ class TestPerformanceIntegration:
                     assert len(set(document_ids)) == 3  # All unique
 
 
-@pytest.mark.integration()
+@pytest.mark.integration
 class TestHealthCheckIntegration:
     """Test health check integration across all components."""
 

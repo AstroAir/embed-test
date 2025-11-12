@@ -1,12 +1,12 @@
 # Vector Database Examples
 
-This directory contains advanced examples for vector database operations and search patterns.
+This directory contains examples for vector database operations and search patterns.
 
 ## Examples
 
-### `advanced_search_patterns.py`
+### `search_patterns.py`
 
-Sophisticated search techniques including semantic search, filtering, and ranking.
+Search techniques including semantic search, filtering, and ranking.
 
 ### `collection_management.py`
 
@@ -14,7 +14,7 @@ Creating, managing, and optimizing ChromaDB collections.
 
 ### `metadata_filtering.py`
 
-Advanced metadata-based filtering and search refinement.
+Metadata-based filtering and search refinement.
 
 ### `similarity_analysis.py`
 
@@ -40,7 +40,7 @@ Using custom distance metrics and similarity functions.
 - Embedding-based search
 - Hybrid search approaches
 
-### Advanced Filtering
+### Filtering Techniques
 
 - Metadata-based filtering
 - Date range filtering
@@ -70,7 +70,7 @@ Using custom distance metrics and similarity functions.
 
 ## What You'll Learn
 
-- Advanced ChromaDB operations
+- ChromaDB operations
 - Search optimization techniques
 - Metadata management strategies
 - Performance tuning approaches

@@ -17,7 +17,7 @@ except ImportError:
 
 __author__ = "The Augster"
 
-from pdf_vector_system.config import Config
-from pdf_vector_system.pipeline import PDFVectorPipeline
+from pdf_vector_system.core.config import Config
+from pdf_vector_system.core.pipeline import PDFVectorPipeline
 
 __all__ = ["Config", "PDFVectorPipeline"]

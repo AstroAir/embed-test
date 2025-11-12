@@ -212,3 +212,5 @@ chroma_db/
 reports/
 ruff_issues.json
 test_summary.txt
+
+llmdoc/

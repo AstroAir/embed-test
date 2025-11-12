@@ -12,9 +12,9 @@ Demonstrates all basic CLI commands with example usage.
 
 Shows how to process multiple PDFs efficiently using CLI commands.
 
-### `advanced_search_cli.py`
+### `search_cli.py`
 
-Advanced search patterns and filtering using the CLI.
+Search patterns and filtering using the CLI.
 
 ### `collection_management_cli.py`
 
@@ -49,7 +49,7 @@ pdf-vector process document.pdf --model all-mpnet-base-v2 --batch-size 32
 # Basic search
 pdf-vector search "machine learning"
 
-# Advanced search with filters
+# Search with filters
 pdf-vector search "AI" --document doc1 --page 5 --results 10
 ```
 

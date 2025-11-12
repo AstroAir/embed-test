@@ -8,9 +8,9 @@ It can be used as a script or imported to start the GUI programmatically.
 import sys
 from pathlib import Path
 
-from pdf_vector_system.config.settings import Config
+from pdf_vector_system.core.config.settings import Config
+from pdf_vector_system.core.utils.logging import setup_logging
 from pdf_vector_system.gui.app import PDFVectorGUIApp
-from pdf_vector_system.utils.logging import setup_logging
 
 # Add the project root to Python path if needed
 project_root = Path(__file__).parent.parent

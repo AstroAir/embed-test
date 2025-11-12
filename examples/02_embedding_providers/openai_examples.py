@@ -34,14 +34,15 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
 
-from pdf_vector_system import Config, PDFVectorPipeline
-from pdf_vector_system.config.settings import EmbeddingModelType
 from utils.example_helpers import (
     check_api_key,
     example_context,
     print_section,
     print_subsection,
 )
+
+from pdf_vector_system import Config, PDFVectorPipeline
+from pdf_vector_system.config.settings import EmbeddingModelType
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))

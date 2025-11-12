@@ -37,9 +37,10 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
+from utils.example_helpers import example_context, print_section, print_subsection
+
 from pdf_vector_system import Config
 from pdf_vector_system.config.settings import EmbeddingModelType, LogLevel
-from utils.example_helpers import example_context, print_section, print_subsection
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))

@@ -24,7 +24,7 @@ from qfluentwidgets import (
     VBoxLayout,
 )
 
-from pdf_vector_system.config.settings import Config
+from pdf_vector_system.core.config.settings import Config
 
 
 class SettingsDialog(QDialog):
