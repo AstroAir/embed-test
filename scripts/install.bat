@@ -1,10 +1,10 @@
 @echo off
-REM PDF Vector System Installation Script for Windows
+REM VectorFlow Installation Script for Windows
 
 setlocal enabledelayedexpansion
 
-echo PDF Vector System Installation Script
-echo =====================================
+echo VectorFlow Installation Script
+echo ==============================
 echo.
 
 REM Check if Python is installed
@@ -48,13 +48,13 @@ if %errorlevel% equ 0 (
     )
 )
 
-REM Install PDF Vector System
-echo [INFO] Installing PDF Vector System...
+REM Install VectorFlow
+echo [INFO] Installing VectorFlow...
 if "!USE_UV!"=="true" (
-    uv pip install pdf-vector-system
+    uv pip install vectorflow
     if %errorlevel% neq 0 (
         echo [ERROR] Installation failed with UV, trying pip...
-        pip install pdf-vector-system
+        pip install vectorflow
         if %errorlevel% neq 0 (
             echo [ERROR] Installation failed
             pause
@@ -62,18 +62,18 @@ if "!USE_UV!"=="true" (
         )
     )
 ) else (
-    pip install pdf-vector-system
+    pip install vectorflow
     if %errorlevel% neq 0 (
         echo [ERROR] Installation failed
         pause
         exit /b 1
     )
 )
-echo [SUCCESS] PDF Vector System installed successfully
+echo [SUCCESS] VectorFlow installed successfully
 
 REM Verify installation
 echo [INFO] Verifying installation...
-pdf-vector --version >nul 2>&1
+vectorflow --version >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] CLI command not found
     pause
@@ -81,7 +81,7 @@ if %errorlevel% neq 0 (
 )
 echo [SUCCESS] CLI command available
 
-python -c "import pdf_vector_system; print(f'Version: {pdf_vector_system.__version__}')" >nul 2>&1
+python -c "import vectorflow; print(f'Version: {vectorflow.__version__}')" >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] Python package import failed
     pause
@@ -93,8 +93,8 @@ echo.
 echo [SUCCESS] Installation completed successfully!
 echo.
 echo Next steps:
-echo   1. Run 'pdf-vector --help' to see available commands
-echo   2. Check the documentation at: https://your-username.github.io/pdf-vector-system/
-echo   3. Try the quick start guide: https://your-username.github.io/pdf-vector-system/getting-started/quickstart/
+echo   1. Run 'vectorflow --help' to see available commands
+echo   2. Check the documentation at: https://your-username.github.io/vectorflow/
+echo   3. Try the quick start guide: https://your-username.github.io/vectorflow/getting-started/quickstart/
 echo.
 pause

@@ -6,9 +6,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.config.settings import PDFConfig
-from pdf_vector_system.core.pdf.processor import PDFProcessingError, PDFProcessor
 from tests.mocks.pdf_mocks import create_mock_pdf_document
+from vectorflow.core.config.settings import PDFConfig
+from vectorflow.core.pdf.processor import PDFProcessingError, PDFProcessor
 
 
 class TestPDFProcessor:
@@ -32,7 +32,7 @@ class TestPDFProcessor:
         assert processor.config.timeout_seconds == 300
         assert processor.config.extract_images is False
 
-    @patch("pdf_vector_system.pdf.processor.fitz.open")
+    @patch("vectorflow.pdf.processor.fitz.open")
     def test_extract_text_success(self, mock_fitz_open, temp_dir):
         """Test successful text extraction."""
         # Create a test PDF file
@@ -108,7 +108,7 @@ class TestPDFProcessor:
             ):
                 processor.extract_text(pdf_path)
 
-    @patch("pdf_vector_system.pdf.processor.fitz.open")
+    @patch("vectorflow.pdf.processor.fitz.open")
     def test_extract_text_fitz_error(self, mock_fitz_open, temp_dir):
         """Test text extraction with PyMuPDF error."""
         pdf_path = temp_dir / "test.pdf"
@@ -123,7 +123,7 @@ class TestPDFProcessor:
         with pytest.raises(PDFProcessingError, match="Error extracting text"):
             processor.extract_text(pdf_path)
 
-    @patch("pdf_vector_system.pdf.processor.fitz.open")
+    @patch("vectorflow.pdf.processor.fitz.open")
     def test_get_pdf_info_success(self, mock_fitz_open, temp_dir):
         """Test successful PDF info extraction."""
         pdf_path = temp_dir / "test.pdf"
@@ -146,7 +146,7 @@ class TestPDFProcessor:
         mock_fitz_open.assert_called_once_with(pdf_path)
         mock_doc.close.assert_called_once()
 
-    @patch("pdf_vector_system.pdf.processor.fitz.open")
+    @patch("vectorflow.pdf.processor.fitz.open")
     def test_get_pdf_info_error(self, mock_fitz_open, temp_dir):
         """Test PDF info extraction with error."""
         pdf_path = temp_dir / "test.pdf"
@@ -297,7 +297,7 @@ class TestPDFProcessor:
         assert processor._clean_extracted_text("") == ""
         assert processor._clean_extracted_text("   ") == ""
 
-    @patch("pdf_vector_system.pdf.processor.fitz.open")
+    @patch("vectorflow.pdf.processor.fitz.open")
     def test_extract_text_with_performance_timing(self, mock_fitz_open, temp_dir):
         """Test that text extraction includes performance timing."""
         pdf_path = temp_dir / "test.pdf"
@@ -327,7 +327,7 @@ class TestPDFProcessor:
 
         # Test with string path
         with patch.object(processor, "_validate_pdf_file") as mock_validate:
-            with patch("pdf_vector_system.pdf.processor.fitz.open") as mock_fitz:
+            with patch("vectorflow.pdf.processor.fitz.open") as mock_fitz:
                 mock_doc = create_mock_pdf_document()
                 mock_fitz.return_value = mock_doc
 
@@ -343,7 +343,7 @@ class TestPDFProcessor:
 class TestPDFProcessorComprehensive:
     """Comprehensive tests for PDFProcessor to achieve 80%+ coverage."""
 
-    @patch("pdf_vector_system.pdf.processor.fitz.open")
+    @patch("vectorflow.pdf.processor.fitz.open")
     def test_extract_text_simple(self, mock_fitz_open, temp_dir):
         """Test extract_text_simple method."""
         pdf_path = temp_dir / "test.pdf"
@@ -365,7 +365,7 @@ class TestPDFProcessorComprehensive:
         assert "Page 3" in text
         assert "\n\n" in text  # Pages should be separated by double newlines
 
-    @patch("pdf_vector_system.pdf.processor.fitz.open")
+    @patch("vectorflow.pdf.processor.fitz.open")
     def test_extract_text_fitz_file_data_error(self, mock_fitz_open, temp_dir):
         """Test extract_text with corrupted PDF (FileDataError)."""
         pdf_path = temp_dir / "corrupted.pdf"
@@ -381,7 +381,7 @@ class TestPDFProcessorComprehensive:
         with pytest.raises(PDFProcessingError, match="Invalid or corrupted PDF"):
             processor.extract_text(pdf_path)
 
-    @patch("pdf_vector_system.pdf.processor.fitz.open")
+    @patch("vectorflow.pdf.processor.fitz.open")
     def test_extract_text_fitz_file_not_found_error(self, mock_fitz_open, temp_dir):
         """Test extract_text with FileNotFoundError from fitz."""
         pdf_path = temp_dir / "test.pdf"
@@ -433,7 +433,7 @@ class TestPDFProcessorComprehensive:
         # Should log warning but not raise exception for .pdf files
         processor._validate_pdf_file(pdf_path)  # Should pass with warning
 
-    @patch("pdf_vector_system.pdf.processor.fitz.open")
+    @patch("vectorflow.pdf.processor.fitz.open")
     def test_extract_metadata_with_pdf_version(self, mock_fitz_open, temp_dir):
         """Test metadata extraction includes PDF version."""
         pdf_path = temp_dir / "test.pdf"
@@ -495,7 +495,7 @@ class TestPDFProcessorComprehensive:
         assert "subject" not in metadata
         assert "keywords" not in metadata
 
-    @patch("pdf_vector_system.pdf.processor.fitz.open")
+    @patch("vectorflow.pdf.processor.fitz.open")
     def test_get_pdf_info_encrypted(self, mock_fitz_open, temp_dir):
         """Test get_pdf_info with encrypted PDF."""
         pdf_path = temp_dir / "encrypted.pdf"
@@ -580,7 +580,7 @@ class TestPDFProcessorComprehensive:
             if line:  # Non-empty string
                 assert line.strip() != ""
 
-    @patch("pdf_vector_system.pdf.processor.fitz.open")
+    @patch("vectorflow.pdf.processor.fitz.open")
     def test_extract_text_includes_file_size(self, mock_fitz_open, temp_dir):
         """Test extract_text includes file size in bytes."""
         pdf_path = temp_dir / "test.pdf"
@@ -596,7 +596,7 @@ class TestPDFProcessorComprehensive:
         assert "file_size_bytes" in result
         assert result["file_size_bytes"] > 0
 
-    @patch("pdf_vector_system.pdf.processor.fitz.open")
+    @patch("vectorflow.pdf.processor.fitz.open")
     def test_extract_text_calculates_total_characters(self, mock_fitz_open, temp_dir):
         """Test extract_text correctly calculates total characters."""
         pdf_path = temp_dir / "test.pdf"
@@ -678,7 +678,7 @@ class TestPDFProcessorComprehensive:
         ):
             processor._validate_pdf_file(pdf_path)
 
-    @patch("pdf_vector_system.pdf.processor.fitz.open")
+    @patch("vectorflow.pdf.processor.fitz.open")
     def test_extract_text_page_count_consistency(self, mock_fitz_open, temp_dir):
         """Test that page_count matches number of text_content entries."""
         pdf_path = temp_dir / "test.pdf"

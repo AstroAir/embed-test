@@ -38,8 +38,8 @@ from utils.example_helpers import (
     print_subsection,
 )
 
-from pdf_vector_system import Config
-from pdf_vector_system.config.settings import (
+from vectorflow import Config
+from vectorflow.config.settings import (
     EmbeddingConfig,
     EmbeddingModelType,
     LogLevel,

@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.widgets.log_widget import LogWidget
+from vectorflow.gui.widgets.log_widget import LogWidget
 
 
 class TestLogWidget:

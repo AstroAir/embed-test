@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.vector_db.models import (
+from vectorflow.core.vector_db.models import (
     CollectionInfo,
     DocumentChunk,
     DocumentNotFoundError,
@@ -12,7 +12,7 @@ from pdf_vector_system.core.vector_db.models import (
     SearchResult,
     VectorDBError,
 )
-from pdf_vector_system.core.vector_db.qdrant_client import QdrantClient
+from vectorflow.core.vector_db.qdrant_client import QdrantClient
 
 
 class TestQdrantClient:
@@ -21,7 +21,7 @@ class TestQdrantClient:
     def test_initialization(self, qdrant_config_test):
         """Test QdrantClient initialization."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client_class.return_value = mock_client
@@ -34,7 +34,7 @@ class TestQdrantClient:
     def test_lazy_client_initialization(self, qdrant_config_test):
         """Test lazy client initialization."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client_class.return_value = mock_client
@@ -50,7 +50,7 @@ class TestQdrantClient:
     def test_create_collection_success(self, qdrant_config_test):
         """Test successful collection creation."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.create_collection.return_value = None
@@ -68,7 +68,7 @@ class TestQdrantClient:
     def test_create_collection_with_distance_metric(self, qdrant_config_test):
         """Test collection creation with custom distance metric."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.create_collection.return_value = None
@@ -86,7 +86,7 @@ class TestQdrantClient:
     def test_delete_collection_success(self, qdrant_config_test):
         """Test successful collection deletion."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.delete_collection.return_value = None
@@ -101,7 +101,7 @@ class TestQdrantClient:
     def test_list_collections(self, qdrant_config_test):
         """Test listing collections."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collections = [
@@ -120,7 +120,7 @@ class TestQdrantClient:
     def test_collection_exists_true(self, qdrant_config_test):
         """Test collection_exists returns True for existing collection."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collections = [
@@ -138,7 +138,7 @@ class TestQdrantClient:
     def test_collection_exists_false(self, qdrant_config_test):
         """Test collection_exists returns False for non-existing collection."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collections = [Mock(name="other_collection")]
@@ -153,7 +153,7 @@ class TestQdrantClient:
     def test_add_chunks_success(self, qdrant_config_test, sample_document_chunks):
         """Test successful chunk addition."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.upsert.return_value = Mock(status="completed")
@@ -173,7 +173,7 @@ class TestQdrantClient:
     ):
         """Test chunk addition with custom collection name."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.upsert.return_value = Mock(status="completed")
@@ -190,7 +190,7 @@ class TestQdrantClient:
     def test_search_success(self, qdrant_config_test, sample_search_query):
         """Test successful search operation."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_search_results = [
@@ -226,7 +226,7 @@ class TestQdrantClient:
         )
 
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.search.return_value = []
@@ -244,7 +244,7 @@ class TestQdrantClient:
     ):
         """Test search without providing query embedding."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client_class.return_value = mock_client
@@ -257,7 +257,7 @@ class TestQdrantClient:
     def test_delete_chunks_success(self, qdrant_config_test):
         """Test successful chunk deletion."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.delete.return_value = None
@@ -275,7 +275,7 @@ class TestQdrantClient:
     def test_get_chunk_success(self, qdrant_config_test):
         """Test successful chunk retrieval."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.retrieve.return_value = [
@@ -298,7 +298,7 @@ class TestQdrantClient:
     def test_get_chunk_not_found(self, qdrant_config_test):
         """Test chunk retrieval when chunk not found."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.retrieve.return_value = []
@@ -312,7 +312,7 @@ class TestQdrantClient:
     def test_update_chunk_success(self, qdrant_config_test, sample_document_chunks):
         """Test successful chunk update."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.upsert.return_value = Mock(status="completed")
@@ -330,7 +330,7 @@ class TestQdrantClient:
     def test_get_collection_info(self, qdrant_config_test):
         """Test getting collection information."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.get_collection_info.return_value = Mock(
@@ -347,7 +347,7 @@ class TestQdrantClient:
 
     def test_get_document_info_not_supported(self, qdrant_config_test):
         """Test that get_document_info raises NotImplementedError."""
-        with patch("pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"):
+        with patch("vectorflow.vector_db.qdrant_client.QdrantClientLib"):
             client = QdrantClient(qdrant_config_test)
 
             with pytest.raises(NotImplementedError):
@@ -356,7 +356,7 @@ class TestQdrantClient:
     def test_health_check_success(self, qdrant_config_test):
         """Test successful health check."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.get_collections.return_value.collections = []
@@ -370,7 +370,7 @@ class TestQdrantClient:
     def test_health_check_failure(self, qdrant_config_test):
         """Test health check failure."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.get_collections.side_effect = Exception("Connection error")
@@ -388,7 +388,7 @@ class TestQdrantClientErrorHandling:
     def test_connection_error(self, qdrant_config_test):
         """Test connection error handling."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client_class.side_effect = Exception("Connection failed")
 
@@ -400,7 +400,7 @@ class TestQdrantClientErrorHandling:
     def test_collection_not_found_error(self, qdrant_config_test):
         """Test collection not found error handling."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.get_collection_info.side_effect = Exception(
@@ -416,7 +416,7 @@ class TestQdrantClientErrorHandling:
     def test_upsert_error(self, qdrant_config_test, sample_document_chunks):
         """Test upsert operation error handling."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.upsert.side_effect = Exception("Upsert failed")
@@ -436,7 +436,7 @@ class TestQdrantClientIntegration:
     ):
         """Test end-to-end workflow with mocked Qdrant."""
         with patch(
-            "pdf_vector_system.vector_db.qdrant_client.QdrantClientLib"
+            "vectorflow.vector_db.qdrant_client.QdrantClientLib"
         ) as mock_client_class:
             mock_client = Mock()
 

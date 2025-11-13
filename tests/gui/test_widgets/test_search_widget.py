@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.widgets.search_widget import SearchWidget
+from vectorflow.gui.widgets.search_widget import SearchWidget
 
 
 class TestSearchWidget:

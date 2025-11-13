@@ -4,9 +4,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.embeddings.base import EmbeddingResult
-from pdf_vector_system.core.embeddings.openai_service import OpenAIEmbeddingService
 from tests.mocks.embedding_mocks import MockOpenAIService
+from vectorflow.core.embeddings.base import EmbeddingResult
+from vectorflow.core.embeddings.openai_service import OpenAIEmbeddingService
 
 
 class TestOpenAIEmbeddingService:
@@ -216,7 +216,7 @@ class TestOpenAIEmbeddingService:
         for model in expected_models:
             assert model in OpenAIEmbeddingService.MODEL_CONFIGS
 
-    @patch("pdf_vector_system.embeddings.openai_service.OpenAI")
+    @patch("vectorflow.embeddings.openai_service.OpenAI")
     def test_real_service_initialization(self, mock_openai_class):
         """Test real service initialization with mocked OpenAI client."""
         mock_client = Mock()

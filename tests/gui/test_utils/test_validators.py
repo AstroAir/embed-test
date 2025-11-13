@@ -4,7 +4,7 @@ import pytest
 from PySide6.QtWidgets import QLineEdit
 
 # Import validator classes (these would need to be implemented)
-# from pdf_vector_system.gui.utils.validators import (
+# from vectorflow.gui.utils.validators import (
 #     ConfigValidator, FilePathValidator, NumberRangeValidator,
 #     EmailValidator, URLValidator
 # )

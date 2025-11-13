@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.controllers.status_controller import StatusController
+from vectorflow.gui.controllers.status_controller import StatusController
 
 
 class TestStatusController:

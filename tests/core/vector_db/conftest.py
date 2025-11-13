@@ -9,21 +9,21 @@ from unittest.mock import Mock
 
 import pytest
 
-from pdf_vector_system.core.vector_db.config import (
+from tests.mocks.chromadb_mocks import MockChromaDBClient, MockCollection
+from vectorflow.core.vector_db.config import (
     ChromaDBConfig,
     MilvusConfig,
     PineconeConfig,
     QdrantConfig,
     WeaviateConfig,
 )
-from pdf_vector_system.core.vector_db.models import (
+from vectorflow.core.vector_db.models import (
     CollectionInfo,
     DocumentChunk,
     DocumentInfo,
     SearchQuery,
     SearchResult,
 )
-from tests.mocks.chromadb_mocks import MockChromaDBClient, MockCollection
 
 
 @pytest.fixture
@@ -385,7 +385,7 @@ def mock_milvus_client():
 @pytest.fixture
 def mock_connection_error():
     """Create a mock connection error for testing."""
-    from pdf_vector_system.core.vector_db.models import ConnectionError
+    from vectorflow.core.vector_db.models import ConnectionError
 
     return ConnectionError("Failed to connect to vector database")
 
@@ -393,7 +393,7 @@ def mock_connection_error():
 @pytest.fixture
 def mock_authentication_error():
     """Create a mock authentication error for testing."""
-    from pdf_vector_system.core.vector_db.models import AuthenticationError
+    from vectorflow.core.vector_db.models import AuthenticationError
 
     return AuthenticationError("Invalid API key or credentials")
 
@@ -401,7 +401,7 @@ def mock_authentication_error():
 @pytest.fixture
 def mock_configuration_error():
     """Create a mock configuration error for testing."""
-    from pdf_vector_system.core.vector_db.models import ConfigurationError
+    from vectorflow.core.vector_db.models import ConfigurationError
 
     return ConfigurationError("Invalid configuration parameters")
 
@@ -409,7 +409,7 @@ def mock_configuration_error():
 @pytest.fixture
 def mock_quota_exceeded_error():
     """Create a mock quota exceeded error for testing."""
-    from pdf_vector_system.core.vector_db.models import QuotaExceededError
+    from vectorflow.core.vector_db.models import QuotaExceededError
 
     return QuotaExceededError("API quota exceeded")
 
@@ -476,7 +476,7 @@ def mock_backend_unavailable():
     """Mock backend unavailable scenario."""
 
     def side_effect(*_args, **_kwargs):
-        from pdf_vector_system.core.vector_db.models import BackendNotAvailableError
+        from vectorflow.core.vector_db.models import BackendNotAvailableError
 
         raise BackendNotAvailableError("Backend service is unavailable")
 
@@ -499,7 +499,7 @@ def mock_import_error():
 @pytest.fixture
 def performance_timer():
     """Create a performance timer for testing."""
-    from pdf_vector_system.core.utils.progress import PerformanceTimer
+    from vectorflow.core.utils.progress import PerformanceTimer
 
     return PerformanceTimer()
 

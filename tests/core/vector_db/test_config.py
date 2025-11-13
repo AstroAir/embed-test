@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from pdf_vector_system.core.vector_db.config import (
+from vectorflow.core.vector_db.config import (
     ChromaDBConfig,
     MilvusConfig,
     PineconeConfig,

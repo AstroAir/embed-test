@@ -4,13 +4,13 @@ from unittest.mock import Mock
 
 import pytest
 
-from pdf_vector_system.core.config.settings import EmbeddingConfig, EmbeddingModelType
-from pdf_vector_system.core.embeddings.base import EmbeddingBatch, EmbeddingResult
 from tests.mocks.embedding_mocks import (
     MockEmbeddingService,
     MockOpenAIService,
     MockSentenceTransformersService,
 )
+from vectorflow.core.config.settings import EmbeddingConfig, EmbeddingModelType
+from vectorflow.core.embeddings.base import EmbeddingBatch, EmbeddingResult
 
 
 @pytest.fixture
@@ -108,7 +108,7 @@ def sample_embeddings_384d() -> list[list[float]]:
 @pytest.fixture
 def mock_retry_config():
     """Create a mock retry configuration."""
-    from pdf_vector_system.core.embeddings.retry import RetryConfig
+    from vectorflow.core.embeddings.retry import RetryConfig
 
     return RetryConfig(
         max_retries=3,

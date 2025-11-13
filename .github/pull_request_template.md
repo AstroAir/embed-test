@@ -70,10 +70,10 @@ pytest tests/
 
 ```bash
 # Commands used for quality checks
-ruff check pdf_vector_system tests
-ruff format --check pdf_vector_system tests
-mypy pdf_vector_system
-bandit -r pdf_vector_system
+ruff check vectorflow tests
+ruff format --check vectorflow tests
+mypy vectorflow
+bandit -r vectorflow
 ```
 
 ## Documentation

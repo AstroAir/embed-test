@@ -6,16 +6,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.pipeline import (
-    PDFVectorPipeline,
-    PipelineError,
-    ProcessingResult,
-)
-from pdf_vector_system.core.vector_db.models import (
-    DocumentChunk,
-    SearchQuery,
-    SearchResult,
-)
+from vectorflow.core.pipeline import PDFVectorPipeline, PipelineError, ProcessingResult
+from vectorflow.core.vector_db.models import DocumentChunk, SearchQuery, SearchResult
 
 
 class TestProcessingResult:
@@ -100,10 +92,10 @@ class TestPDFVectorPipeline:
 
     def test_initialization(self, test_config):
         """Test pipeline initialization."""
-        with patch("pdf_vector_system.pipeline.PDFProcessor"):
-            with patch("pdf_vector_system.pipeline.TextProcessor"):
-                with patch("pdf_vector_system.pipeline.EmbeddingServiceFactory"):
-                    with patch("pdf_vector_system.pipeline.ChromaDBClient"):
+        with patch("vectorflow.pipeline.PDFProcessor"):
+            with patch("vectorflow.pipeline.TextProcessor"):
+                with patch("vectorflow.pipeline.EmbeddingServiceFactory"):
+                    with patch("vectorflow.pipeline.ChromaDBClient"):
                         pipeline = PDFVectorPipeline(test_config)
 
                         assert pipeline.config == test_config
@@ -158,13 +150,13 @@ class TestPDFVectorPipeline:
             ),
         ]
 
-        with patch("pdf_vector_system.pipeline.PDFProcessor") as mock_pdf_class:
-            with patch("pdf_vector_system.pipeline.TextProcessor") as mock_text_class:
+        with patch("vectorflow.pipeline.PDFProcessor") as mock_pdf_class:
+            with patch("vectorflow.pipeline.TextProcessor") as mock_text_class:
                 with patch(
-                    "pdf_vector_system.pipeline.EmbeddingServiceFactory"
+                    "vectorflow.pipeline.EmbeddingServiceFactory"
                 ) as mock_factory:
                     with patch(
-                        "pdf_vector_system.pipeline.ChromaDBClient"
+                        "vectorflow.pipeline.ChromaDBClient"
                     ) as mock_chroma_class:
                         # Set up mocks
                         mock_pdf_processor = Mock()
@@ -220,10 +212,10 @@ class TestPDFVectorPipeline:
 
     def test_process_pdf_file_not_found(self, test_config):
         """Test PDF processing with non-existent file."""
-        with patch("pdf_vector_system.pipeline.PDFProcessor"):
-            with patch("pdf_vector_system.pipeline.TextProcessor"):
-                with patch("pdf_vector_system.pipeline.EmbeddingServiceFactory"):
-                    with patch("pdf_vector_system.pipeline.ChromaDBClient"):
+        with patch("vectorflow.pipeline.PDFProcessor"):
+            with patch("vectorflow.pipeline.TextProcessor"):
+                with patch("vectorflow.pipeline.EmbeddingServiceFactory"):
+                    with patch("vectorflow.pipeline.ChromaDBClient"):
                         pipeline = PDFVectorPipeline(test_config)
 
                         non_existent_path = Path("non_existent.pdf")
@@ -238,10 +230,10 @@ class TestPDFVectorPipeline:
         pdf_path = temp_dir / "test.pdf"
         pdf_path.write_text("Mock PDF content")
 
-        with patch("pdf_vector_system.pipeline.PDFProcessor") as mock_pdf_class:
-            with patch("pdf_vector_system.pipeline.TextProcessor"):
-                with patch("pdf_vector_system.pipeline.EmbeddingServiceFactory"):
-                    with patch("pdf_vector_system.pipeline.ChromaDBClient"):
+        with patch("vectorflow.pipeline.PDFProcessor") as mock_pdf_class:
+            with patch("vectorflow.pipeline.TextProcessor"):
+                with patch("vectorflow.pipeline.EmbeddingServiceFactory"):
+                    with patch("vectorflow.pipeline.ChromaDBClient"):
                         # Mock PDF processor to raise error
                         mock_pdf_processor = Mock()
                         mock_pdf_processor.extract_text.side_effect = Exception(
@@ -275,11 +267,11 @@ class TestPDFVectorPipeline:
             ),
         ]
 
-        with patch("pdf_vector_system.pipeline.PDFProcessor"):
-            with patch("pdf_vector_system.pipeline.TextProcessor"):
-                with patch("pdf_vector_system.pipeline.EmbeddingServiceFactory"):
+        with patch("vectorflow.pipeline.PDFProcessor"):
+            with patch("vectorflow.pipeline.TextProcessor"):
+                with patch("vectorflow.pipeline.EmbeddingServiceFactory"):
                     with patch(
-                        "pdf_vector_system.pipeline.ChromaDBClient"
+                        "vectorflow.pipeline.ChromaDBClient"
                     ) as mock_chroma_class:
                         mock_vector_db = Mock()
                         mock_vector_db.search_documents.return_value = (
@@ -301,11 +293,11 @@ class TestPDFVectorPipeline:
         """Test document search with error."""
         query = SearchQuery(query_text="test query")
 
-        with patch("pdf_vector_system.pipeline.PDFProcessor"):
-            with patch("pdf_vector_system.pipeline.TextProcessor"):
-                with patch("pdf_vector_system.pipeline.EmbeddingServiceFactory"):
+        with patch("vectorflow.pipeline.PDFProcessor"):
+            with patch("vectorflow.pipeline.TextProcessor"):
+                with patch("vectorflow.pipeline.EmbeddingServiceFactory"):
                     with patch(
-                        "pdf_vector_system.pipeline.ChromaDBClient"
+                        "vectorflow.pipeline.ChromaDBClient"
                     ) as mock_chroma_class:
                         mock_vector_db = Mock()
                         mock_vector_db.search_documents.side_effect = Exception(
@@ -322,11 +314,11 @@ class TestPDFVectorPipeline:
 
     def test_delete_document_success(self, test_config):
         """Test successful document deletion."""
-        with patch("pdf_vector_system.pipeline.PDFProcessor"):
-            with patch("pdf_vector_system.pipeline.TextProcessor"):
-                with patch("pdf_vector_system.pipeline.EmbeddingServiceFactory"):
+        with patch("vectorflow.pipeline.PDFProcessor"):
+            with patch("vectorflow.pipeline.TextProcessor"):
+                with patch("vectorflow.pipeline.EmbeddingServiceFactory"):
                     with patch(
-                        "pdf_vector_system.pipeline.ChromaDBClient"
+                        "vectorflow.pipeline.ChromaDBClient"
                     ) as mock_chroma_class:
                         mock_vector_db = Mock()
                         mock_vector_db.delete_documents_by_filter.return_value = True
@@ -342,11 +334,11 @@ class TestPDFVectorPipeline:
 
     def test_delete_document_error(self, test_config):
         """Test document deletion with error."""
-        with patch("pdf_vector_system.pipeline.PDFProcessor"):
-            with patch("pdf_vector_system.pipeline.TextProcessor"):
-                with patch("pdf_vector_system.pipeline.EmbeddingServiceFactory"):
+        with patch("vectorflow.pipeline.PDFProcessor"):
+            with patch("vectorflow.pipeline.TextProcessor"):
+                with patch("vectorflow.pipeline.EmbeddingServiceFactory"):
                     with patch(
-                        "pdf_vector_system.pipeline.ChromaDBClient"
+                        "vectorflow.pipeline.ChromaDBClient"
                     ) as mock_chroma_class:
                         mock_vector_db = Mock()
                         mock_vector_db.delete_documents_by_filter.side_effect = (
@@ -363,17 +355,17 @@ class TestPDFVectorPipeline:
 
     def test_get_document_info_success(self, test_config):
         """Test successful document info retrieval."""
-        from pdf_vector_system.core.vector_db.models import DocumentInfo
+        from vectorflow.core.vector_db.models import DocumentInfo
 
         mock_doc_info = DocumentInfo(
             document_id="doc_1", chunk_count=5, total_characters=1000, page_count=3
         )
 
-        with patch("pdf_vector_system.pipeline.PDFProcessor"):
-            with patch("pdf_vector_system.pipeline.TextProcessor"):
-                with patch("pdf_vector_system.pipeline.EmbeddingServiceFactory"):
+        with patch("vectorflow.pipeline.PDFProcessor"):
+            with patch("vectorflow.pipeline.TextProcessor"):
+                with patch("vectorflow.pipeline.EmbeddingServiceFactory"):
                     with patch(
-                        "pdf_vector_system.pipeline.ChromaDBClient"
+                        "vectorflow.pipeline.ChromaDBClient"
                     ) as mock_chroma_class:
                         mock_vector_db = Mock()
                         mock_vector_db.get_document_info.return_value = mock_doc_info
@@ -394,11 +386,11 @@ class TestPDFVectorPipeline:
             {"name": "collection_2", "metadata": {"type": "prod"}},
         ]
 
-        with patch("pdf_vector_system.pipeline.PDFProcessor"):
-            with patch("pdf_vector_system.pipeline.TextProcessor"):
-                with patch("pdf_vector_system.pipeline.EmbeddingServiceFactory"):
+        with patch("vectorflow.pipeline.PDFProcessor"):
+            with patch("vectorflow.pipeline.TextProcessor"):
+                with patch("vectorflow.pipeline.EmbeddingServiceFactory"):
                     with patch(
-                        "pdf_vector_system.pipeline.ChromaDBClient"
+                        "vectorflow.pipeline.ChromaDBClient"
                     ) as mock_chroma_class:
                         mock_vector_db = Mock()
                         mock_vector_db.list_collections.return_value = mock_collections
@@ -412,13 +404,13 @@ class TestPDFVectorPipeline:
 
     def test_health_check_success(self, test_config):
         """Test successful health check."""
-        with patch("pdf_vector_system.pipeline.PDFProcessor"):
-            with patch("pdf_vector_system.pipeline.TextProcessor"):
+        with patch("vectorflow.pipeline.PDFProcessor"):
+            with patch("vectorflow.pipeline.TextProcessor"):
                 with patch(
-                    "pdf_vector_system.pipeline.EmbeddingServiceFactory"
+                    "vectorflow.pipeline.EmbeddingServiceFactory"
                 ) as mock_factory:
                     with patch(
-                        "pdf_vector_system.pipeline.ChromaDBClient"
+                        "vectorflow.pipeline.ChromaDBClient"
                     ) as mock_chroma_class:
                         mock_embedding_service = Mock()
                         mock_embedding_service.health_check.return_value = True
@@ -439,13 +431,13 @@ class TestPDFVectorPipeline:
 
     def test_health_check_failure(self, test_config):
         """Test health check with failures."""
-        with patch("pdf_vector_system.pipeline.PDFProcessor"):
-            with patch("pdf_vector_system.pipeline.TextProcessor"):
+        with patch("vectorflow.pipeline.PDFProcessor"):
+            with patch("vectorflow.pipeline.TextProcessor"):
                 with patch(
-                    "pdf_vector_system.pipeline.EmbeddingServiceFactory"
+                    "vectorflow.pipeline.EmbeddingServiceFactory"
                 ) as mock_factory:
                     with patch(
-                        "pdf_vector_system.pipeline.ChromaDBClient"
+                        "vectorflow.pipeline.ChromaDBClient"
                     ) as mock_chroma_class:
                         mock_embedding_service = Mock()
                         mock_embedding_service.health_check.return_value = False
@@ -485,10 +477,10 @@ class TestPDFVectorPipeline:
 
         mock_embeddings = [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]]
 
-        with patch("pdf_vector_system.pipeline.PDFProcessor"):
-            with patch("pdf_vector_system.pipeline.TextProcessor"):
-                with patch("pdf_vector_system.pipeline.EmbeddingServiceFactory"):
-                    with patch("pdf_vector_system.pipeline.ChromaDBClient"):
+        with patch("vectorflow.pipeline.PDFProcessor"):
+            with patch("vectorflow.pipeline.TextProcessor"):
+                with patch("vectorflow.pipeline.EmbeddingServiceFactory"):
+                    with patch("vectorflow.pipeline.ChromaDBClient"):
                         pipeline = PDFVectorPipeline(test_config)
 
                         chunks = pipeline._create_document_chunks(
@@ -515,10 +507,10 @@ class TestPDFVectorPipelineCurrentAPI:
     def pipeline(self, test_config):
         """Create a pipeline with mocked components."""
         with (
-            patch("pdf_vector_system.pipeline.PDFProcessor"),
-            patch("pdf_vector_system.pipeline.TextProcessor"),
-            patch("pdf_vector_system.pipeline.EmbeddingServiceFactory"),
-            patch("pdf_vector_system.pipeline.VectorDBFactory"),
+            patch("vectorflow.pipeline.PDFProcessor"),
+            patch("vectorflow.pipeline.TextProcessor"),
+            patch("vectorflow.pipeline.EmbeddingServiceFactory"),
+            patch("vectorflow.pipeline.VectorDBFactory"),
         ):
             pipeline = PDFVectorPipeline(test_config)
             # Mock the vector DB
@@ -751,7 +743,7 @@ class TestPDFVectorPipelineCurrentAPI:
 
     def test_get_document_info_current_api(self, pipeline):
         """Test get_document_info with current API."""
-        from pdf_vector_system.core.vector_db.models import DocumentInfo
+        from vectorflow.core.vector_db.models import DocumentInfo
 
         # Mock document info
         mock_info = DocumentInfo(

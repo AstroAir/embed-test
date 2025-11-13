@@ -7,7 +7,7 @@ import tempfile
 from pathlib import Path
 from typing import Any, Optional
 
-from pdf_vector_system.core.config.settings import (
+from vectorflow.core.config.settings import (
     ChromaDBConfig,
     Config,
     EmbeddingConfig,
@@ -17,12 +17,8 @@ from pdf_vector_system.core.config.settings import (
     PDFConfig,
     TextProcessingConfig,
 )
-from pdf_vector_system.core.pdf.text_processor import TextChunk
-from pdf_vector_system.core.vector_db.models import (
-    DocumentChunk,
-    SearchQuery,
-    SearchResult,
-)
+from vectorflow.core.pdf.text_processor import TextChunk
+from vectorflow.core.vector_db.models import DocumentChunk, SearchQuery, SearchResult
 
 from .test_data import DataGenerator
 

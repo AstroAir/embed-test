@@ -4,15 +4,15 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-from pdf_vector_system import gui_main
+from vectorflow import gui_main
 
 
 class TestGuiMain:
     """Test GUI main entry point."""
 
-    @patch("pdf_vector_system.gui_main.PDFVectorGUIApp")
-    @patch("pdf_vector_system.gui_main.setup_logging")
-    @patch("pdf_vector_system.gui_main.Config")
+    @patch("vectorflow.gui_main.PDFVectorGUIApp")
+    @patch("vectorflow.gui_main.setup_logging")
+    @patch("vectorflow.gui_main.Config")
     def test_main_success(self, mock_config_class, mock_setup_logging, mock_app_class):
         """Test successful GUI application startup."""
         # Mock configuration
@@ -37,9 +37,9 @@ class TestGuiMain:
         # Should return success code
         assert result == 0
 
-    @patch("pdf_vector_system.gui_main.PDFVectorGUIApp")
-    @patch("pdf_vector_system.gui_main.setup_logging")
-    @patch("pdf_vector_system.gui_main.Config")
+    @patch("vectorflow.gui_main.PDFVectorGUIApp")
+    @patch("vectorflow.gui_main.setup_logging")
+    @patch("vectorflow.gui_main.Config")
     def test_main_app_returns_error_code(
         self, mock_config_class, mock_setup_logging, mock_app_class
     ):
@@ -60,9 +60,9 @@ class TestGuiMain:
         # Should return the error code from app
         assert result == 1
 
-    @patch("pdf_vector_system.gui_main.PDFVectorGUIApp")
-    @patch("pdf_vector_system.gui_main.setup_logging")
-    @patch("pdf_vector_system.gui_main.Config")
+    @patch("vectorflow.gui_main.PDFVectorGUIApp")
+    @patch("vectorflow.gui_main.setup_logging")
+    @patch("vectorflow.gui_main.Config")
     def test_main_import_error(
         self, mock_config_class, mock_setup_logging, mock_app_class
     ):
@@ -88,9 +88,9 @@ class TestGuiMain:
         assert any("Import error" in call for call in print_calls)
         assert any("PySide6" in call for call in print_calls)
 
-    @patch("pdf_vector_system.gui_main.PDFVectorGUIApp")
-    @patch("pdf_vector_system.gui_main.setup_logging")
-    @patch("pdf_vector_system.gui_main.Config")
+    @patch("vectorflow.gui_main.PDFVectorGUIApp")
+    @patch("vectorflow.gui_main.setup_logging")
+    @patch("vectorflow.gui_main.Config")
     def test_main_general_exception(
         self, mock_config_class, mock_setup_logging, mock_app_class
     ):
@@ -110,9 +110,9 @@ class TestGuiMain:
         print_calls = [call[0][0] for call in mock_print.call_args_list]
         assert any("Error starting GUI application" in call for call in print_calls)
 
-    @patch("pdf_vector_system.gui_main.PDFVectorGUIApp")
-    @patch("pdf_vector_system.gui_main.setup_logging")
-    @patch("pdf_vector_system.gui_main.Config")
+    @patch("vectorflow.gui_main.PDFVectorGUIApp")
+    @patch("vectorflow.gui_main.setup_logging")
+    @patch("vectorflow.gui_main.Config")
     def test_main_setup_logging_called_with_config(
         self, mock_config_class, mock_setup_logging, mock_app_class
     ):
@@ -134,9 +134,9 @@ class TestGuiMain:
         # Verify setup_logging called with correct config
         mock_setup_logging.assert_called_once_with(mock_logging_config)
 
-    @patch("pdf_vector_system.gui_main.PDFVectorGUIApp")
-    @patch("pdf_vector_system.gui_main.setup_logging")
-    @patch("pdf_vector_system.gui_main.Config")
+    @patch("vectorflow.gui_main.PDFVectorGUIApp")
+    @patch("vectorflow.gui_main.setup_logging")
+    @patch("vectorflow.gui_main.Config")
     def test_main_app_created_with_config(
         self, mock_config_class, mock_setup_logging, mock_app_class
     ):
@@ -175,12 +175,12 @@ class TestGuiMain:
         # This is tested indirectly by checking that imports work
 
         # Check that the path manipulation logic exists
-        import pdf_vector_system.gui_main as gui_main_module
+        import vectorflow.gui_main as gui_main_module
 
         # Should be able to import without issues
         assert gui_main_module is not None
 
-    @patch("pdf_vector_system.gui_main.sys")
+    @patch("vectorflow.gui_main.sys")
     def test_path_insertion_logic(self, mock_sys):
         """Test path insertion logic."""
         # Mock sys.path that doesn't contain project root
@@ -208,9 +208,9 @@ class TestGuiMain:
         # Should return int
         assert sig.return_annotation is int
 
-    @patch("pdf_vector_system.gui_main.PDFVectorGUIApp")
-    @patch("pdf_vector_system.gui_main.setup_logging")
-    @patch("pdf_vector_system.gui_main.Config")
+    @patch("vectorflow.gui_main.PDFVectorGUIApp")
+    @patch("vectorflow.gui_main.setup_logging")
+    @patch("vectorflow.gui_main.Config")
     def test_main_exception_during_logging_setup(
         self, mock_config_class, mock_setup_logging, mock_app_class
     ):
@@ -233,9 +233,9 @@ class TestGuiMain:
         # Should print error message
         mock_print.assert_called()
 
-    @patch("pdf_vector_system.gui_main.PDFVectorGUIApp")
-    @patch("pdf_vector_system.gui_main.setup_logging")
-    @patch("pdf_vector_system.gui_main.Config")
+    @patch("vectorflow.gui_main.PDFVectorGUIApp")
+    @patch("vectorflow.gui_main.setup_logging")
+    @patch("vectorflow.gui_main.Config")
     def test_main_exception_during_app_run(
         self, mock_config_class, mock_setup_logging, mock_app_class
     ):
@@ -266,26 +266,26 @@ class TestGuiMainAsScript:
 
     def test_module_can_be_imported(self):
         """Test that module can be imported without errors."""
-        import pdf_vector_system.gui_main
+        import vectorflow.gui_main
 
-        assert pdf_vector_system.gui_main is not None
+        assert vectorflow.gui_main is not None
 
     def test_module_has_required_imports(self):
         """Test that module has all required imports."""
-        import pdf_vector_system.gui_main as gui_main_module
+        import vectorflow.gui_main as gui_main_module
 
         # Should have imported necessary modules
         assert hasattr(gui_main_module, "Config")
         assert hasattr(gui_main_module, "PDFVectorGUIApp")
         assert hasattr(gui_main_module, "setup_logging")
 
-    @patch("pdf_vector_system.gui_main.main")
+    @patch("vectorflow.gui_main.main")
     def test_script_execution(self, mock_main):
         """Test script execution when run as __main__."""
         mock_main.return_value = 0
 
         # Simulate running as script
-        with patch("pdf_vector_system.gui_main.__name__", "__main__"):
+        with patch("vectorflow.gui_main.__name__", "__main__"):
             # This would normally call main(), but we can't easily test that
             # without actually running the script
             pass
@@ -297,8 +297,8 @@ class TestGuiMainAsScript:
 
         try:
             # Test that core modules can be imported
-            config_spec = importlib.util.find_spec("pdf_vector_system.config.settings")
-            logging_spec = importlib.util.find_spec("pdf_vector_system.utils.logging")
+            config_spec = importlib.util.find_spec("vectorflow.config.settings")
+            logging_spec = importlib.util.find_spec("vectorflow.utils.logging")
 
             assert config_spec is not None, "Config module should be importable"
             assert logging_spec is not None, "Logging module should be importable"
@@ -311,7 +311,7 @@ class TestGuiMainAsScript:
     def test_pathlib_usage(self):
         """Test that pathlib is used correctly."""
         # Module should use pathlib.Path for path operations
-        import pdf_vector_system.gui_main as gui_main_module
+        import vectorflow.gui_main as gui_main_module
 
         # Check that Path is imported and used
         assert hasattr(gui_main_module, "Path")

@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.dialogs.progress_dialog import ProgressDialog
+from vectorflow.gui.dialogs.progress_dialog import ProgressDialog
 
 
 class TestProgressDialog:

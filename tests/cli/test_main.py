@@ -4,9 +4,9 @@ from unittest.mock import Mock, patch
 
 import typer
 
-from pdf_vector_system.cli.main import app, console
-from pdf_vector_system.core.pipeline import ProcessingResult
-from pdf_vector_system.core.vector_db.models import SearchResult
+from vectorflow.cli.main import app, console
+from vectorflow.core.pipeline import ProcessingResult
+from vectorflow.core.vector_db.models import SearchResult
 
 
 class TestCLIApp:
@@ -33,8 +33,8 @@ class TestCLIApp:
 class TestCLIIntegration:
     """Test CLI integration with mocked components."""
 
-    @patch("pdf_vector_system.cli.PDFVectorPipeline")
-    @patch("pdf_vector_system.cli.Config")
+    @patch("vectorflow.cli.PDFVectorPipeline")
+    @patch("vectorflow.cli.Config")
     def test_process_command_integration(
         self, mock_config_class, mock_pipeline_class, temp_dir
     ):
@@ -69,8 +69,8 @@ class TestCLIIntegration:
         assert mock_config_class is not None
         assert mock_pipeline_class is not None
 
-    @patch("pdf_vector_system.cli.PDFVectorPipeline")
-    @patch("pdf_vector_system.cli.Config")
+    @patch("vectorflow.cli.PDFVectorPipeline")
+    @patch("vectorflow.cli.Config")
     def test_search_command_integration(self, mock_config_class, mock_pipeline_class):
         """Test search command integration."""
         # Mock configuration
@@ -102,8 +102,8 @@ class TestCLIIntegration:
         assert mock_config_class is not None
         assert mock_pipeline_class is not None
 
-    @patch("pdf_vector_system.cli.PDFVectorPipeline")
-    @patch("pdf_vector_system.cli.Config")
+    @patch("vectorflow.cli.PDFVectorPipeline")
+    @patch("vectorflow.cli.Config")
     def test_health_command_integration(self, mock_config_class, mock_pipeline_class):
         """Test health command integration."""
         # Mock configuration

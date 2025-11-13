@@ -4,19 +4,17 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.embeddings.base import EmbeddingResult
-from pdf_vector_system.core.embeddings.sentence_transformers_service import (
+from tests.mocks.embedding_mocks import MockSentenceTransformersService
+from vectorflow.core.embeddings.base import EmbeddingResult
+from vectorflow.core.embeddings.sentence_transformers_service import (
     SentenceTransformersService,
 )
-from tests.mocks.embedding_mocks import MockSentenceTransformersService
 
 
 class TestSentenceTransformersService:
     """Test SentenceTransformersService with mocking."""
 
-    @patch(
-        "pdf_vector_system.embeddings.sentence_transformers_service.SentenceTransformer"
-    )
+    @patch("vectorflow.embeddings.sentence_transformers_service.SentenceTransformer")
     def test_initialization(self, mock_st_class):
         """Test service initialization."""
         mock_model = Mock()
@@ -31,9 +29,7 @@ class TestSentenceTransformersService:
         assert service.device == "cpu"
         mock_st_class.assert_called_once()
 
-    @patch(
-        "pdf_vector_system.embeddings.sentence_transformers_service.SentenceTransformer"
-    )
+    @patch("vectorflow.embeddings.sentence_transformers_service.SentenceTransformer")
     def test_initialization_with_custom_params(self, mock_st_class):
         """Test service initialization with custom parameters."""
         mock_model = Mock()
@@ -181,9 +177,7 @@ class TestSentenceTransformersService:
         embedding = service.embed_single("")
         assert len(embedding) == service.embedding_dimension
 
-    @patch(
-        "pdf_vector_system.embeddings.sentence_transformers_service.SentenceTransformer"
-    )
+    @patch("vectorflow.embeddings.sentence_transformers_service.SentenceTransformer")
     def test_real_service_error_handling(self, mock_st_class):
         """Test real service error handling during initialization."""
         # Test initialization failure

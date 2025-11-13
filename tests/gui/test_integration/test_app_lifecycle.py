@@ -6,8 +6,8 @@ from unittest.mock import Mock, patch
 import pytest
 from PySide6.QtWidgets import QApplication
 
-from pdf_vector_system.gui.app import PDFVectorGUIApp
-from pdf_vector_system.gui.main_window import MainWindow
+from vectorflow.gui.app import PDFVectorGUIApp
+from vectorflow.gui.main_window import MainWindow
 
 
 @pytest.mark.gui
@@ -81,7 +81,7 @@ class TestAppLifecycle:
 
         # Mock MainWindow to raise exception
         with patch(
-            "pdf_vector_system.gui.app.MainWindow", side_effect=Exception("Init failed")
+            "vectorflow.gui.app.MainWindow", side_effect=Exception("Init failed")
         ):
             # Should handle error gracefully
             try:

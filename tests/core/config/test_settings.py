@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import pytest
 
-from pdf_vector_system.core.config.settings import (
+from vectorflow.core.config.settings import (
     ChromaDBConfig,
     Config,
     EmbeddingConfig,

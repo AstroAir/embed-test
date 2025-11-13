@@ -10,7 +10,7 @@ from unittest.mock import Mock
 import pytest
 from loguru import logger
 
-from pdf_vector_system.core.config.settings import (
+from vectorflow.core.config.settings import (
     ChromaDBConfig,
     Config,
     EmbeddingConfig,
@@ -20,7 +20,7 @@ from pdf_vector_system.core.config.settings import (
     PDFConfig,
     TextProcessingConfig,
 )
-from pdf_vector_system.core.vector_db.models import DocumentChunk, SearchResult
+from vectorflow.core.vector_db.models import DocumentChunk, SearchResult
 
 
 @pytest.fixture(scope="session", autouse=True)

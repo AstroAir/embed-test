@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.widgets.config_widget import ConfigWidget
+from vectorflow.gui.widgets.config_widget import ConfigWidget
 
 
 class TestConfigWidget:

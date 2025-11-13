@@ -10,8 +10,8 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Optional
 
-from pdf_vector_system import Config
-from pdf_vector_system.config.settings import EmbeddingModelType, LogLevel
+from vectorflow import Config
+from vectorflow.config.settings import EmbeddingModelType, LogLevel
 
 
 def setup_example_environment(example_name: str = "example") -> Config:

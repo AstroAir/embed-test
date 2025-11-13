@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.vector_db.config import (
+from vectorflow.core.vector_db.config import (
     ChromaDBConfig,
     MilvusConfig,
     PineconeConfig,
@@ -12,7 +12,7 @@ from pdf_vector_system.core.vector_db.config import (
     VectorDBType,
     WeaviateConfig,
 )
-from pdf_vector_system.core.vector_db.health_check import (
+from vectorflow.core.vector_db.health_check import (
     ChromaDBHealthChecker,
     HealthChecker,
     HealthCheckResult,

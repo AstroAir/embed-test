@@ -11,8 +11,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.config.settings import LoggingConfig, LogLevel
-from pdf_vector_system.core.utils.logging import LoggerMixin
+from vectorflow.core.config.settings import LoggingConfig, LogLevel
+from vectorflow.core.utils.logging import LoggerMixin
 
 
 @pytest.fixture

@@ -8,9 +8,9 @@ from typing import Any
 
 import pytest
 
-from pdf_vector_system.core.config.settings import PDFConfig, TextProcessingConfig
-from pdf_vector_system.core.pdf.text_processor import TextChunk
 from tests.mocks.pdf_mocks import MockPDFDocument, MockPDFProcessor
+from vectorflow.core.config.settings import PDFConfig, TextProcessingConfig
+from vectorflow.core.pdf.text_processor import TextChunk
 
 
 @pytest.fixture

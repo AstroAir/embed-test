@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.utils.adaptive_ui import AdaptiveMargins, AdaptiveSpacing
+from vectorflow.gui.utils.adaptive_ui import AdaptiveMargins, AdaptiveSpacing
 
 
 class TestAdaptiveUI:

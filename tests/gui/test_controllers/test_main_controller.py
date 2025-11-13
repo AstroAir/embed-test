@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from pdf_vector_system.gui.controllers.main_controller import MainController
+from vectorflow.gui.controllers.main_controller import MainController
 
 
 @pytest.mark.gui

@@ -4,13 +4,13 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.vector_db.models import (
+from vectorflow.core.vector_db.models import (
     CollectionInfo,
     SearchQuery,
     SearchResult,
     VectorDBError,
 )
-from pdf_vector_system.core.vector_db.pinecone_client import PineconeClient
+from vectorflow.core.vector_db.pinecone_client import PineconeClient
 
 
 class TestPineconeClient:
@@ -19,7 +19,7 @@ class TestPineconeClient:
     def test_initialization(self, pinecone_config_test):
         """Test PineconeClient initialization."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_pinecone.return_value = mock_client
@@ -33,7 +33,7 @@ class TestPineconeClient:
     def test_lazy_client_initialization(self, pinecone_config_test):
         """Test lazy client initialization."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()
@@ -51,7 +51,7 @@ class TestPineconeClient:
     def test_lazy_index_initialization(self, pinecone_config_test):
         """Test lazy index initialization."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()
@@ -69,7 +69,7 @@ class TestPineconeClient:
     def test_create_collection_success(self, pinecone_config_test):
         """Test successful collection (index) creation."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_client.create_index.return_value = None
@@ -87,7 +87,7 @@ class TestPineconeClient:
     def test_create_collection_already_exists(self, pinecone_config_test):
         """Test collection creation when index already exists."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_client.create_index.side_effect = Exception("Index already exists")
@@ -101,7 +101,7 @@ class TestPineconeClient:
     def test_delete_collection_success(self, pinecone_config_test):
         """Test successful collection (index) deletion."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_client.delete_index.return_value = None
@@ -116,7 +116,7 @@ class TestPineconeClient:
     def test_list_collections(self, pinecone_config_test):
         """Test listing collections (indexes)."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_client.list_indexes.return_value = ["index1", "index2", "index3"]
@@ -131,7 +131,7 @@ class TestPineconeClient:
     def test_collection_exists_true(self, pinecone_config_test):
         """Test collection_exists returns True for existing index."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_client.list_indexes.return_value = ["test-index", "other-index"]
@@ -145,7 +145,7 @@ class TestPineconeClient:
     def test_collection_exists_false(self, pinecone_config_test):
         """Test collection_exists returns False for non-existing index."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_client.list_indexes.return_value = ["other-index"]
@@ -159,7 +159,7 @@ class TestPineconeClient:
     def test_add_chunks_success(self, pinecone_config_test, sample_document_chunks):
         """Test successful chunk addition."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()
@@ -182,7 +182,7 @@ class TestPineconeClient:
     ):
         """Test chunk addition with namespace."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()
@@ -202,7 +202,7 @@ class TestPineconeClient:
     def test_search_success(self, pinecone_config_test, sample_search_query):
         """Test successful search operation."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()
@@ -247,7 +247,7 @@ class TestPineconeClient:
         )
 
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()
@@ -267,7 +267,7 @@ class TestPineconeClient:
     ):
         """Test search without providing query embedding."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()
@@ -282,7 +282,7 @@ class TestPineconeClient:
     def test_delete_chunks_success(self, pinecone_config_test):
         """Test successful chunk deletion."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()
@@ -301,7 +301,7 @@ class TestPineconeClient:
     def test_delete_chunks_with_namespace(self, pinecone_config_test):
         """Test chunk deletion with namespace."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()
@@ -319,7 +319,7 @@ class TestPineconeClient:
 
     def test_get_chunk_not_supported(self, pinecone_config_test):
         """Test that get_chunk raises NotImplementedError."""
-        with patch("pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"):
+        with patch("vectorflow.vector_db.pinecone_client.pinecone.Pinecone"):
             client = PineconeClient(pinecone_config_test)
 
             with pytest.raises(NotImplementedError):
@@ -328,7 +328,7 @@ class TestPineconeClient:
     def test_update_chunk_success(self, pinecone_config_test, sample_document_chunks):
         """Test successful chunk update."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()
@@ -348,7 +348,7 @@ class TestPineconeClient:
     def test_get_collection_info(self, pinecone_config_test):
         """Test getting collection information."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()
@@ -371,7 +371,7 @@ class TestPineconeClient:
 
     def test_get_document_info_not_supported(self, pinecone_config_test):
         """Test that get_document_info raises NotImplementedError."""
-        with patch("pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"):
+        with patch("vectorflow.vector_db.pinecone_client.pinecone.Pinecone"):
             client = PineconeClient(pinecone_config_test)
 
             with pytest.raises(NotImplementedError):
@@ -380,7 +380,7 @@ class TestPineconeClient:
     def test_health_check_success(self, pinecone_config_test):
         """Test successful health check."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_client.list_indexes.return_value = ["test-index"]
@@ -394,7 +394,7 @@ class TestPineconeClient:
     def test_health_check_failure(self, pinecone_config_test):
         """Test health check failure."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_client.list_indexes.side_effect = Exception("API error")
@@ -412,7 +412,7 @@ class TestPineconeClientErrorHandling:
     def test_authentication_error(self, pinecone_config_test):
         """Test authentication error handling."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_pinecone.side_effect = Exception("Invalid API key")
 
@@ -424,7 +424,7 @@ class TestPineconeClientErrorHandling:
     def test_connection_error(self, pinecone_config_test):
         """Test connection error handling."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_client.list_indexes.side_effect = Exception("Connection timeout")
@@ -438,7 +438,7 @@ class TestPineconeClientErrorHandling:
     def test_index_not_found_error(self, pinecone_config_test):
         """Test index not found error handling."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_client.Index.side_effect = Exception("Index not found")
@@ -452,7 +452,7 @@ class TestPineconeClientErrorHandling:
     def test_quota_exceeded_error(self, pinecone_config_test, sample_document_chunks):
         """Test quota exceeded error handling."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()
@@ -474,7 +474,7 @@ class TestPineconeClientIntegration:
     ):
         """Test end-to-end workflow with mocked Pinecone."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()
@@ -529,7 +529,7 @@ class TestPineconeClientIntegration:
     def test_batch_operations(self, pinecone_config_test, large_document_chunks):
         """Test batch operations with large datasets."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()
@@ -552,7 +552,7 @@ class TestPineconeClientIntegration:
     def test_namespace_isolation(self, pinecone_config_test, sample_document_chunks):
         """Test namespace isolation in operations."""
         with patch(
-            "pdf_vector_system.vector_db.pinecone_client.pinecone.Pinecone"
+            "vectorflow.vector_db.pinecone_client.pinecone.Pinecone"
         ) as mock_pinecone:
             mock_client = Mock()
             mock_index = Mock()

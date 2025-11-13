@@ -6,8 +6,8 @@ from unittest.mock import patch
 import pytest
 from PySide6.QtCore import Qt
 
-from pdf_vector_system.gui.controllers.processing_controller import ProcessingController
-from pdf_vector_system.gui.widgets.processing_widget import ProcessingWidget
+from vectorflow.gui.controllers.processing_controller import ProcessingController
+from vectorflow.gui.widgets.processing_widget import ProcessingWidget
 
 
 @pytest.mark.gui
@@ -149,7 +149,7 @@ class TestProcessingWidget:
         assert not widget.process_btn.isEnabled()
 
     @patch(
-        "pdf_vector_system.gui.controllers.processing_controller.ProcessingController.process_files"
+        "vectorflow.gui.controllers.processing_controller.ProcessingController.process_files"
     )
     def test_process_files_execution(self, mock_process, qtbot, mock_config):
         """Test file processing execution."""

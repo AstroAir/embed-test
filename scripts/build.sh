@@ -1,5 +1,5 @@
 #!/bin/bash
-# PDF Vector System Build Script
+# VectorFlow Build Script
 
 set -e
 
@@ -54,7 +54,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --help)
-            echo "PDF Vector System Build Script"
+            echo "VectorFlow Build Script"
             echo ""
             echo "Usage: $0 [options]"
             echo ""
@@ -120,34 +120,34 @@ run_quality_checks() {
         # Ruff linting
         print_status "Running ruff linter..."
         if [ "$PACKAGE_MANAGER" = "uv" ]; then
-            uv run ruff check pdf_vector_system tests examples
+            uv run ruff check vectorflow tests examples
         else
-            ruff check pdf_vector_system tests examples
+            ruff check vectorflow tests examples
         fi
 
         # Ruff formatting
         print_status "Checking code formatting..."
         if [ "$PACKAGE_MANAGER" = "uv" ]; then
-            uv run ruff format --check pdf_vector_system tests examples
+            uv run ruff format --check vectorflow tests examples
         else
-            ruff format --check pdf_vector_system tests examples
+            ruff format --check vectorflow tests examples
         fi
 
         # MyPy type checking
         print_status "Running type checks..."
         if [ "$PACKAGE_MANAGER" = "uv" ]; then
-            uv run mypy pdf_vector_system
+            uv run mypy vectorflow
         else
-            mypy pdf_vector_system
+            mypy vectorflow
         fi
 
         # Security checks
         print_status "Running security checks..."
         if [ "$PACKAGE_MANAGER" = "uv" ]; then
-            uv run bandit -r pdf_vector_system
+            uv run bandit -r vectorflow
             uv run safety check
         else
-            bandit -r pdf_vector_system
+            bandit -r vectorflow
             safety check
         fi
 
@@ -161,9 +161,9 @@ run_tests() {
         print_status "Running tests..."
 
         if [ "$PACKAGE_MANAGER" = "uv" ]; then
-            uv run pytest tests/ -v --cov=pdf_vector_system --cov-report=term-missing
+            uv run pytest tests/ -v --cov=vectorflow --cov-report=term-missing
         else
-            pytest tests/ -v --cov=pdf_vector_system --cov-report=term-missing
+            pytest tests/ -v --cov=vectorflow --cov-report=term-missing
         fi
 
         print_success "Tests passed"
@@ -235,8 +235,8 @@ show_build_info() {
 
 # Main build process
 main() {
-    echo "PDF Vector System Build Script"
-    echo "=============================="
+    echo "VectorFlow Build Script"
+    echo "======================"
     echo
 
     clean_build

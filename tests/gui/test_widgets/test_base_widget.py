@@ -3,7 +3,7 @@
 import pytest
 from PySide6.QtWidgets import QLabel, QVBoxLayout
 
-from pdf_vector_system.gui.widgets.base import BaseWidget
+from vectorflow.gui.widgets.base import BaseWidget
 
 
 @pytest.mark.gui
@@ -107,7 +107,7 @@ class TestSearchWidget:
 
     def test_widget_initialization(self, qtbot, mock_config):
         """Test widget initializes correctly."""
-        from pdf_vector_system.gui.widgets.search_widget import SearchWidget
+        from vectorflow.gui.widgets.search_widget import SearchWidget
 
         widget = SearchWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -124,7 +124,7 @@ class TestSearchWidget:
 
     def test_search_functionality(self, qtbot, mock_config):
         """Test search functionality."""
-        from pdf_vector_system.gui.widgets.search_widget import SearchWidget
+        from vectorflow.gui.widgets.search_widget import SearchWidget
 
         widget = SearchWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -139,7 +139,7 @@ class TestSearchWidget:
 
     def test_results_display(self, qtbot, mock_config):
         """Test search results display."""
-        from pdf_vector_system.gui.widgets.search_widget import SearchWidget
+        from vectorflow.gui.widgets.search_widget import SearchWidget
 
         widget = SearchWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -156,7 +156,7 @@ class TestDocumentWidget:
 
     def test_widget_initialization(self, qtbot, mock_config):
         """Test widget initializes correctly."""
-        from pdf_vector_system.gui.widgets.document_widget import DocumentWidget
+        from vectorflow.gui.widgets.document_widget import DocumentWidget
 
         widget = DocumentWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -172,7 +172,7 @@ class TestDocumentWidget:
 
     def test_document_list_display(self, qtbot, mock_config):
         """Test document list display."""
-        from pdf_vector_system.gui.widgets.document_widget import DocumentWidget
+        from vectorflow.gui.widgets.document_widget import DocumentWidget
 
         widget = DocumentWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -183,7 +183,7 @@ class TestDocumentWidget:
 
     def test_document_operations(self, qtbot, mock_config):
         """Test document operations (delete, info)."""
-        from pdf_vector_system.gui.widgets.document_widget import DocumentWidget
+        from vectorflow.gui.widgets.document_widget import DocumentWidget
 
         widget = DocumentWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -200,7 +200,7 @@ class TestConfigWidget:
 
     def test_widget_initialization(self, qtbot, mock_config):
         """Test widget initializes correctly."""
-        from pdf_vector_system.gui.widgets.config_widget import ConfigWidget
+        from vectorflow.gui.widgets.config_widget import ConfigWidget
 
         widget = ConfigWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -215,7 +215,7 @@ class TestConfigWidget:
 
     def test_configuration_display(self, qtbot, mock_config):
         """Test configuration display."""
-        from pdf_vector_system.gui.widgets.config_widget import ConfigWidget
+        from vectorflow.gui.widgets.config_widget import ConfigWidget
 
         widget = ConfigWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -225,7 +225,7 @@ class TestConfigWidget:
 
     def test_configuration_validation(self, qtbot, mock_config):
         """Test configuration validation."""
-        from pdf_vector_system.gui.widgets.config_widget import ConfigWidget
+        from vectorflow.gui.widgets.config_widget import ConfigWidget
 
         widget = ConfigWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -235,7 +235,7 @@ class TestConfigWidget:
 
     def test_save_load_functionality(self, qtbot, mock_config):
         """Test save/load configuration."""
-        from pdf_vector_system.gui.widgets.config_widget import ConfigWidget
+        from vectorflow.gui.widgets.config_widget import ConfigWidget
 
         widget = ConfigWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -251,7 +251,7 @@ class TestStatusWidget:
 
     def test_widget_initialization(self, qtbot, mock_config):
         """Test widget initializes correctly."""
-        from pdf_vector_system.gui.widgets.status_widget import StatusWidget
+        from vectorflow.gui.widgets.status_widget import StatusWidget
 
         widget = StatusWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -266,7 +266,7 @@ class TestStatusWidget:
 
     def test_health_check_display(self, qtbot, mock_config):
         """Test health check display."""
-        from pdf_vector_system.gui.widgets.status_widget import StatusWidget
+        from vectorflow.gui.widgets.status_widget import StatusWidget
 
         widget = StatusWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -276,7 +276,7 @@ class TestStatusWidget:
 
     def test_system_info_display(self, qtbot, mock_config):
         """Test system information display."""
-        from pdf_vector_system.gui.widgets.status_widget import StatusWidget
+        from vectorflow.gui.widgets.status_widget import StatusWidget
 
         widget = StatusWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -286,7 +286,7 @@ class TestStatusWidget:
 
     def test_auto_refresh_functionality(self, qtbot, mock_config):
         """Test auto-refresh functionality."""
-        from pdf_vector_system.gui.widgets.status_widget import StatusWidget
+        from vectorflow.gui.widgets.status_widget import StatusWidget
 
         widget = StatusWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -302,7 +302,7 @@ class TestLogWidget:
 
     def test_widget_initialization(self, qtbot, mock_config):
         """Test widget initializes correctly."""
-        from pdf_vector_system.gui.widgets.log_widget import LogWidget
+        from vectorflow.gui.widgets.log_widget import LogWidget
 
         widget = LogWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -317,7 +317,7 @@ class TestLogWidget:
 
     def test_log_display(self, qtbot, mock_config):
         """Test log display functionality."""
-        from pdf_vector_system.gui.widgets.log_widget import LogWidget
+        from vectorflow.gui.widgets.log_widget import LogWidget
 
         widget = LogWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -327,7 +327,7 @@ class TestLogWidget:
 
     def test_log_filtering(self, qtbot, mock_config):
         """Test log level filtering."""
-        from pdf_vector_system.gui.widgets.log_widget import LogWidget
+        from vectorflow.gui.widgets.log_widget import LogWidget
 
         widget = LogWidget(config=mock_config)
         qtbot.addWidget(widget)
@@ -337,7 +337,7 @@ class TestLogWidget:
 
     def test_log_controls(self, qtbot, mock_config):
         """Test log control buttons."""
-        from pdf_vector_system.gui.widgets.log_widget import LogWidget
+        from vectorflow.gui.widgets.log_widget import LogWidget
 
         widget = LogWidget(config=mock_config)
         qtbot.addWidget(widget)

@@ -1,7 +1,7 @@
 [project]
-name = "pdf-vector-system"
+name = "vectorflow"
 dynamic = ["version"]
-description = "A comprehensive PDF content processing and vector storage system with ChromaDB integration"
+description = "Streamlined PDF-to-vector processing pipeline with multi-provider embeddings and multi-backend vector storage"
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [
@@ -10,7 +10,7 @@ authors = [
 maintainers = [
     {name = "The Augster", email = "augster@example.com"}
 ]
-keywords = ["pdf", "vector", "embeddings", "chromadb", "nlp", "search", "ai"]
+keywords = ["pdf", "vector", "embeddings", "vectorflow", "nlp", "search", "ai", "semantic-search", "embeddings-pipeline"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -58,11 +58,11 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/your-username/pdf-vector-system"
-Documentation = "https://pdf-vector-system.readthedocs.io/"
-Repository = "https://github.com/your-username/pdf-vector-system.git"
-"Bug Tracker" = "https://github.com/your-username/pdf-vector-system/issues"
-Changelog = "https://github.com/your-username/pdf-vector-system/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/your-username/vectorflow"
+Documentation = "https://vectorflow.readthedocs.io/"
+Repository = "https://github.com/your-username/vectorflow.git"
+"Bug Tracker" = "https://github.com/your-username/vectorflow/issues"
+Changelog = "https://github.com/your-username/vectorflow/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = [
@@ -104,8 +104,8 @@ lint = [
 ]
 
 [project.scripts]
-pdf-vector = "pdf_vector_system.cli.main:main"
-pdf-vector-gui = "pdf_vector_system.gui_main:main"
+vectorflow = "vectorflow.cli.main:main"
+vectorflow-gui = "vectorflow.gui_main:main"
 
 [build-system]
 requires = ["hatchling", "hatch-vcs"]
@@ -115,14 +115,14 @@ build-backend = "hatchling.build"
 source = "vcs"
 
 [tool.hatch.build.hooks.vcs]
-version-file = "pdf_vector_system/_version.py"
+version-file = "vectorflow/_version.py"
 
 [tool.hatch.build.targets.wheel]
-packages = ["pdf_vector_system"]
+packages = ["vectorflow"]
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "/pdf_vector_system",
+    "/vectorflow",
     "/tests",
     "/examples",
     "/README.md",
@@ -172,7 +172,7 @@ include_trailing_comma = true
 force_grid_wrap = 0
 use_parentheses = true
 ensure_newline_before_comments = true
-src_paths = ["pdf_vector_system", "tests"]
+src_paths = ["vectorflow", "tests"]
 
 [tool.mypy]
 python_version = "3.9"
@@ -212,7 +212,7 @@ ignore_missing_imports = true
 [tool.ruff]
 target-version = "py39"
 line-length = 88
-src = ["pdf_vector_system", "tests"]
+src = ["vectorflow", "tests"]
 
 [tool.ruff.lint]
 select = [
@@ -259,7 +259,7 @@ unfixable = [
 "tests/**/*" = ["PLR2004", "S101", "TID252"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["pdf_vector_system"]
+known-first-party = ["vectorflow"]
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
@@ -273,7 +273,7 @@ minversion = "7.0"
 addopts = [
     "--strict-markers",
     "--strict-config",
-    "--cov=pdf_vector_system",
+    "--cov=vectorflow",
     "--cov-report=term-missing",
     "--cov-report=html",
     "--cov-report=xml",
@@ -304,13 +304,13 @@ filterwarnings = [
 
 # Coverage configuration
 [tool.coverage.run]
-source = ["pdf_vector_system"]
+source = ["vectorflow"]
 omit = [
     "*/tests/*",
     "*/test_*",
     "*/__pycache__/*",
     "*/site-packages/*",
-    "pdf_vector_system/_version.py",
+    "vectorflow/_version.py",
 ]
 
 [tool.coverage.report]

@@ -6,8 +6,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from pdf_vector_system.core.vector_db.interface import VectorDBInterface
-from pdf_vector_system.core.vector_db.models import (
+from vectorflow.core.vector_db.interface import VectorDBInterface
+from vectorflow.core.vector_db.models import (
     CollectionInfo,
     DocumentChunk,
     DocumentInfo,

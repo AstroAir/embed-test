@@ -4,9 +4,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.vector_db.chroma_client import ChromaDBClient
-from pdf_vector_system.core.vector_db.config import ChromaDBConfig
-from pdf_vector_system.core.vector_db.models import (
+from vectorflow.core.vector_db.chroma_client import ChromaDBClient
+from vectorflow.core.vector_db.config import ChromaDBConfig
+from vectorflow.core.vector_db.models import (
     CollectionInfo,
     CollectionNotFoundError,
     DocumentChunk,
@@ -30,7 +30,7 @@ class TestChromaDBClient:
         )
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.Client"
+            "vectorflow.vector_db.chroma_client.chromadb.Client"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client_class.return_value = mock_client
@@ -46,9 +46,7 @@ class TestChromaDBClient:
         chroma_dir = temp_dir / "new_chroma_dir"
         config = ChromaDBConfig(persist_directory=chroma_dir)
 
-        with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
-        ):
+        with patch("vectorflow.vector_db.chroma_client.chromadb.PersistentClient"):
             ChromaDBClient(config)
 
             assert chroma_dir.exists()
@@ -59,7 +57,7 @@ class TestChromaDBClient:
         config = ChromaDBConfig()
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collection = Mock()
@@ -79,7 +77,7 @@ class TestChromaDBClient:
         config = ChromaDBConfig()
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.create_collection.side_effect = Exception(
@@ -97,7 +95,7 @@ class TestChromaDBClient:
         config = ChromaDBConfig()
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collection = Mock()
@@ -115,7 +113,7 @@ class TestChromaDBClient:
         config = ChromaDBConfig()
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.get_collection.side_effect = Exception("Collection not found")
@@ -146,7 +144,7 @@ class TestChromaDBClient:
         ]
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collection = Mock()
@@ -181,7 +179,7 @@ class TestChromaDBClient:
         chunks = [DocumentChunk("chunk_1", "content", [0.1, 0.2])]
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collection = Mock()
@@ -208,7 +206,7 @@ class TestChromaDBClient:
         }
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collection = Mock()
@@ -245,7 +243,7 @@ class TestChromaDBClient:
         }
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collection = Mock()
@@ -267,7 +265,7 @@ class TestChromaDBClient:
         query = SearchQuery(query_text="test query")
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collection = Mock()
@@ -288,7 +286,7 @@ class TestChromaDBClient:
         config = ChromaDBConfig(collection_name="test_collection")
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collection = Mock()
@@ -306,7 +304,7 @@ class TestChromaDBClient:
         config = ChromaDBConfig(collection_name="test_collection")
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collection = Mock()
@@ -326,7 +324,7 @@ class TestChromaDBClient:
         config = ChromaDBConfig(collection_name="test_collection")
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collection = Mock()
@@ -361,7 +359,7 @@ class TestChromaDBClient:
         }
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collection = Mock()
@@ -385,7 +383,7 @@ class TestChromaDBClient:
         mock_results = {"ids": [[]], "metadatas": [[]]}
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collection = Mock()
@@ -408,7 +406,7 @@ class TestChromaDBClient:
         ]
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.list_collections.return_value = mock_collections
@@ -428,7 +426,7 @@ class TestChromaDBClient:
         config = ChromaDBConfig()
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client_class.return_value = mock_client
@@ -444,7 +442,7 @@ class TestChromaDBClient:
         config = ChromaDBConfig()
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.delete_collection.side_effect = Exception("Delete error")
@@ -460,7 +458,7 @@ class TestChromaDBClient:
         config = ChromaDBConfig()
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.heartbeat.return_value = 12345  # Timestamp
@@ -477,7 +475,7 @@ class TestChromaDBClient:
         config = ChromaDBConfig()
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.PersistentClient"
+            "vectorflow.vector_db.chroma_client.chromadb.PersistentClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.heartbeat.side_effect = Exception("Connection error")

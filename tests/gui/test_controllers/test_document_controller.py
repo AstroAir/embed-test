@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.controllers.document_controller import DocumentController
+from vectorflow.gui.controllers.document_controller import DocumentController
 
 
 class TestDocumentController:

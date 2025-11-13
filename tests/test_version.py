@@ -4,7 +4,7 @@ import re
 
 import pytest
 
-from pdf_vector_system._version import __version__
+from vectorflow._version import __version__
 
 
 class TestVersion:
@@ -80,8 +80,8 @@ class TestVersion:
     def test_version_consistency(self):
         """Test that version is consistent across imports."""
         # Import version in different ways
-        from pdf_vector_system import __version__ as version2
-        from pdf_vector_system._version import __version__ as version1
+        from vectorflow import __version__ as version2
+        from vectorflow._version import __version__ as version1
 
         assert (
             version1 == version2
@@ -150,13 +150,13 @@ class TestVersionModule:
 
     def test_module_has_version(self):
         """Test that the version module has __version__ attribute."""
-        import pdf_vector_system._version as version_module
+        import vectorflow._version as version_module
 
         assert hasattr(version_module, "__version__")
 
     def test_module_minimal_exports(self):
         """Test that version module doesn't export unnecessary items."""
-        import pdf_vector_system._version as version_module
+        import vectorflow._version as version_module
 
         # Should primarily export __version__
         public_attrs = [
@@ -172,7 +172,7 @@ class TestVersionModule:
     def test_version_importable_from_package(self):
         """Test that version is importable from main package."""
         try:
-            from pdf_vector_system import __version__
+            from vectorflow import __version__
 
             assert __version__ is not None
         except ImportError:
@@ -180,7 +180,7 @@ class TestVersionModule:
 
     def test_version_module_docstring(self):
         """Test that version module has appropriate docstring."""
-        import pdf_vector_system._version as version_module
+        import vectorflow._version as version_module
 
         if version_module.__doc__:
             assert isinstance(version_module.__doc__, str)

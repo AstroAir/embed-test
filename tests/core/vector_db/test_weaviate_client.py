@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.vector_db.models import (
+from vectorflow.core.vector_db.models import (
     CollectionInfo,
     DocumentChunk,
     DocumentNotFoundError,
@@ -12,7 +12,7 @@ from pdf_vector_system.core.vector_db.models import (
     SearchResult,
     VectorDBError,
 )
-from pdf_vector_system.core.vector_db.weaviate_client import WeaviateClient
+from vectorflow.core.vector_db.weaviate_client import WeaviateClient
 
 
 class TestWeaviateClient:
@@ -28,7 +28,7 @@ class TestWeaviateClient:
     def test_lazy_client_initialization(self, weaviate_config_test):
         """Test lazy client initialization."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_connect.return_value = mock_client
@@ -44,7 +44,7 @@ class TestWeaviateClient:
     def test_create_collection_success(self, weaviate_config_test):
         """Test successful collection (class) creation."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             Mock()
@@ -62,7 +62,7 @@ class TestWeaviateClient:
     def test_create_collection_with_properties(self, weaviate_config_test):
         """Test collection creation with custom properties."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_client.schema.get.return_value = {"classes": []}
@@ -84,7 +84,7 @@ class TestWeaviateClient:
     def test_delete_collection_success(self, weaviate_config_test):
         """Test successful collection (class) deletion."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_client.schema.get.return_value = {"classes": [{"class": "TestClass"}]}
@@ -101,7 +101,7 @@ class TestWeaviateClient:
     def test_list_collections(self, weaviate_config_test):
         """Test listing collections (classes)."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_client.schema.get.return_value = {
@@ -125,7 +125,7 @@ class TestWeaviateClient:
     def test_collection_exists_true(self, weaviate_config_test):
         """Test collection_exists returns True for existing class."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_client.schema.get.return_value = {
@@ -141,7 +141,7 @@ class TestWeaviateClient:
     def test_collection_exists_false(self, weaviate_config_test):
         """Test collection_exists returns False for non-existing class."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_client.schema.get.return_value = {"classes": [{"class": "OtherClass"}]}
@@ -155,7 +155,7 @@ class TestWeaviateClient:
     def test_add_chunks_success(self, weaviate_config_test, sample_document_chunks):
         """Test successful chunk addition."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             # Set up v4 API mock
@@ -179,7 +179,7 @@ class TestWeaviateClient:
     ):
         """Test chunk addition with custom class name."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             # Set up v4 API mock
@@ -203,7 +203,7 @@ class TestWeaviateClient:
     def test_search_success(self, weaviate_config_test, sample_search_query):
         """Test successful search operation."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             # Set up v4 API mock
@@ -267,7 +267,7 @@ class TestWeaviateClient:
         )
 
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_query = Mock()
@@ -288,7 +288,7 @@ class TestWeaviateClient:
     ):
         """Test search without providing query embedding."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_connect.return_value = mock_client
@@ -301,7 +301,7 @@ class TestWeaviateClient:
     def test_delete_chunks_success(self, weaviate_config_test):
         """Test successful chunk deletion."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_client.data_object.delete.return_value = None
@@ -317,7 +317,7 @@ class TestWeaviateClient:
     def test_get_chunk_success(self, weaviate_config_test):
         """Test successful chunk retrieval."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_client.data_object.get_by_id.return_value = {
@@ -342,7 +342,7 @@ class TestWeaviateClient:
     def test_get_chunk_not_found(self, weaviate_config_test):
         """Test chunk retrieval when chunk not found."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_client.data_object.get_by_id.return_value = None
@@ -356,7 +356,7 @@ class TestWeaviateClient:
     def test_update_chunk_success(self, weaviate_config_test, sample_document_chunks):
         """Test successful chunk update."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_client.data_object.replace.return_value = None
@@ -374,7 +374,7 @@ class TestWeaviateClient:
     def test_get_collection_info(self, weaviate_config_test):
         """Test getting collection information."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_client.query.aggregate.return_value.with_meta_count.return_value.do.return_value = {
@@ -391,9 +391,7 @@ class TestWeaviateClient:
 
     def test_get_document_info_not_supported(self, weaviate_config_test):
         """Test that get_document_info raises NotImplementedError."""
-        with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
-        ):
+        with patch("vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"):
             client = WeaviateClient(weaviate_config_test)
 
             with pytest.raises(NotImplementedError):
@@ -402,7 +400,7 @@ class TestWeaviateClient:
     def test_health_check_success(self, weaviate_config_test):
         """Test successful health check."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_client.is_ready.return_value = True
@@ -416,7 +414,7 @@ class TestWeaviateClient:
     def test_health_check_failure(self, weaviate_config_test):
         """Test health check failure."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_client.is_ready.return_value = False
@@ -434,7 +432,7 @@ class TestWeaviateClientErrorHandling:
     def test_connection_error(self, weaviate_config_test):
         """Test connection error handling."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_client_class:
             mock_client_class.side_effect = Exception("Connection failed")
 
@@ -446,7 +444,7 @@ class TestWeaviateClientErrorHandling:
     def test_schema_error(self, weaviate_config_test):
         """Test schema operation error handling."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_client.schema.create_class.side_effect = Exception("Schema error")
@@ -460,7 +458,7 @@ class TestWeaviateClientErrorHandling:
     def test_batch_operation_error(self, weaviate_config_test, sample_document_chunks):
         """Test batch operation error handling."""
         with patch(
-            "pdf_vector_system.vector_db.weaviate_client.weaviate.connect_to_custom"
+            "vectorflow.vector_db.weaviate_client.weaviate.connect_to_custom"
         ) as mock_connect:
             mock_client = Mock()
             mock_batch = Mock()

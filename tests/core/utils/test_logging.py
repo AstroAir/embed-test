@@ -2,8 +2,8 @@
 
 from unittest.mock import patch
 
-from pdf_vector_system.core.config.settings import LoggingConfig, LogLevel
-from pdf_vector_system.core.utils.logging import (
+from vectorflow.core.config.settings import LoggingConfig, LogLevel
+from vectorflow.core.utils.logging import (
     LoggerMixin,
     get_logger,
     log_error,
@@ -75,7 +75,7 @@ class TestLoggingFunctions:
         logger = get_logger("test_logger")
         assert logger is not None
 
-    @patch("pdf_vector_system.utils.logging.logger")
+    @patch("vectorflow.utils.logging.logger")
     def test_log_function_call(self, mock_logger):
         """Test log_function_call function."""
         log_function_call("test_function", param1="value1", param2=42)
@@ -86,7 +86,7 @@ class TestLoggingFunctions:
         assert "param1=value1" in call_args
         assert "param2=42" in call_args
 
-    @patch("pdf_vector_system.utils.logging.logger")
+    @patch("vectorflow.utils.logging.logger")
     def test_log_performance(self, mock_logger):
         """Test log_performance function."""
         log_performance("test_operation", 1.5, items=100, rate=66.7)
@@ -98,7 +98,7 @@ class TestLoggingFunctions:
         assert "items=100" in call_args
         assert "rate=66.7" in call_args
 
-    @patch("pdf_vector_system.utils.logging.logger")
+    @patch("vectorflow.utils.logging.logger")
     def test_log_error(self, mock_logger):
         """Test log_error function."""
         test_error = ValueError("Test error message")
@@ -110,7 +110,7 @@ class TestLoggingFunctions:
         assert "Test error message" in call_args
         assert "Test context" in call_args
 
-    @patch("pdf_vector_system.utils.logging.logger")
+    @patch("vectorflow.utils.logging.logger")
     def test_log_error_without_context(self, mock_logger):
         """Test log_error function without context."""
         test_error = RuntimeError("Runtime error")
@@ -121,7 +121,7 @@ class TestLoggingFunctions:
         assert "RuntimeError" in call_args
         assert "Runtime error" in call_args
 
-    @patch("pdf_vector_system.utils.logging.logger")
+    @patch("vectorflow.utils.logging.logger")
     def test_log_warning(self, mock_logger):
         """Test log_warning function."""
         log_warning("Test warning", severity="high", component="test")
@@ -132,7 +132,7 @@ class TestLoggingFunctions:
         assert "severity=high" in call_args
         assert "component=test" in call_args
 
-    @patch("pdf_vector_system.utils.logging.logger")
+    @patch("vectorflow.utils.logging.logger")
     def test_log_progress(self, mock_logger):
         """Test log_progress function."""
         log_progress("processing", 75, 100, stage="final")
@@ -148,7 +148,7 @@ class TestLoggingFunctions:
 class TestSetupLogging:
     """Test setup_logging function."""
 
-    @patch("pdf_vector_system.utils.logging.logger")
+    @patch("vectorflow.utils.logging.logger")
     def test_setup_logging_console_only(self, mock_logger):
         """Test setup_logging with console output only."""
         config = LoggingConfig(level=LogLevel.INFO, file_path=None, format="{message}")
@@ -159,7 +159,7 @@ class TestSetupLogging:
         mock_logger.remove.assert_called_once()
         assert mock_logger.add.call_count >= 1
 
-    @patch("pdf_vector_system.utils.logging.logger")
+    @patch("vectorflow.utils.logging.logger")
     def test_setup_logging_with_file(self, mock_logger, temp_dir):
         """Test setup_logging with file output."""
         log_file = temp_dir / "test.log"
@@ -177,7 +177,7 @@ class TestSetupLogging:
         mock_logger.remove.assert_called_once()
         assert mock_logger.add.call_count >= 2
 
-    @patch("pdf_vector_system.utils.logging.logger")
+    @patch("vectorflow.utils.logging.logger")
     def test_setup_logging_creates_directory(self, mock_logger, temp_dir):
         """Test that setup_logging creates log directory if it doesn't exist."""
         log_dir = temp_dir / "logs"
@@ -194,7 +194,7 @@ class TestSetupLogging:
         assert log_dir.exists()
         assert log_dir.is_dir()
 
-    @patch("pdf_vector_system.utils.logging.logger")
+    @patch("vectorflow.utils.logging.logger")
     def test_setup_logging_different_levels(self, mock_logger):
         """Test setup_logging with different log levels."""
         for level in LogLevel:
@@ -206,7 +206,7 @@ class TestSetupLogging:
             # Reset for next iteration
             mock_logger.reset_mock()
 
-    @patch("pdf_vector_system.utils.logging.logger")
+    @patch("vectorflow.utils.logging.logger")
     def test_setup_logging_custom_format(self, mock_logger):
         """Test setup_logging with custom format."""
         custom_format = "{time:YYYY-MM-DD} | {level} | {message}"
@@ -223,7 +223,7 @@ class TestSetupLogging:
             for arg in call_args[0] + tuple(call_args[1].values())
         )
 
-    @patch("pdf_vector_system.utils.logging.logger")
+    @patch("vectorflow.utils.logging.logger")
     def test_setup_logging_rotation_and_retention(self, mock_logger, temp_dir):
         """Test setup_logging with rotation and retention settings."""
         log_file = temp_dir / "rotating.log"

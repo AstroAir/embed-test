@@ -5,19 +5,19 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.vector_db.config import (
+from vectorflow.core.vector_db.config import (
     ChromaDBConfig,
     MilvusConfig,
     PineconeConfig,
     QdrantConfig,
     WeaviateConfig,
 )
-from pdf_vector_system.core.vector_db.error_handler import (
+from vectorflow.core.vector_db.error_handler import (
     VectorDBErrorHandler,
     handle_vector_db_errors,
 )
-from pdf_vector_system.core.vector_db.factory import VectorDBFactory
-from pdf_vector_system.core.vector_db.models import (
+from vectorflow.core.vector_db.factory import VectorDBFactory
+from vectorflow.core.vector_db.models import (
     AuthenticationError,
     CollectionNotFoundError,
     ConnectionError,

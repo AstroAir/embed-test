@@ -3006,153 +3006,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pdf-vector-system"
-source = { editable = "." }
-dependencies = [
-    { name = "chromadb" },
-    { name = "cohere" },
-    { name = "langchain-text-splitters" },
-    { name = "loguru" },
-    { name = "numpy" },
-    { name = "openai" },
-    { name = "pinecone" },
-    { name = "psutil" },
-    { name = "pydantic" },
-    { name = "pydantic-settings" },
-    { name = "pymilvus" },
-    { name = "pymupdf" },
-    { name = "pyside6" },
-    { name = "pyside6-fluent-widgets" },
-    { name = "python-dotenv" },
-    { name = "qdrant-client" },
-    { name = "rich" },
-    { name = "sentence-transformers" },
-    { name = "sentencepiece" },
-    { name = "tensorflow" },
-    { name = "tensorflow-hub" },
-    { name = "torch" },
-    { name = "tqdm" },
-    { name = "transformers" },
-    { name = "typer" },
-    { name = "weaviate-client" },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "bandit" },
-    { name = "black" },
-    { name = "isort" },
-    { name = "mypy" },
-    { name = "pre-commit" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "pytest-timeout" },
-    { name = "pytest-xdist" },
-    { name = "ruff" },
-    { name = "safety" },
-    { name = "types-requests" },
-    { name = "types-setuptools" },
-]
-docs = [
-    { name = "mkdocs" },
-    { name = "mkdocs-gen-files" },
-    { name = "mkdocs-literate-nav" },
-    { name = "mkdocs-material" },
-    { name = "mkdocs-section-index" },
-    { name = "mkdocstrings", extra = ["python"] },
-]
-lint = [
-    { name = "bandit" },
-    { name = "black" },
-    { name = "isort" },
-    { name = "mypy" },
-    { name = "ruff" },
-    { name = "safety" },
-]
-test = [
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "pytest-timeout" },
-    { name = "pytest-xdist" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest-asyncio" },
-    { name = "pytest-mock" },
-    { name = "pytest-qt" },
-    { name = "types-requests" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "bandit", marker = "extra == 'dev'", specifier = ">=1.7.0,<2.0.0" },
-    { name = "bandit", marker = "extra == 'lint'", specifier = ">=1.7.0,<2.0.0" },
-    { name = "black", marker = "extra == 'dev'", specifier = ">=23.0.0,<25.0.0" },
-    { name = "black", marker = "extra == 'lint'", specifier = ">=23.0.0,<25.0.0" },
-    { name = "chromadb", specifier = ">=0.4.0,<1.0.0" },
-    { name = "cohere", specifier = ">=4.0.0,<6.0.0" },
-    { name = "isort", marker = "extra == 'dev'", specifier = ">=5.12.0,<6.0.0" },
-    { name = "isort", marker = "extra == 'lint'", specifier = ">=5.12.0,<6.0.0" },
-    { name = "langchain-text-splitters", specifier = ">=0.0.1,<1.0.0" },
-    { name = "loguru", specifier = ">=0.7.0,<1.0.0" },
-    { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.5.0,<2.0.0" },
-    { name = "mkdocs-gen-files", marker = "extra == 'docs'", specifier = ">=0.5.0,<1.0.0" },
-    { name = "mkdocs-literate-nav", marker = "extra == 'docs'", specifier = ">=0.6.0,<1.0.0" },
-    { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.0.0,<10.0.0" },
-    { name = "mkdocs-section-index", marker = "extra == 'docs'", specifier = ">=0.3.0,<1.0.0" },
-    { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'", specifier = ">=0.24.0,<1.0.0" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.5.0,<2.0.0" },
-    { name = "mypy", marker = "extra == 'lint'", specifier = ">=1.5.0,<2.0.0" },
-    { name = "numpy", specifier = ">=1.24.0,<2.0.0" },
-    { name = "openai", specifier = ">=1.0.0,<2.0.0" },
-    { name = "pinecone", specifier = ">=7.3.0" },
-    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "psutil", specifier = ">=7.1.0" },
-    { name = "pydantic", specifier = ">=2.0.0,<3.0.0" },
-    { name = "pydantic-settings", specifier = ">=2.0.0,<3.0.0" },
-    { name = "pymilvus", specifier = ">=2.6.2" },
-    { name = "pymupdf", specifier = ">=1.23.0,<2.0.0" },
-    { name = "pyside6", specifier = ">=6.9.2" },
-    { name = "pyside6-fluent-widgets", specifier = ">=1.8.7" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0,<9.0.0" },
-    { name = "pytest", marker = "extra == 'test'", specifier = ">=7.0.0,<9.0.0" },
-    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.0.0,<6.0.0" },
-    { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=4.0.0,<6.0.0" },
-    { name = "pytest-timeout", marker = "extra == 'dev'", specifier = ">=2.1.0,<3.0.0" },
-    { name = "pytest-timeout", marker = "extra == 'test'", specifier = ">=2.1.0,<3.0.0" },
-    { name = "pytest-xdist", marker = "extra == 'dev'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "pytest-xdist", marker = "extra == 'test'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "python-dotenv", specifier = ">=1.0.0,<2.0.0" },
-    { name = "qdrant-client", specifier = ">=1.12.1" },
-    { name = "rich", specifier = ">=13.0.0,<14.0.0" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1.0,<1.0.0" },
-    { name = "ruff", marker = "extra == 'lint'", specifier = ">=0.1.0,<1.0.0" },
-    { name = "safety", marker = "extra == 'dev'", specifier = ">=2.3.0,<4.0.0" },
-    { name = "safety", marker = "extra == 'lint'", specifier = ">=2.3.0,<4.0.0" },
-    { name = "sentence-transformers", specifier = ">=2.2.0,<3.0.0" },
-    { name = "sentencepiece", specifier = ">=0.2.1" },
-    { name = "tensorflow", specifier = ">=2.13.0,<3.0.0" },
-    { name = "tensorflow-hub", specifier = ">=0.15.0,<1.0.0" },
-    { name = "torch", specifier = ">=2.0.0,<3.0.0" },
-    { name = "tqdm", specifier = ">=4.65.0,<5.0.0" },
-    { name = "transformers", specifier = ">=4.21.0,<5.0.0" },
-    { name = "typer", specifier = ">=0.9.0,<1.0.0" },
-    { name = "types-requests", marker = "extra == 'dev'", specifier = ">=2.32.0" },
-    { name = "types-setuptools", marker = "extra == 'dev'", specifier = ">=80.0.0" },
-    { name = "weaviate-client", specifier = ">=4.0.0,<5.0.0" },
-]
-provides-extras = ["dev", "docs", "lint", "test"]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pytest-asyncio", specifier = ">=1.2.0" },
-    { name = "pytest-mock", specifier = ">=3.15.1" },
-    { name = "pytest-qt", specifier = ">=4.5.0" },
-    { name = "types-requests", specifier = ">=2.32.4.20250913" },
-]
-
-[[package]]
 name = "pillow"
 version = "11.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -8250,6 +8103,153 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/53/66/a435d9ae49850b2f071f7ebd8119dd4e84872b01630d6736761e6e7fd847/validators-0.35.0.tar.gz", hash = "sha256:992d6c48a4e77c81f1b4daba10d16c3a9bb0dbb79b3a19ea847ff0928e70497a", size = 73399, upload-time = "2025-05-01T05:42:06.7Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fa/6e/3e955517e22cbdd565f2f8b2e73d52528b14b8bcfdb04f62466b071de847/validators-0.35.0-py3-none-any.whl", hash = "sha256:e8c947097eae7892cb3d26868d637f79f47b4a0554bc6b80065dfe5aac3705dd", size = 44712, upload-time = "2025-05-01T05:42:04.203Z" },
+]
+
+[[package]]
+name = "vectorflow"
+source = { editable = "." }
+dependencies = [
+    { name = "chromadb" },
+    { name = "cohere" },
+    { name = "langchain-text-splitters" },
+    { name = "loguru" },
+    { name = "numpy" },
+    { name = "openai" },
+    { name = "pinecone" },
+    { name = "psutil" },
+    { name = "pydantic" },
+    { name = "pydantic-settings" },
+    { name = "pymilvus" },
+    { name = "pymupdf" },
+    { name = "pyside6" },
+    { name = "pyside6-fluent-widgets" },
+    { name = "python-dotenv" },
+    { name = "qdrant-client" },
+    { name = "rich" },
+    { name = "sentence-transformers" },
+    { name = "sentencepiece" },
+    { name = "tensorflow" },
+    { name = "tensorflow-hub" },
+    { name = "torch" },
+    { name = "tqdm" },
+    { name = "transformers" },
+    { name = "typer" },
+    { name = "weaviate-client" },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "bandit" },
+    { name = "black" },
+    { name = "isort" },
+    { name = "mypy" },
+    { name = "pre-commit" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "pytest-timeout" },
+    { name = "pytest-xdist" },
+    { name = "ruff" },
+    { name = "safety" },
+    { name = "types-requests" },
+    { name = "types-setuptools" },
+]
+docs = [
+    { name = "mkdocs" },
+    { name = "mkdocs-gen-files" },
+    { name = "mkdocs-literate-nav" },
+    { name = "mkdocs-material" },
+    { name = "mkdocs-section-index" },
+    { name = "mkdocstrings", extra = ["python"] },
+]
+lint = [
+    { name = "bandit" },
+    { name = "black" },
+    { name = "isort" },
+    { name = "mypy" },
+    { name = "ruff" },
+    { name = "safety" },
+]
+test = [
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "pytest-timeout" },
+    { name = "pytest-xdist" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest-asyncio" },
+    { name = "pytest-mock" },
+    { name = "pytest-qt" },
+    { name = "types-requests" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "bandit", marker = "extra == 'dev'", specifier = ">=1.7.0,<2.0.0" },
+    { name = "bandit", marker = "extra == 'lint'", specifier = ">=1.7.0,<2.0.0" },
+    { name = "black", marker = "extra == 'dev'", specifier = ">=23.0.0,<25.0.0" },
+    { name = "black", marker = "extra == 'lint'", specifier = ">=23.0.0,<25.0.0" },
+    { name = "chromadb", specifier = ">=0.4.0,<1.0.0" },
+    { name = "cohere", specifier = ">=4.0.0,<6.0.0" },
+    { name = "isort", marker = "extra == 'dev'", specifier = ">=5.12.0,<6.0.0" },
+    { name = "isort", marker = "extra == 'lint'", specifier = ">=5.12.0,<6.0.0" },
+    { name = "langchain-text-splitters", specifier = ">=0.0.1,<1.0.0" },
+    { name = "loguru", specifier = ">=0.7.0,<1.0.0" },
+    { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.5.0,<2.0.0" },
+    { name = "mkdocs-gen-files", marker = "extra == 'docs'", specifier = ">=0.5.0,<1.0.0" },
+    { name = "mkdocs-literate-nav", marker = "extra == 'docs'", specifier = ">=0.6.0,<1.0.0" },
+    { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.0.0,<10.0.0" },
+    { name = "mkdocs-section-index", marker = "extra == 'docs'", specifier = ">=0.3.0,<1.0.0" },
+    { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'", specifier = ">=0.24.0,<1.0.0" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.5.0,<2.0.0" },
+    { name = "mypy", marker = "extra == 'lint'", specifier = ">=1.5.0,<2.0.0" },
+    { name = "numpy", specifier = ">=1.24.0,<2.0.0" },
+    { name = "openai", specifier = ">=1.0.0,<2.0.0" },
+    { name = "pinecone", specifier = ">=7.3.0" },
+    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.0.0,<4.0.0" },
+    { name = "psutil", specifier = ">=7.1.0" },
+    { name = "pydantic", specifier = ">=2.0.0,<3.0.0" },
+    { name = "pydantic-settings", specifier = ">=2.0.0,<3.0.0" },
+    { name = "pymilvus", specifier = ">=2.6.2" },
+    { name = "pymupdf", specifier = ">=1.23.0,<2.0.0" },
+    { name = "pyside6", specifier = ">=6.9.2" },
+    { name = "pyside6-fluent-widgets", specifier = ">=1.8.7" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0,<9.0.0" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=7.0.0,<9.0.0" },
+    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.0.0,<6.0.0" },
+    { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=4.0.0,<6.0.0" },
+    { name = "pytest-timeout", marker = "extra == 'dev'", specifier = ">=2.1.0,<3.0.0" },
+    { name = "pytest-timeout", marker = "extra == 'test'", specifier = ">=2.1.0,<3.0.0" },
+    { name = "pytest-xdist", marker = "extra == 'dev'", specifier = ">=3.0.0,<4.0.0" },
+    { name = "pytest-xdist", marker = "extra == 'test'", specifier = ">=3.0.0,<4.0.0" },
+    { name = "python-dotenv", specifier = ">=1.0.0,<2.0.0" },
+    { name = "qdrant-client", specifier = ">=1.12.1" },
+    { name = "rich", specifier = ">=13.0.0,<14.0.0" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1.0,<1.0.0" },
+    { name = "ruff", marker = "extra == 'lint'", specifier = ">=0.1.0,<1.0.0" },
+    { name = "safety", marker = "extra == 'dev'", specifier = ">=2.3.0,<4.0.0" },
+    { name = "safety", marker = "extra == 'lint'", specifier = ">=2.3.0,<4.0.0" },
+    { name = "sentence-transformers", specifier = ">=2.2.0,<3.0.0" },
+    { name = "sentencepiece", specifier = ">=0.2.1" },
+    { name = "tensorflow", specifier = ">=2.13.0,<3.0.0" },
+    { name = "tensorflow-hub", specifier = ">=0.15.0,<1.0.0" },
+    { name = "torch", specifier = ">=2.0.0,<3.0.0" },
+    { name = "tqdm", specifier = ">=4.65.0,<5.0.0" },
+    { name = "transformers", specifier = ">=4.21.0,<5.0.0" },
+    { name = "typer", specifier = ">=0.9.0,<1.0.0" },
+    { name = "types-requests", marker = "extra == 'dev'", specifier = ">=2.32.0" },
+    { name = "types-setuptools", marker = "extra == 'dev'", specifier = ">=80.0.0" },
+    { name = "weaviate-client", specifier = ">=4.0.0,<5.0.0" },
+]
+provides-extras = ["dev", "docs", "lint", "test"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest-asyncio", specifier = ">=1.2.0" },
+    { name = "pytest-mock", specifier = ">=3.15.1" },
+    { name = "pytest-qt", specifier = ">=4.5.0" },
+    { name = "types-requests", specifier = ">=2.32.4.20250913" },
 ]
 
 [[package]]

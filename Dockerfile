@@ -1,4 +1,4 @@
-# Multi-stage build for PDF Vector System
+# Multi-stage build for VectorFlow
 FROM python:3.11-slim as builder
 
 # Set environment variables
@@ -52,7 +52,7 @@ WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv
 
 # Copy application code
-COPY pdf_vector_system/ ./pdf_vector_system/
+COPY vectorflow/ ./vectorflow/
 COPY examples/ ./examples/
 COPY README.md LICENSE ./
 
@@ -65,10 +65,10 @@ USER appuser
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import pdf_vector_system; print('OK')" || exit 1
+    CMD python -c "import vectorflow; print('OK')" || exit 1
 
 # Default command
-CMD ["pdf-vector", "--help"]
+CMD ["vectorflow", "--help"]
 
 # Development stage
 FROM production as development

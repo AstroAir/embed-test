@@ -2,8 +2,8 @@
 
 from unittest.mock import ANY, Mock, patch
 
-from pdf_vector_system.core.config.settings import TextProcessingConfig
-from pdf_vector_system.core.pdf.text_processor import (
+from vectorflow.core.config.settings import TextProcessingConfig
+from vectorflow.core.pdf.text_processor import (
     TextChunk,
     TextCleaningStats,
     TextProcessor,
@@ -208,7 +208,7 @@ class TestTextProcessor:
         # Structure may be modified
         assert cleaned_text is not None
 
-    @patch("pdf_vector_system.pdf.text_processor.RecursiveCharacterTextSplitter")
+    @patch("vectorflow.pdf.text_processor.RecursiveCharacterTextSplitter")
     def test_chunk_text_basic(self, mock_splitter_class):
         """Test basic text chunking."""
         # Mock the text splitter
@@ -241,7 +241,7 @@ class TestTextProcessor:
             is_separator_regex=ANY,
         )
 
-    @patch("pdf_vector_system.pdf.text_processor.RecursiveCharacterTextSplitter")
+    @patch("vectorflow.pdf.text_processor.RecursiveCharacterTextSplitter")
     def test_chunk_text_custom_parameters(self, mock_splitter_class):
         """Test text chunking with custom parameters."""
         mock_splitter = Mock()
@@ -276,7 +276,7 @@ class TestTextProcessor:
 
         assert len(chunks) == 0
 
-    @patch("pdf_vector_system.pdf.text_processor.RecursiveCharacterTextSplitter")
+    @patch("vectorflow.pdf.text_processor.RecursiveCharacterTextSplitter")
     def test_chunk_text_character_positions(self, mock_splitter_class):
         """Test that chunks have correct character positions."""
         mock_splitter = Mock()

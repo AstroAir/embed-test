@@ -11,10 +11,10 @@ from PySide6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 # Import GUI components
-from pdf_vector_system.core.config.settings import Config
-from pdf_vector_system.core.pipeline import PDFVectorPipeline
-from pdf_vector_system.gui.app import PDFVectorGUIApp
-from pdf_vector_system.gui.main_window import MainWindow
+from vectorflow.core.config.settings import Config
+from vectorflow.core.pipeline import PDFVectorPipeline
+from vectorflow.gui.app import PDFVectorGUIApp
+from vectorflow.gui.main_window import MainWindow
 
 
 @pytest.fixture(scope="session")

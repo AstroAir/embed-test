@@ -4,8 +4,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.embeddings.base import EmbeddingServiceError
-from pdf_vector_system.core.embeddings.gemini_service import GeminiEmbeddingService
+from vectorflow.core.embeddings.base import EmbeddingServiceError
+from vectorflow.core.embeddings.gemini_service import GeminiEmbeddingService
 
 
 class TestGeminiEmbeddingService:
@@ -61,7 +61,7 @@ class TestGeminiEmbeddingService:
                 model_name=self.model_name, api_key=self.api_key, use_vertex_ai=True
             )
 
-    @patch("pdf_vector_system.embeddings.gemini_service.requests.post")
+    @patch("vectorflow.embeddings.gemini_service.requests.post")
     def test_embed_single_google_ai(self, mock_post):
         """Test single text embedding with Google AI API."""
         # Mock response
@@ -84,7 +84,7 @@ class TestGeminiEmbeddingService:
         assert "x-goog-api-key" in call_args[1]["headers"]
         assert call_args[1]["headers"]["x-goog-api-key"] == self.api_key
 
-    @patch("pdf_vector_system.embeddings.gemini_service.requests.post")
+    @patch("vectorflow.embeddings.gemini_service.requests.post")
     def test_embed_texts_batch_google_ai(self, mock_post):
         """Test batch text embedding with Google AI API."""
         # Mock response for batch request
@@ -108,7 +108,7 @@ class TestGeminiEmbeddingService:
         assert result.model_name == self.model_name
         assert result.embedding_dimension == 3
 
-    @patch("pdf_vector_system.embeddings.gemini_service.requests.post")
+    @patch("vectorflow.embeddings.gemini_service.requests.post")
     def test_embed_texts_vertex_ai(self, mock_post):
         """Test text embedding with Vertex AI."""
         # Mock response for Vertex AI
@@ -142,7 +142,7 @@ class TestGeminiEmbeddingService:
         assert "Authorization" in call_args[1]["headers"]
         assert call_args[1]["headers"]["Authorization"] == f"Bearer {self.api_key}"
 
-    @patch("pdf_vector_system.embeddings.gemini_service.requests.post")
+    @patch("vectorflow.embeddings.gemini_service.requests.post")
     def test_api_error_handling(self, mock_post):
         """Test API error handling."""
         # Mock error response
@@ -187,7 +187,7 @@ class TestGeminiEmbeddingService:
         assert info["location"] == "us-central1"
         assert info["has_api_key"] is True
 
-    @patch("pdf_vector_system.embeddings.gemini_service.requests.post")
+    @patch("vectorflow.embeddings.gemini_service.requests.post")
     def test_health_check_success(self, mock_post):
         """Test successful health check."""
         # Mock successful response
@@ -204,7 +204,7 @@ class TestGeminiEmbeddingService:
 
         assert service.health_check() is True
 
-    @patch("pdf_vector_system.embeddings.gemini_service.requests.post")
+    @patch("vectorflow.embeddings.gemini_service.requests.post")
     def test_health_check_failure(self, mock_post):
         """Test failed health check."""
         # Mock error response

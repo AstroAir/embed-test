@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.dialogs.settings_dialog import SettingsDialog
+from vectorflow.gui.dialogs.settings_dialog import SettingsDialog
 
 
 class TestSettingsDialog:

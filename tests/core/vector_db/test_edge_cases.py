@@ -4,10 +4,10 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.vector_db.config import ChromaDBConfig
-from pdf_vector_system.core.vector_db.converters import VectorDBConverter
-from pdf_vector_system.core.vector_db.factory import VectorDBFactory
-from pdf_vector_system.core.vector_db.models import (
+from vectorflow.core.vector_db.config import ChromaDBConfig
+from vectorflow.core.vector_db.converters import VectorDBConverter
+from vectorflow.core.vector_db.factory import VectorDBFactory
+from vectorflow.core.vector_db.models import (
     DocumentChunk,
     InvalidQueryError,
     SearchQuery,

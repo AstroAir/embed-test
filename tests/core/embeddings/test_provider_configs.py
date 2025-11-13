@@ -1,15 +1,11 @@
 """Tests for provider configuration utilities."""
 
-from pdf_vector_system.core.embeddings.provider_configs import (
+from vectorflow.core.embeddings.provider_configs import (
     ProviderBatchConfigs,
     ProviderHealthConfigs,
     ProviderRetryConfigs,
 )
-from pdf_vector_system.core.embeddings.retry import (
-    FailureType,
-    RetryConfig,
-    RetryStrategy,
-)
+from vectorflow.core.embeddings.retry import FailureType, RetryConfig, RetryStrategy
 
 
 class TestProviderRetryConfigs:

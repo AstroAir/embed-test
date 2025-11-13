@@ -3,8 +3,8 @@
 import pytest
 from PySide6.QtWidgets import QApplication
 
-from pdf_vector_system.core.config.settings import Config
-from pdf_vector_system.gui.app import PDFVectorGUIApp
+from vectorflow.core.config.settings import Config
+from vectorflow.gui.app import PDFVectorGUIApp
 
 
 @pytest.fixture

@@ -4,7 +4,7 @@ import time
 
 import pytest
 
-from pdf_vector_system.core.vector_db.models import (
+from vectorflow.core.vector_db.models import (
     CollectionInfo,
     CollectionNotFoundError,
     DocumentChunk,

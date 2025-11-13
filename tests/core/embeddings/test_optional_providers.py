@@ -5,8 +5,8 @@ from unittest.mock import Mock, patch
 import numpy as np
 import pytest
 
-from pdf_vector_system.core.config.settings import EmbeddingConfig, EmbeddingModelType
-from pdf_vector_system.core.embeddings.base import EmbeddingResult
+from vectorflow.core.config.settings import EmbeddingConfig, EmbeddingModelType
+from vectorflow.core.embeddings.base import EmbeddingResult
 
 
 class TestCohereService:
@@ -33,21 +33,17 @@ class TestCohereService:
     def test_cohere_service_import(self):
         """Test importing Cohere service."""
         try:
-            from pdf_vector_system.core.embeddings.cohere_service import (
-                CohereEmbeddingService,
-            )
+            from vectorflow.core.embeddings.cohere_service import CohereEmbeddingService
 
             assert CohereEmbeddingService is not None
         except ImportError:
             pytest.skip("Cohere not available")
 
-    @patch("pdf_vector_system.core.embeddings.cohere_service.cohere")
+    @patch("vectorflow.core.embeddings.cohere_service.cohere")
     def test_cohere_service_initialization(self, mock_cohere, cohere_config):
         """Test Cohere service initialization."""
         try:
-            from pdf_vector_system.core.embeddings.cohere_service import (
-                CohereEmbeddingService,
-            )
+            from vectorflow.core.embeddings.cohere_service import CohereEmbeddingService
         except ImportError:
             pytest.skip("Cohere not available")
 
@@ -61,13 +57,11 @@ class TestCohereService:
             api_key="test-cohere-key", base_url=None, timeout=60
         )
 
-    @patch("pdf_vector_system.core.embeddings.cohere_service.cohere")
+    @patch("vectorflow.core.embeddings.cohere_service.cohere")
     def test_cohere_embed_single(self, mock_cohere, cohere_config, mock_cohere_client):
         """Test Cohere single embedding."""
         try:
-            from pdf_vector_system.core.embeddings.cohere_service import (
-                CohereEmbeddingService,
-            )
+            from vectorflow.core.embeddings.cohere_service import CohereEmbeddingService
         except ImportError:
             pytest.skip("Cohere not available")
 
@@ -80,13 +74,11 @@ class TestCohereService:
         assert len(result) == 1024
         mock_cohere_client.embed.assert_called_once()
 
-    @patch("pdf_vector_system.core.embeddings.cohere_service.cohere")
+    @patch("vectorflow.core.embeddings.cohere_service.cohere")
     def test_cohere_embed_batch(self, mock_cohere, cohere_config, mock_cohere_client):
         """Test Cohere batch embedding."""
         try:
-            from pdf_vector_system.core.embeddings.cohere_service import (
-                CohereEmbeddingService,
-            )
+            from vectorflow.core.embeddings.cohere_service import CohereEmbeddingService
         except ImportError:
             pytest.skip("Cohere not available")
 
@@ -100,7 +92,7 @@ class TestCohereService:
         mock_cohere.Client.return_value = mock_cohere_client
 
         service = CohereEmbeddingService(cohere_config)
-        from pdf_vector_system.core.embeddings.base import EmbeddingBatch
+        from vectorflow.core.embeddings.base import EmbeddingBatch
 
         batch = EmbeddingBatch(texts=["text 1", "text 2"])
         result = service.embed_batch(batch)
@@ -124,7 +116,7 @@ class TestHuggingFaceService:
     def test_huggingface_service_import(self):
         """Test importing HuggingFace service."""
         try:
-            from pdf_vector_system.core.embeddings.huggingface_service import (
+            from vectorflow.core.embeddings.huggingface_service import (
                 HuggingFaceEmbeddingService,
             )
 
@@ -139,7 +131,7 @@ class TestHuggingFaceService:
     ):
         """Test HuggingFace service initialization."""
         try:
-            from pdf_vector_system.core.embeddings.huggingface_service import (
+            from vectorflow.core.embeddings.huggingface_service import (
                 HuggingFaceEmbeddingService,
             )
         except ImportError:
@@ -166,7 +158,7 @@ class TestHuggingFaceService:
     ):
         """Test HuggingFace single embedding."""
         try:
-            from pdf_vector_system.core.embeddings.huggingface_service import (
+            from vectorflow.core.embeddings.huggingface_service import (
                 HuggingFaceEmbeddingService,
             )
         except ImportError:
@@ -227,21 +219,17 @@ class TestGoogleUSEService:
     def test_google_use_service_import(self):
         """Test importing Google USE service."""
         try:
-            from pdf_vector_system.core.embeddings.google_use_service import (
-                GoogleUSEService,
-            )
+            from vectorflow.core.embeddings.google_use_service import GoogleUSEService
 
             assert GoogleUSEService is not None
         except ImportError:
             pytest.skip("TensorFlow/TensorFlow Hub not available")
 
-    @patch("pdf_vector_system.core.embeddings.google_use_service.hub.load")
+    @patch("vectorflow.core.embeddings.google_use_service.hub.load")
     def test_google_use_service_initialization(self, mock_hub, google_use_config):
         """Test Google USE service initialization."""
         try:
-            from pdf_vector_system.core.embeddings.google_use_service import (
-                GoogleUSEService,
-            )
+            from vectorflow.core.embeddings.google_use_service import GoogleUSEService
         except ImportError:
             pytest.skip("TensorFlow/TensorFlow Hub not available")
 
@@ -260,13 +248,11 @@ class TestGoogleUSEService:
         _ = service.model
         mock_hub.load.assert_called_once()
 
-    @patch("pdf_vector_system.core.embeddings.google_use_service.hub.load")
+    @patch("vectorflow.core.embeddings.google_use_service.hub.load")
     def test_google_use_embed_single(self, mock_hub, google_use_config):
         """Test Google USE single embedding."""
         try:
-            from pdf_vector_system.core.embeddings.google_use_service import (
-                GoogleUSEService,
-            )
+            from vectorflow.core.embeddings.google_use_service import GoogleUSEService
         except ImportError:
             pytest.skip("TensorFlow/TensorFlow Hub not available")
 
@@ -305,7 +291,7 @@ class TestAzureOpenAIService:
     def test_azure_openai_service_import(self):
         """Test importing Azure OpenAI service."""
         try:
-            from pdf_vector_system.core.embeddings.azure_openai_service import (
+            from vectorflow.core.embeddings.azure_openai_service import (
                 AzureOpenAIEmbeddingService,
             )
 
@@ -319,7 +305,7 @@ class TestAzureOpenAIService:
     ):
         """Test Azure OpenAI service initialization."""
         try:
-            from pdf_vector_system.core.embeddings.azure_openai_service import (
+            from vectorflow.core.embeddings.azure_openai_service import (
                 AzureOpenAIEmbeddingService,
             )
         except ImportError:
@@ -350,7 +336,7 @@ class TestAzureOpenAIService:
     def test_azure_openai_embed_single(self, mock_azure_openai, azure_openai_config):
         """Test Azure OpenAI single embedding."""
         try:
-            from pdf_vector_system.core.embeddings.azure_openai_service import (
+            from vectorflow.core.embeddings.azure_openai_service import (
                 AzureOpenAIEmbeddingService,
             )
         except ImportError:
@@ -386,7 +372,7 @@ class TestProviderAvailability:
 
     def test_get_available_providers(self):
         """Test getting available providers."""
-        from pdf_vector_system.core.embeddings import get_available_providers
+        from vectorflow.core.embeddings import get_available_providers
 
         providers = get_available_providers()
 
@@ -407,7 +393,7 @@ class TestProviderAvailability:
 
     def test_check_provider_dependencies(self):
         """Test checking provider dependencies."""
-        from pdf_vector_system.core.embeddings import check_provider_dependencies
+        from vectorflow.core.embeddings import check_provider_dependencies
 
         missing = check_provider_dependencies()
 
@@ -421,7 +407,7 @@ class TestProviderAvailability:
 
     def test_provider_availability_consistency(self):
         """Test consistency between availability and dependencies."""
-        from pdf_vector_system.core.embeddings import (
+        from vectorflow.core.embeddings import (
             check_provider_dependencies,
             get_available_providers,
         )

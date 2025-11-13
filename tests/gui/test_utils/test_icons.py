@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.utils.icons import IconType
+from vectorflow.gui.utils.icons import IconType
 
 
 class TestIcons:

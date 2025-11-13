@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.widgets.status_widget import StatusWidget
+from vectorflow.gui.widgets.status_widget import StatusWidget
 
 
 class TestStatusWidget:

@@ -5,8 +5,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.config.settings import ChromaDBConfig as OldChromaDBConfig
-from pdf_vector_system.core.vector_db.compatibility import (
+from vectorflow.core.config.settings import ChromaDBConfig as OldChromaDBConfig
+from vectorflow.core.vector_db.compatibility import (
     ChromaClient,
     CompatibilityHelper,
     CompatibilityWarning,
@@ -19,8 +19,8 @@ from pdf_vector_system.core.vector_db.compatibility import (
     migrate_chroma_config,
     setup_compatibility_warnings,
 )
-from pdf_vector_system.core.vector_db.config import ChromaDBConfig as NewChromaDBConfig
-from pdf_vector_system.core.vector_db.models import SearchQuery
+from vectorflow.core.vector_db.config import ChromaDBConfig as NewChromaDBConfig
+from vectorflow.core.vector_db.models import SearchQuery
 
 
 class TestCompatibilityWarning:
@@ -39,7 +39,7 @@ class TestCompatibilityWarning:
 class TestCreateChromaClientLegacy:
     """Test create_chroma_client_legacy function."""
 
-    @patch("pdf_vector_system.vector_db.compatibility.ChromaDBClient")
+    @patch("vectorflow.vector_db.compatibility.ChromaDBClient")
     def test_creates_client_with_defaults(self, mock_client_class):
         """Test creating client with default parameters."""
         mock_client = Mock()
@@ -55,7 +55,7 @@ class TestCreateChromaClientLegacy:
             assert issubclass(w[0].category, CompatibilityWarning)
             assert "deprecated" in str(w[0].message).lower()
 
-    @patch("pdf_vector_system.vector_db.compatibility.ChromaDBClient")
+    @patch("vectorflow.vector_db.compatibility.ChromaDBClient")
     def test_creates_client_with_custom_params(
         self, mock_client_class, vector_db_temp_dir
     ):
@@ -85,7 +85,7 @@ class TestCreateChromaClientLegacy:
 
     def test_warning_stacklevel(self):
         """Test that warning has correct stack level."""
-        with patch("pdf_vector_system.vector_db.compatibility.ChromaDBClient"):
+        with patch("vectorflow.vector_db.compatibility.ChromaDBClient"):
             with warnings.catch_warnings(record=True) as w:
                 warnings.simplefilter("always")
 
@@ -137,7 +137,7 @@ class TestConvertOldConfigToNew:
 class TestLegacyChromaDBClient:
     """Test LegacyChromaDBClient class."""
 
-    @patch("pdf_vector_system.vector_db.compatibility.ChromaDBClient")
+    @patch("vectorflow.vector_db.compatibility.ChromaDBClient")
     def test_initialization_with_defaults(self, mock_client_class):
         """Test LegacyChromaDBClient initialization with defaults."""
         mock_client = Mock()
@@ -152,7 +152,7 @@ class TestLegacyChromaDBClient:
             assert len(w) == 1
             assert issubclass(w[0].category, CompatibilityWarning)
 
-    @patch("pdf_vector_system.vector_db.compatibility.ChromaDBClient")
+    @patch("vectorflow.vector_db.compatibility.ChromaDBClient")
     def test_initialization_with_custom_params(
         self, mock_client_class, vector_db_temp_dir
     ):
@@ -172,7 +172,7 @@ class TestLegacyChromaDBClient:
 
             assert legacy_client._client == mock_client
 
-    @patch("pdf_vector_system.vector_db.compatibility.ChromaDBClient")
+    @patch("vectorflow.vector_db.compatibility.ChromaDBClient")
     def test_attribute_delegation(self, mock_client_class):
         """Test that attributes are delegated to wrapped client."""
         mock_client = Mock()
@@ -193,7 +193,7 @@ class TestLegacyChromaDBClient:
             # Test property delegation
             assert legacy_client.some_property == "test_property"
 
-    @patch("pdf_vector_system.vector_db.compatibility.ChromaDBClient")
+    @patch("vectorflow.vector_db.compatibility.ChromaDBClient")
     def test_add_documents_legacy_method(
         self, mock_client_class, sample_document_chunks
     ):
@@ -220,7 +220,7 @@ class TestLegacyChromaDBClient:
                 "add_documents() is deprecated" in str(warning.message) for warning in w
             )
 
-    @patch("pdf_vector_system.vector_db.compatibility.ChromaDBClient")
+    @patch("vectorflow.vector_db.compatibility.ChromaDBClient")
     def test_search_documents_legacy_method(
         self, mock_client_class, sample_search_results
     ):

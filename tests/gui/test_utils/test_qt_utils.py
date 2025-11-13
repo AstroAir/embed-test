@@ -6,8 +6,8 @@ import pytest
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication, QMessageBox, QWidget
 
-from pdf_vector_system.gui.utils.icons import IconType
-from pdf_vector_system.gui.utils.qt_utils import (
+from vectorflow.gui.utils.icons import IconType
+from vectorflow.gui.utils.qt_utils import (
     center_window,
     set_window_icon,
     show_error_message,
@@ -67,9 +67,7 @@ class TestQtUtils:
         # Mock get_icon function
         mock_icon = Mock(spec=QIcon)
 
-        with patch(
-            "pdf_vector_system.gui.utils.qt_utils.get_icon", return_value=mock_icon
-        ):
+        with patch("vectorflow.gui.utils.qt_utils.get_icon", return_value=mock_icon):
             set_window_icon(widget, IconType.APP)
 
             # Check icon was set
@@ -181,7 +179,7 @@ class TestQtUtils:
         qtbot.addWidget(widget)
 
         # Mock get_icon to return None for invalid type
-        with patch("pdf_vector_system.gui.utils.qt_utils.get_icon", return_value=None):
+        with patch("vectorflow.gui.utils.qt_utils.get_icon", return_value=None):
             # Should handle gracefully
             set_window_icon(widget, "invalid_type")
 

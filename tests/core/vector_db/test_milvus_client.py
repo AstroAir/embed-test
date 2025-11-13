@@ -4,8 +4,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.vector_db.milvus_client import MilvusClient
-from pdf_vector_system.core.vector_db.models import (
+from vectorflow.core.vector_db.milvus_client import MilvusClient
+from vectorflow.core.vector_db.models import (
     CollectionInfo,
     SearchQuery,
     SearchResult,
@@ -19,7 +19,7 @@ class TestMilvusClient:
     def test_initialization(self, milvus_config_test):
         """Test MilvusClient initialization."""
         with patch(
-            "pdf_vector_system.vector_db.milvus_client.connections"
+            "vectorflow.vector_db.milvus_client.connections"
         ) as mock_connections:
             mock_connections.connect.return_value = None
 
@@ -31,7 +31,7 @@ class TestMilvusClient:
     def test_lazy_client_initialization(self, milvus_config_test):
         """Test lazy client initialization."""
         with patch(
-            "pdf_vector_system.vector_db.milvus_client.connections"
+            "vectorflow.vector_db.milvus_client.connections"
         ) as mock_connections:
             mock_connections.connect.return_value = None
 
@@ -46,13 +46,11 @@ class TestMilvusClient:
     def test_create_collection_success(self, milvus_config_test):
         """Test successful collection creation."""
         with (
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
             patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.Collection"
+                "vectorflow.vector_db.milvus_client.Collection"
             ) as mock_collection_class,
-            patch("pdf_vector_system.vector_db.milvus_client.utility") as mock_utility,
+            patch("vectorflow.vector_db.milvus_client.utility") as mock_utility,
         ):
             mock_connections.connect.return_value = None
             mock_utility.has_collection.return_value = False
@@ -68,10 +66,8 @@ class TestMilvusClient:
     def test_create_collection_already_exists(self, milvus_config_test):
         """Test collection creation when collection already exists."""
         with (
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch("pdf_vector_system.vector_db.milvus_client.utility") as mock_utility,
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
+            patch("vectorflow.vector_db.milvus_client.utility") as mock_utility,
         ):
             mock_connections.connect.return_value = None
             mock_utility.has_collection.return_value = True
@@ -84,10 +80,8 @@ class TestMilvusClient:
     def test_delete_collection_success(self, milvus_config_test):
         """Test successful collection deletion."""
         with (
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch("pdf_vector_system.vector_db.milvus_client.utility") as mock_utility,
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
+            patch("vectorflow.vector_db.milvus_client.utility") as mock_utility,
         ):
             mock_connections.connect.return_value = None
             mock_utility.drop_collection.return_value = None
@@ -101,10 +95,8 @@ class TestMilvusClient:
     def test_list_collections(self, milvus_config_test):
         """Test listing collections."""
         with (
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch("pdf_vector_system.vector_db.milvus_client.utility") as mock_utility,
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
+            patch("vectorflow.vector_db.milvus_client.utility") as mock_utility,
         ):
             mock_connections.connect.return_value = None
             mock_utility.list_collections.return_value = [
@@ -121,10 +113,8 @@ class TestMilvusClient:
     def test_collection_exists_true(self, milvus_config_test):
         """Test collection_exists returns True for existing collection."""
         with (
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch("pdf_vector_system.vector_db.milvus_client.utility") as mock_utility,
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
+            patch("vectorflow.vector_db.milvus_client.utility") as mock_utility,
         ):
             mock_connections.connect.return_value = None
             mock_utility.has_collection.return_value = True
@@ -137,10 +127,8 @@ class TestMilvusClient:
     def test_collection_exists_false(self, milvus_config_test):
         """Test collection_exists returns False for non-existing collection."""
         with (
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch("pdf_vector_system.vector_db.milvus_client.utility") as mock_utility,
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
+            patch("vectorflow.vector_db.milvus_client.utility") as mock_utility,
         ):
             mock_connections.connect.return_value = None
             mock_utility.has_collection.return_value = False
@@ -153,11 +141,9 @@ class TestMilvusClient:
     def test_add_chunks_success(self, milvus_config_test, sample_document_chunks):
         """Test successful chunk addition."""
         with (
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
             patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.Collection"
+                "vectorflow.vector_db.milvus_client.Collection"
             ) as mock_collection_class,
         ):
             mock_connections.connect.return_value = None
@@ -177,11 +163,9 @@ class TestMilvusClient:
     ):
         """Test chunk addition with custom collection name."""
         with (
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
             patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.Collection"
+                "vectorflow.vector_db.milvus_client.Collection"
             ) as mock_collection_class,
         ):
             mock_connections.connect.return_value = None
@@ -202,11 +186,9 @@ class TestMilvusClient:
     def test_search_success(self, milvus_config_test, sample_search_query):
         """Test successful search operation."""
         with (
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
             patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.Collection"
+                "vectorflow.vector_db.milvus_client.Collection"
             ) as mock_collection_class,
         ):
             mock_connections.connect.return_value = None
@@ -248,11 +230,9 @@ class TestMilvusClient:
         )
 
         with (
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
             patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.Collection"
+                "vectorflow.vector_db.milvus_client.Collection"
             ) as mock_collection_class,
         ):
             mock_connections.connect.return_value = None
@@ -272,7 +252,7 @@ class TestMilvusClient:
     ):
         """Test search without providing query embedding."""
         with patch(
-            "pdf_vector_system.vector_db.milvus_client.connections"
+            "vectorflow.vector_db.milvus_client.connections"
         ) as mock_connections:
             mock_connections.connect.return_value = None
 
@@ -284,11 +264,9 @@ class TestMilvusClient:
     def test_delete_chunks_success(self, milvus_config_test):
         """Test successful chunk deletion."""
         with (
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
             patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.Collection"
+                "vectorflow.vector_db.milvus_client.Collection"
             ) as mock_collection_class,
         ):
             mock_connections.connect.return_value = None
@@ -306,7 +284,7 @@ class TestMilvusClient:
 
     def test_get_chunk_basic(self, milvus_config_test):
         """Test basic get_chunk functionality without complex mocking."""
-        with patch("pdf_vector_system.vector_db.milvus_client.connections"):
+        with patch("vectorflow.vector_db.milvus_client.connections"):
             client = MilvusClient(milvus_config_test)
 
             # Test that method exists and can be called
@@ -317,11 +295,9 @@ class TestMilvusClient:
     def test_update_chunk_success(self, milvus_config_test, sample_document_chunks):
         """Test successful chunk update."""
         with (
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
             patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.Collection"
+                "vectorflow.vector_db.milvus_client.Collection"
             ) as mock_collection_class,
         ):
             mock_connections.connect.return_value = None
@@ -338,11 +314,9 @@ class TestMilvusClient:
     def test_get_collection_info(self, milvus_config_test):
         """Test getting collection information."""
         with (
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
             patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.Collection"
+                "vectorflow.vector_db.milvus_client.Collection"
             ) as mock_collection_class,
         ):
             mock_connections.connect.return_value = None
@@ -359,7 +333,7 @@ class TestMilvusClient:
 
     def test_get_document_info_basic(self, milvus_config_test):
         """Test basic get_document_info functionality without complex mocking."""
-        with patch("pdf_vector_system.vector_db.milvus_client.connections"):
+        with patch("vectorflow.vector_db.milvus_client.connections"):
             client = MilvusClient(milvus_config_test)
 
             # Test that method exists and can be called
@@ -370,10 +344,8 @@ class TestMilvusClient:
     def test_health_check_success(self, milvus_config_test):
         """Test successful health check."""
         with (
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch("pdf_vector_system.vector_db.milvus_client.utility") as mock_utility,
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
+            patch("vectorflow.vector_db.milvus_client.utility") as mock_utility,
         ):
             mock_connections.connect.return_value = None
             mock_utility.list_collections.return_value = []
@@ -386,10 +358,8 @@ class TestMilvusClient:
     def test_health_check_failure(self, milvus_config_test):
         """Test health check failure."""
         with (
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch("pdf_vector_system.vector_db.milvus_client.utility") as mock_utility,
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
+            patch("vectorflow.vector_db.milvus_client.utility") as mock_utility,
         ):
             mock_connections.connect.return_value = None
             mock_utility.list_collections.side_effect = Exception("Connection error")
@@ -406,7 +376,7 @@ class TestMilvusClientErrorHandling:
     def test_connection_error(self, milvus_config_test):
         """Test connection error handling."""
         with patch(
-            "pdf_vector_system.vector_db.milvus_client.connections"
+            "vectorflow.vector_db.milvus_client.connections"
         ) as mock_connections:
             mock_connections.connect.side_effect = Exception("Connection failed")
 
@@ -418,11 +388,9 @@ class TestMilvusClientErrorHandling:
     def test_collection_creation_error(self, milvus_config_test):
         """Test collection creation error handling."""
         with (
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
             patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.Collection"
+                "vectorflow.vector_db.milvus_client.Collection"
             ) as mock_collection_class,
         ):
             mock_connections.connect.return_value = None
@@ -436,11 +404,9 @@ class TestMilvusClientErrorHandling:
     def test_insert_error(self, milvus_config_test, sample_document_chunks):
         """Test insert operation error handling."""
         with (
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
             patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.Collection"
+                "vectorflow.vector_db.milvus_client.Collection"
             ) as mock_collection_class,
         ):
             mock_connections.connect.return_value = None
@@ -462,13 +428,11 @@ class TestMilvusClientIntegration:
     ):
         """Test end-to-end workflow with mocked Milvus."""
         with (
+            patch("vectorflow.vector_db.milvus_client.connections") as mock_connections,
             patch(
-                "pdf_vector_system.vector_db.milvus_client.connections"
-            ) as mock_connections,
-            patch(
-                "pdf_vector_system.vector_db.milvus_client.Collection"
+                "vectorflow.vector_db.milvus_client.Collection"
             ) as mock_collection_class,
-            patch("pdf_vector_system.vector_db.milvus_client.utility") as mock_utility,
+            patch("vectorflow.vector_db.milvus_client.utility") as mock_utility,
         ):
             mock_connections.connect.return_value = None
             mock_collection = Mock()

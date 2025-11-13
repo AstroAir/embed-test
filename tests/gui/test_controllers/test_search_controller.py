@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.controllers.search_controller import SearchController
+from vectorflow.gui.controllers.search_controller import SearchController
 
 
 class TestSearchController:

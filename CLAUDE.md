@@ -14,7 +14,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Testing
 
 - **Run all tests**: `pytest tests/`
-- **Run with coverage**: `pytest --cov=pdf_vector_system --cov-report=term-missing`
+- **Run with coverage**: `pytest --cov=vectorflow --cov-report=term-missing`
 - **Run specific test file**: `pytest tests/test_pipeline.py`
 - **Run with parallel execution**: `pytest -n auto`
 - **Run integration tests**: `pytest -m integration`
@@ -22,9 +22,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Code Quality
 
-- **Lint and format**: `ruff check pdf_vector_system tests` and `ruff format pdf_vector_system tests`
-- **Type checking**: `mypy pdf_vector_system`
-- **Security checks**: `bandit -r pdf_vector_system`
+- **Lint and format**: `ruff check vectorflow tests` and `ruff format vectorflow tests`
+- **Type checking**: `mypy vectorflow`
+- **Security checks**: `bandit -r vectorflow`
 - **Dependency safety**: `safety check`
 - **Pre-commit hooks**: `pre-commit run --all-files`
 
@@ -36,45 +36,45 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### CLI Tools
 
-- **Main CLI**: `pdf-vector --help`
-- **GUI application**: `pdf-vector-gui`
-- **Process PDF**: `pdf-vector process document.pdf`
-- **Search**: `pdf-vector search "query text"`
-- **Stats**: `pdf-vector stats`
+- **Main CLI**: `vectorflow --help`
+- **GUI application**: `vectorflow-gui`
+- **Process PDF**: `vectorflow process document.pdf`
+- **Search**: `vectorflow search "query text"`
+- **Stats**: `vectorflow stats`
 
 ## Architecture Overview
 
-This is a comprehensive PDF vector processing system that extracts text from PDFs, generates embeddings, and stores them in vector databases for similarity search.
+VectorFlow is a comprehensive PDF vector processing system that extracts text from PDFs, generates embeddings, and stores them in vector databases for similarity search.
 
 ### Core Components
 
-1. **PDF Processing Pipeline** (`pdf_vector_system.pipeline`)
+1. **PDF Processing Pipeline** (`vectorflow.core.pipeline`)
    - Main orchestrator class `PDFVectorPipeline`
    - Coordinates PDF extraction → text processing → embedding → storage
    - Handles progress tracking and error recovery
 
-2. **PDF Processing** (`pdf_vector_system.pdf`)
+2. **PDF Processing** (`vectorflow.core.pdf`)
    - `processor.py`: Text extraction using PyMuPDF
    - `text_processor.py`: Text cleaning, normalization, and chunking with LangChain
 
-3. **Embedding Services** (`pdf_vector_system.embeddings`)
+3. **Embedding Services** (`vectorflow.core.embeddings`)
    - Factory pattern for multiple providers (OpenAI, Sentence Transformers, Cohere, etc.)
    - `base.py`: Abstract base interface
    - `factory.py`: Service creation and batch processing
    - Individual service files for each provider
 
-4. **Vector Database** (`pdf_vector_system.vector_db`)
+4. **Vector Database** (`vectorflow.core.vector_db`)
    - Multi-backend support (ChromaDB, Milvus, Pinecone, Qdrant, Weaviate)
    - `factory.py`: Client creation using factory pattern
    - `models.py`: Data models for chunks, searches, results
    - Each backend has its own client implementation
 
-5. **Configuration** (`pdf_vector_system.config`)
+5. **Configuration** (`vectorflow.core.config`)
    - Pydantic-based type-safe configuration
    - Environment variable support
    - Settings for all components (embedding, processing, vector DB)
 
-6. **GUI Application** (`pdf_vector_system.gui`)
+6. **GUI Application** (`vectorflow.gui`)
    - PySide6-based desktop application
    - MVC architecture with controllers, widgets, and dialogs
    - Uses qfluentwidgets for modern styling

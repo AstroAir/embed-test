@@ -6,7 +6,7 @@ from unittest.mock import Mock
 
 import numpy as np
 
-from pdf_vector_system.core.embeddings.base import EmbeddingResult
+from vectorflow.core.embeddings.base import EmbeddingResult
 
 
 class MockEmbeddingService:

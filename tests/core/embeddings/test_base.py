@@ -3,13 +3,13 @@
 
 import pytest
 
-from pdf_vector_system.core.embeddings.base import (
+from tests.mocks.embedding_mocks import MockEmbeddingService
+from vectorflow.core.embeddings.base import (
     EmbeddingBatch,
     EmbeddingResult,
     EmbeddingService,
     EmbeddingServiceError,
 )
-from tests.mocks.embedding_mocks import MockEmbeddingService
 
 
 class TestEmbeddingResult:

@@ -3,7 +3,7 @@
 import pytest
 from PySide6.QtCore import QObject
 
-from pdf_vector_system.gui.controllers.config_controller import ConfigController
+from vectorflow.gui.controllers.config_controller import ConfigController
 
 
 class TestConfigController:

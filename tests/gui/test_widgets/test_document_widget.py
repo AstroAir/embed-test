@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.widgets.document_widget import DocumentWidget
+from vectorflow.gui.widgets.document_widget import DocumentWidget
 
 
 class TestDocumentWidget:

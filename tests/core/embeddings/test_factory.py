@@ -4,13 +4,13 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.config.settings import EmbeddingConfig, EmbeddingModelType
-from pdf_vector_system.core.embeddings.base import EmbeddingResult
-from pdf_vector_system.core.embeddings.factory import (
+from tests.mocks.embedding_mocks import MockEmbeddingService
+from vectorflow.core.config.settings import EmbeddingConfig, EmbeddingModelType
+from vectorflow.core.embeddings.base import EmbeddingResult
+from vectorflow.core.embeddings.factory import (
     BatchEmbeddingProcessor,
     EmbeddingServiceFactory,
 )
-from tests.mocks.embedding_mocks import MockEmbeddingService
 
 
 class TestEmbeddingServiceFactory:
@@ -25,7 +25,7 @@ class TestEmbeddingServiceFactory:
         )
 
         with patch(
-            "pdf_vector_system.embeddings.factory.SentenceTransformersService"
+            "vectorflow.embeddings.factory.SentenceTransformersService"
         ) as mock_class:
             mock_service = Mock()
             mock_class.return_value = mock_service
@@ -50,7 +50,7 @@ class TestEmbeddingServiceFactory:
         )
 
         with patch(
-            "pdf_vector_system.embeddings.factory.OpenAIEmbeddingService"
+            "vectorflow.embeddings.factory.OpenAIEmbeddingService"
         ) as mock_class:
             mock_service = Mock()
             mock_class.return_value = mock_service
@@ -100,7 +100,7 @@ class TestEmbeddingServiceFactory:
         )
 
         with patch(
-            "pdf_vector_system.embeddings.factory.SentenceTransformersService"
+            "vectorflow.embeddings.factory.SentenceTransformersService"
         ) as mock_class:
             mock_service = Mock()
             mock_class.return_value = mock_service
@@ -126,7 +126,7 @@ class TestEmbeddingServiceFactory:
         )
 
         with patch(
-            "pdf_vector_system.embeddings.factory.OpenAIEmbeddingService"
+            "vectorflow.embeddings.factory.OpenAIEmbeddingService"
         ) as mock_class:
             mock_service = Mock()
             mock_class.return_value = mock_service

@@ -35,8 +35,8 @@ from typing import Any, Optional
 
 from utils.example_helpers import example_context, print_section, print_subsection
 
-from pdf_vector_system import Config, PDFVectorPipeline
-from pdf_vector_system.config.settings import EmbeddingModelType
+from vectorflow import Config, PDFVectorPipeline
+from vectorflow.config.settings import EmbeddingModelType
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))

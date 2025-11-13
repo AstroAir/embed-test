@@ -5,11 +5,8 @@ This example demonstrates how all embedding providers implement the same unified
 making it easy to switch between different providers without changing your code.
 """
 
-from pdf_vector_system.config.settings import EmbeddingConfig, EmbeddingModelType
-from pdf_vector_system.embeddings import (
-    EmbeddingProviderRegistry,
-    EmbeddingServiceFactory,
-)
+from vectorflow.config.settings import EmbeddingConfig, EmbeddingModelType
+from vectorflow.embeddings import EmbeddingProviderRegistry, EmbeddingServiceFactory
 
 
 def demonstrate_unified_interface():

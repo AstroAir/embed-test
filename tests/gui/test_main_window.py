@@ -5,8 +5,8 @@ from unittest.mock import Mock, patch
 import pytest
 from PySide6.QtGui import QShortcut
 
-from pdf_vector_system.gui.controllers.main_controller import MainController
-from pdf_vector_system.gui.main_window import MainWindow
+from vectorflow.gui.controllers.main_controller import MainController
+from vectorflow.gui.main_window import MainWindow
 
 
 @pytest.mark.gui

@@ -4,18 +4,18 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.vector_db.config import (
+from vectorflow.core.vector_db.config import (
     ChromaDBConfig,
     MilvusConfig,
     PineconeConfig,
     QdrantConfig,
     WeaviateConfig,
 )
-from pdf_vector_system.core.vector_db.converters import VectorDBConverter
-from pdf_vector_system.core.vector_db.error_handler import VectorDBErrorHandler
-from pdf_vector_system.core.vector_db.factory import VectorDBFactory
-from pdf_vector_system.core.vector_db.health_check import VectorDBHealthManager
-from pdf_vector_system.core.vector_db.models import (
+from vectorflow.core.vector_db.converters import VectorDBConverter
+from vectorflow.core.vector_db.error_handler import VectorDBErrorHandler
+from vectorflow.core.vector_db.factory import VectorDBFactory
+from vectorflow.core.vector_db.health_check import VectorDBHealthManager
+from vectorflow.core.vector_db.models import (
     CollectionNotFoundError,
     SearchResult,
     VectorDBError,
@@ -57,11 +57,11 @@ class TestFactoryIntegration:
 
         # Mock the specific client class for each backend
         client_module_map = {
-            "chromadb": "pdf_vector_system.vector_db.chroma_client.ChromaDBClient",
-            "pinecone": "pdf_vector_system.vector_db.pinecone_client.PineconeClient",
-            "weaviate": "pdf_vector_system.vector_db.weaviate_client.WeaviateClient",
-            "qdrant": "pdf_vector_system.vector_db.qdrant_client.QdrantClient",
-            "milvus": "pdf_vector_system.vector_db.milvus_client.MilvusClient",
+            "chromadb": "vectorflow.vector_db.chroma_client.ChromaDBClient",
+            "pinecone": "vectorflow.vector_db.pinecone_client.PineconeClient",
+            "weaviate": "vectorflow.vector_db.weaviate_client.WeaviateClient",
+            "qdrant": "vectorflow.vector_db.qdrant_client.QdrantClient",
+            "milvus": "vectorflow.vector_db.milvus_client.MilvusClient",
         }
 
         with patch(client_module_map[backend_type]) as mock_client_class:
@@ -80,7 +80,7 @@ class TestFactoryIntegration:
         config = ChromaDBConfig(persist_directory=vector_db_temp_dir / "chroma")
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.ChromaDBClient"
+            "vectorflow.vector_db.chroma_client.ChromaDBClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.add_chunks.return_value = None
@@ -103,7 +103,7 @@ class TestFactoryIntegration:
         config = ChromaDBConfig(persist_directory=vector_db_temp_dir / "chroma")
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.ChromaDBClient"
+            "vectorflow.vector_db.chroma_client.ChromaDBClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.list_collections.side_effect = Exception("Connection failed")
@@ -251,7 +251,7 @@ class TestEndToEndWorkflows:
         config = ChromaDBConfig(persist_directory=vector_db_temp_dir / "chroma")
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.ChromaDBClient"
+            "vectorflow.vector_db.chroma_client.ChromaDBClient"
         ) as mock_client_class:
             mock_client = Mock()
 
@@ -317,8 +317,8 @@ class TestEndToEndWorkflows:
 
         for config in configs:
             client_module_map = {
-                "chromadb": "pdf_vector_system.vector_db.chroma_client.ChromaDBClient",
-                "pinecone": "pdf_vector_system.vector_db.pinecone_client.PineconeClient",
+                "chromadb": "vectorflow.vector_db.chroma_client.ChromaDBClient",
+                "pinecone": "vectorflow.vector_db.pinecone_client.PineconeClient",
             }
 
             with patch(client_module_map[config.db_type]) as mock_client_class:
@@ -345,7 +345,7 @@ class TestEndToEndWorkflows:
         config = ChromaDBConfig(persist_directory=vector_db_temp_dir / "chroma")
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.ChromaDBClient"
+            "vectorflow.vector_db.chroma_client.ChromaDBClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client.add_chunks.side_effect = CollectionNotFoundError(
@@ -381,7 +381,7 @@ class TestConfigurationIntegration:
         valid_config = ChromaDBConfig(persist_directory=vector_db_temp_dir / "chroma")
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.ChromaDBClient"
+            "vectorflow.vector_db.chroma_client.ChromaDBClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client_class.return_value = mock_client
@@ -418,7 +418,7 @@ class TestConfigurationIntegration:
 
         # Both configs should create equivalent clients
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.ChromaDBClient"
+            "vectorflow.vector_db.chroma_client.ChromaDBClient"
         ) as mock_client_class:
             mock_client = Mock()
             mock_client_class.return_value = mock_client

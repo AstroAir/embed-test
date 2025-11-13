@@ -1,41 +1,62 @@
-# PDF Vector System
+# VectorFlow
 
-[![PyPI version](https://badge.fury.io/py/pdf-vector-system.svg)](https://badge.fury.io/py/pdf-vector-system)
-[![Python versions](https://img.shields.io/pypi/pyversions/pdf-vector-system.svg)](https://pypi.org/project/pdf-vector-system/)
-[![License](https://img.shields.io/github/license/your-username/pdf-vector-system.svg)](https://github.com/your-username/pdf-vector-system/blob/main/LICENSE)
-[![CI](https://github.com/your-username/pdf-vector-system/workflows/CI/badge.svg)](https://github.com/your-username/pdf-vector-system/actions)
-[![Coverage](https://codecov.io/gh/your-username/pdf-vector-system/branch/main/graph/badge.svg)](https://codecov.io/gh/your-username/pdf-vector-system)
-[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://your-username.github.io/pdf-vector-system/)
+[![PyPI version](https://badge.fury.io/py/vectorflow.svg)](https://badge.fury.io/py/vectorflow)
+[![Python versions](https://img.shields.io/pypi/pyversions/vectorflow.svg)](https://pypi.org/project/vectorflow/)
+[![License](https://img.shields.io/github/license/your-username/vectorflow.svg)](https://github.com/your-username/vectorflow/blob/main/LICENSE)
+[![CI](https://github.com/your-username/vectorflow/workflows/CI/badge.svg)](https://github.com/your-username/vectorflow/actions)
+[![Coverage](https://codecov.io/gh/your-username/vectorflow/branch/main/graph/badge.svg)](https://codecov.io/gh/your-username/vectorflow)
+[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://your-username.github.io/vectorflow/)
 
-A comprehensive PDF content processing and vector storage system with ChromaDB integration. This system extracts text from PDF files, processes it for embedding generation, integrates with language models to generate embeddings, and stores them in ChromaDB for similarity search and retrieval.
+**Streamlined PDF-to-vector processing pipeline with multi-provider embeddings and multi-backend vector storage**
 
-## Features
+VectorFlow is a comprehensive, production-ready system for extracting text from PDF documents, generating embeddings through multiple AI providers, and storing vectors in scalable databases. Designed for flexibility, performance, and ease of use.
 
-- **PDF Content Extraction**: Robust text extraction from various PDF formats using PyMuPDF
-- **Text Processing**: Intelligent text cleaning, normalization, and chunking with configurable parameters
-- **Dual Embedding Support**:
-  - Local embeddings with sentence-transformers (all-MiniLM-L6-v2, all-mpnet-base-v2, etc.)
-  - API-based embeddings with OpenAI (text-embedding-3-small, text-embedding-3-large)
-- **Vector Database**: ChromaDB integration with comprehensive metadata and similarity search
-- **Batch Processing**: Efficient processing of multiple documents with progress tracking
-- **Configuration Management**: Type-safe configuration with Pydantic models
-- **Comprehensive Logging**: Detailed logging with loguru and progress tracking with rich
-- **Error Handling**: Robust error handling and graceful failure recovery
+## Key Features
+
+### Multi-Provider Embedding Support
+Choose from 7 embedding providers optimized for different use cases:
+- **OpenAI**: text-embedding-3-small, text-embedding-3-large (highest quality)
+- **Azure OpenAI**: Enterprise-grade embeddings with Azure integration
+- **Sentence Transformers**: Fast, local embeddings (all-MiniLM-L6-v2, all-mpnet-base-v2, etc.)
+- **Cohere**: Advanced semantic understanding with Cohere models
+- **HuggingFace**: Access to 1000+ open-source models
+- **Google Gemini**: Cutting-edge embeddings from Google
+- **Google Universal Sentence Encoder**: Lightweight, multilingual embeddings
+
+### Multi-Backend Vector Storage
+Store vectors in any of 5 production-ready database backends:
+- **ChromaDB**: Lightweight, in-memory or persistent storage
+- **Milvus**: High-performance, distributed vector database
+- **Pinecone**: Serverless vector database with semantic search
+- **Qdrant**: Fully-featured vector search engine
+- **Weaviate**: GraphQL-powered vector database
+
+### Dual Interfaces
+- **CLI**: Full-featured command-line interface for batch processing and search
+- **GUI**: Modern, user-friendly desktop application built with PySide6 and qfluentwidgets
+
+### Developer-Focused Design
+- **Type-Safe Configuration**: Pydantic-based configuration with IDE autocomplete
+- **Modular Architecture**: Core library, CLI, and GUI modules for flexible integration
+- **Batch Processing**: Efficient handling of large document sets
+- **Progress Tracking**: Real-time progress bars and performance metrics
+- **Comprehensive Error Handling**: Graceful failure recovery with detailed logging
+- **Full Documentation**: API docs, examples, and architecture guides
 
 ## Installation
 
 ### From PyPI (Recommended)
 
 ```bash
-pip install pdf-vector-system
+pip install vectorflow
 ```
 
 ### From Source
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/pdf-vector-system.git
-cd pdf-vector-system
+git clone https://github.com/your-username/vectorflow.git
+cd vectorflow
 
 # Install dependencies using uv (recommended)
 uv sync
@@ -47,7 +68,7 @@ pip install -e .
 ### Using UV (Fast)
 
 ```bash
-uv add pdf-vector-system
+uv add vectorflow
 ```
 
 ### Quick Install Script
@@ -56,10 +77,10 @@ For a guided installation experience:
 
 ```bash
 # Linux/macOS
-curl -sSL https://raw.githubusercontent.com/your-username/pdf-vector-system/main/scripts/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/your-username/vectorflow/main/scripts/install.sh | bash
 
 # Windows
-powershell -Command "iwr https://raw.githubusercontent.com/your-username/pdf-vector-system/main/scripts/install.bat -OutFile install.bat; .\install.bat"
+powershell -Command "iwr https://raw.githubusercontent.com/your-username/vectorflow/main/scripts/install.bat -OutFile install.bat; .\install.bat"
 ```
 
 ### Prerequisites
@@ -72,21 +93,28 @@ powershell -Command "iwr https://raw.githubusercontent.com/your-username/pdf-vec
 
 ```bash
 # Development dependencies
-pip install pdf-vector-system[dev]
+pip install vectorflow[dev]
 
 # Documentation dependencies
-pip install pdf-vector-system[docs]
+pip install vectorflow[docs]
 
 # All dependencies
-pip install pdf-vector-system[dev,docs]
+pip install vectorflow[dev,docs]
 ```
 
 ### Configuration
 
-For OpenAI embeddings, set your API key:
+For API-based embeddings, set your API keys:
 
 ```bash
+# OpenAI
 export OPENAI_API_KEY="your-api-key-here"
+
+# Cohere
+export COHERE_API_KEY="your-api-key-here"
+
+# Google
+export GOOGLE_API_KEY="your-api-key-here"
 ```
 
 ### Verification
@@ -95,21 +123,21 @@ Verify your installation:
 
 ```bash
 # Check CLI installation
-pdf-vector --help
+vectorflow --help
 
 # Check Python import
-python -c "import pdf_vector_system; print(pdf_vector_system.__version__)"
+python -c "import vectorflow; print(vectorflow.__version__)"
 ```
 
 ## Quick Start
 
-### Basic Usage
+### Basic Usage with Sentence Transformers
 
 ```python
-from pdf_vector_system import Config, PDFVectorPipeline
-from pdf_vector_system.config.settings import EmbeddingModelType
+from vectorflow import Config, PDFVectorPipeline
+from vectorflow.config.settings import EmbeddingModelType
 
-# Create configuration
+# Create configuration for local embeddings
 config = Config()
 config.embedding.model_type = EmbeddingModelType.SENTENCE_TRANSFORMERS
 config.embedding.model_name = "all-MiniLM-L6-v2"
@@ -129,12 +157,12 @@ if result.success:
         print(f"Score: {result.score:.3f} - {result.content[:100]}...")
 ```
 
-### Advanced Configuration
+### Advanced Configuration with Multi-Backend Support
 
 ```python
 from pathlib import Path
-from pdf_vector_system import Config, PDFVectorPipeline
-from pdf_vector_system.config.settings import EmbeddingModelType
+from vectorflow import Config, PDFVectorPipeline
+from vectorflow.config.settings import EmbeddingModelType, VectorDBType
 
 # Advanced configuration
 config = Config()
@@ -148,20 +176,44 @@ config.embedding.batch_size = 50
 config.text_processing.chunk_size = 1200
 config.text_processing.chunk_overlap = 200
 
-# ChromaDB
-config.chroma_db.collection_name = "my_documents"
-config.chroma_db.persist_directory = Path("./my_vector_db")
+# Use Pinecone for vector storage
+config.vector_db.type = VectorDBType.PINECONE
+config.vector_db.pinecone_config.index_name = "pdf-documents"
+config.vector_db.pinecone_config.api_key = "your-pinecone-key"
 
-# Performance
+# Performance tuning
 config.max_workers = 6
 
 # Initialize and use
 pipeline = PDFVectorPipeline(config)
 ```
 
+### Using Different Embedding Providers
+
+```python
+from vectorflow import Config, PDFVectorPipeline
+from vectorflow.config.settings import EmbeddingModelType
+
+config = Config()
+
+# Option 1: Google Gemini
+config.embedding.model_type = EmbeddingModelType.GOOGLE_GEMINI
+config.embedding.model_name = "models/embedding-001"
+
+# Option 2: Cohere
+config.embedding.model_type = EmbeddingModelType.COHERE
+config.embedding.model_name = "embed-english-v3.0"
+
+# Option 3: HuggingFace
+config.embedding.model_type = EmbeddingModelType.HUGGINGFACE
+config.embedding.model_name = "sentence-transformers/all-mpnet-base-v2"
+
+pipeline = PDFVectorPipeline(config)
+```
+
 ## Configuration
 
-The system uses Pydantic models for type-safe configuration. You can configure via:
+VectorFlow uses Pydantic models for type-safe configuration. You can configure via:
 
 1. **Environment variables** (recommended for production)
 2. **Configuration objects** (recommended for development)
@@ -171,16 +223,20 @@ The system uses Pydantic models for type-safe configuration. You can configure v
 
 ```bash
 # Embedding Configuration
-EMBEDDING__MODEL_TYPE=sentence-transformers
-EMBEDDING__MODEL_NAME=all-MiniLM-L6-v2
+EMBEDDING__MODEL_TYPE=openai
+EMBEDDING__MODEL_NAME=text-embedding-3-small
 EMBEDDING__BATCH_SIZE=32
 
-# OpenAI Configuration (if using OpenAI embeddings)
+# OpenAI Configuration
 OPENAI_API_KEY=your_api_key_here
 
-# ChromaDB Configuration
-CHROMA_DB__PERSIST_DIRECTORY=./chroma_db
-CHROMA_DB__COLLECTION_NAME=pdf_documents
+# Vector Database Configuration
+VECTOR_DB__TYPE=pinecone
+VECTOR_DB__PINECONE_API_KEY=your_pinecone_key
+
+# ChromaDB Configuration (if using ChromaDB)
+VECTOR_DB__CHROMA_DB_PERSIST_DIRECTORY=./chroma_db
+VECTOR_DB__CHROMA_DB_COLLECTION_NAME=pdf_documents
 
 # Text Processing
 TEXT_PROCESSING__CHUNK_SIZE=1000
@@ -188,7 +244,7 @@ TEXT_PROCESSING__CHUNK_OVERLAP=200
 
 # Logging
 LOGGING__LEVEL=INFO
-LOGGING__FILE_PATH=./logs/pdf_vector_system.log
+LOGGING__FILE_PATH=./logs/vectorflow.log
 ```
 
 ### Configuration File
@@ -202,69 +258,138 @@ cp .env.example .env
 
 ## Architecture
 
-The system consists of several key components:
+VectorFlow is built on a modular architecture with three main components:
 
-### 1. PDF Processor (`pdf_vector_system.pdf.processor`)
+### Core Module (`vectorflow.core`)
 
-- Extracts text from PDF files using PyMuPDF
-- Handles various PDF formats and structures
-- Provides metadata extraction and validation
+The heart of the system providing:
 
-### 2. Text Processor (`pdf_vector_system.pdf.text_processor`)
+1. **PDF Processor** (`pdf.processor`)
+   - Robust text extraction from various PDF formats using PyMuPDF
+   - Metadata extraction and validation
+   - Support for large documents with streaming
 
-- Cleans and normalizes extracted text
-- Implements intelligent chunking with LangChain's RecursiveCharacterTextSplitter
-- Configurable chunk size and overlap
+2. **Text Processor** (`pdf.text_processor`)
+   - Intelligent text cleaning and normalization
+   - Configurable chunking with LangChain's RecursiveCharacterTextSplitter
+   - Preserves context with configurable overlap
 
-### 3. Embedding Services (`pdf_vector_system.embeddings`)
+3. **Embedding Services** (`embeddings`)
+   - Factory pattern for 7+ embedding providers
+   - Batch processing with automatic retry logic
+   - Performance tracking and error handling
+   - Automatic model downloading and caching
 
-- **Sentence Transformers**: Local embedding generation
-- **OpenAI**: API-based embedding generation
-- Batch processing with progress tracking
-- Automatic retry logic and error handling
+4. **Vector Database** (`vector_db`)
+   - Multi-backend support (ChromaDB, Milvus, Pinecone, Qdrant, Weaviate)
+   - Unified interface across all backends
+   - Advanced search and filtering capabilities
+   - Collection management utilities
 
-### 4. Vector Database (`pdf_vector_system.vector_db`)
+5. **Pipeline Orchestrator** (`pipeline`)
+   - Coordinates all components
+   - Progress tracking and performance monitoring
+   - High-level API for PDF processing
+   - Document lifecycle management
 
-- ChromaDB integration with persistent storage
-- Comprehensive metadata support
-- Advanced search and filtering capabilities
-- Collection management utilities
+### CLI Module (`vectorflow.cli`)
 
-### 5. Main Pipeline (`pdf_vector_system.pipeline`)
+Command-line interface with commands for:
+- Document processing and batch operations
+- Vector database search
+- Collection statistics and management
+- Configuration inspection and validation
 
-- Orchestrates all components
-- Provides high-level API for PDF processing
-- Progress tracking and performance monitoring
+### GUI Module (`vectorflow.gui`)
 
-## Examples
+Desktop application featuring:
+- Modern PySide6 interface with qfluentwidgets styling
+- MVC architecture for maintainability
+- Real-time progress tracking
+- Multi-document batch processing
+- Semantic search with result preview
+- Configuration management UI
 
-### Running Examples
-
-```bash
-# Basic usage with sentence-transformers
-python examples/basic_usage.py
-
-# Advanced usage with OpenAI embeddings (requires API key)
-python examples/advanced_usage.py
-```
+## Usage Examples
 
 ### Command Line Interface
 
 ```bash
 # Process a single PDF
-pdf-vector process document.pdf
+vectorflow process document.pdf
 
 # Process multiple PDFs
-pdf-vector process *.pdf
+vectorflow process *.pdf
 
 # Search the database
-pdf-vector search "machine learning"
+vectorflow search "machine learning"
 
 # Show collection statistics
-pdf-vector stats
+vectorflow stats
 
 # List all documents
-pdf-vector list
+vectorflow list
+
+# Clear a collection
+vectorflow clear-collection
+
+# Export search results
+vectorflow search "query" --output results.json
+```
+
+### GUI Application
+
+```bash
+# Launch the desktop application
+vectorflow-gui
+```
+
+### Python API Examples
+
+#### Basic Search
+
+```python
+from vectorflow import Config, PDFVectorPipeline
+
+config = Config()
+pipeline = PDFVectorPipeline(config)
+
+# Process and search
+pipeline.process_pdf("document.pdf")
+results = pipeline.search("your query", n_results=10)
+
+for result in results:
+    print(f"{result.content}\n(Score: {result.score:.3f})")
+```
+
+#### Batch Processing
+
+```python
+from pathlib import Path
+from vectorflow import Config, PDFVectorPipeline
+
+config = Config()
+pipeline = PDFVectorPipeline(config)
+
+# Process all PDFs in a directory
+pdf_files = Path("documents").glob("*.pdf")
+for pdf_file in pdf_files:
+    result = pipeline.process_pdf(str(pdf_file), show_progress=True)
+    if result.success:
+        print(f"Processed: {pdf_file}")
+```
+
+#### Custom Chunking Strategy
+
+```python
+from vectorflow import Config, PDFVectorPipeline
+
+config = Config()
+config.text_processing.chunk_size = 800  # Smaller chunks for precision
+config.text_processing.chunk_overlap = 100
+
+pipeline = PDFVectorPipeline(config)
+result = pipeline.process_pdf("document.pdf")
 ```
 
 ## API Reference
@@ -281,15 +406,16 @@ Main class for processing PDFs and managing the vector database.
 - `delete_document(document_id)`: Delete a document from the database
 - `get_collection_stats()`: Get collection statistics
 - `health_check()`: Perform system health check
+- `list_documents()`: List all processed documents
 
 ### Configuration Classes
 
 - `Config`: Main configuration class
-- `PDFConfig`: PDF processing configuration
-- `TextProcessingConfig`: Text processing and chunking configuration
-- `EmbeddingConfig`: Embedding generation configuration
-- `ChromaDBConfig`: Vector database configuration
+- `EmbeddingConfig`: Embedding provider configuration (supports 7 providers)
+- `VectorDBConfig`: Vector database configuration (supports 5 backends)
+- `TextProcessingConfig`: Text processing and chunking settings
 - `LoggingConfig`: Logging configuration
+- `PDFConfig`: PDF processing settings
 
 ## Performance
 
@@ -301,27 +427,42 @@ Typical performance on a modern laptop (M1 MacBook Pro):
 - **Text Chunking**: ~10,000 chunks/second
 - **Sentence Transformers Embeddings**: ~100-500 texts/second
 - **OpenAI Embeddings**: ~1,000-2,000 texts/second (API dependent)
-- **ChromaDB Storage**: ~1,000-5,000 chunks/second
+- **Vector Database Storage**: ~1,000-5,000 chunks/second (backend dependent)
 
 ### Optimization Tips
 
-1. **Use appropriate batch sizes**: 16-32 for sentence-transformers, 50-100 for OpenAI
-2. **Adjust chunk size**: Larger chunks (1000-1500 chars) for better context, smaller (500-800) for precision
+1. **Use appropriate batch sizes**:
+   - Sentence Transformers: 16-32
+   - OpenAI: 50-100
+   - Google/Cohere: 32-64
+
+2. **Adjust chunk size**:
+   - Larger chunks (1000-1500 chars): Better context
+   - Smaller chunks (500-800 chars): Better precision
+
 3. **Use multiple workers**: Set `max_workers` to 4-8 for CPU-bound tasks
+
 4. **Choose the right embedding model**:
    - `all-MiniLM-L6-v2`: Fast, good quality
    - `all-mpnet-base-v2`: Slower, higher quality
    - OpenAI models: Highest quality, API costs
+   - Google Gemini: Balanced performance and quality
+
+5. **Select appropriate vector database**:
+   - ChromaDB: Development and small-scale deployments
+   - Pinecone: Cloud-hosted, managed infrastructure
+   - Milvus: Self-hosted, high-performance
+   - Weaviate: GraphQL interface, rich metadata support
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **"Model not found" error**: Ensure the model name is correct and the model is available
-2. **OpenAI API errors**: Check your API key and rate limits
-3. **ChromaDB persistence issues**: Ensure the persist directory is writable
+1. **"Model not found" error**: Ensure the model name is correct and available for the provider
+2. **API errors**: Check your API keys and rate limits for cloud-based providers
+3. **Vector database connection issues**: Verify connection strings and credentials
 4. **Memory issues with large PDFs**: Reduce batch size or chunk size
-5. **Slow processing**: Increase batch size or use more workers
+5. **Slow processing**: Increase batch size, use more workers, or optimize chunk size
 
 ### Debug Mode
 
@@ -336,36 +477,23 @@ Or set environment variable:
 
 ```bash
 DEBUG=true
+LOGGING__LEVEL=DEBUG
 ```
 
-## Contributing
+### Getting Help
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+- Check the [troubleshooting guide](docs/troubleshooting.md)
+- Review [architecture documentation](llmdoc/feature/core-module-architecture.md)
+- Open an [issue on GitHub](https://github.com/your-username/vectorflow/issues)
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- [PyMuPDF](https://pymupdf.readthedocs.io/) for PDF processing
-- [sentence-transformers](https://www.sbert.net/) for local embeddings
-- [ChromaDB](https://www.trychroma.com/) for vector database
-- [LangChain](https://langchain.com/) for text splitting
-- [OpenAI](https://openai.com/) for embedding APIs
-
-## Development and CI/CD
+## Development
 
 ### Development Setup
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/pdf-vector-system.git
-cd pdf-vector-system
+git clone https://github.com/your-username/vectorflow.git
+cd vectorflow
 
 # Install development dependencies
 uv sync --extra dev
@@ -377,8 +505,8 @@ pre-commit install
 pytest tests/
 
 # Run quality checks
-ruff check pdf_vector_system tests
-mypy pdf_vector_system
+ruff check vectorflow tests
+mypy vectorflow
 ```
 
 ### Build and Release
@@ -394,6 +522,47 @@ mypy pdf_vector_system
 pip install dist/*.whl
 ```
 
+### Testing
+
+```bash
+# Run all tests
+pytest tests/
+
+# Run with coverage
+pytest --cov=vectorflow --cov-report=term-missing
+
+# Run specific test file
+pytest tests/test_pipeline.py
+
+# Run with parallel execution
+pytest -n auto
+
+# Run integration tests only
+pytest -m integration
+
+# Run tests excluding external dependencies
+pytest -m "not external"
+```
+
+### Code Quality
+
+```bash
+# Lint with Ruff
+ruff check vectorflow tests
+
+# Format with Ruff
+ruff format vectorflow tests
+
+# Type checking
+mypy vectorflow
+
+# Security scanning
+bandit -r vectorflow
+
+# Dependency safety
+safety check
+```
+
 ### CI/CD Pipeline
 
 The project uses GitHub Actions for continuous integration and deployment:
@@ -405,7 +574,7 @@ The project uses GitHub Actions for continuous integration and deployment:
 - **Package Publishing**: Automated PyPI publishing on release tags
 - **Dependency Updates**: Weekly automated dependency updates
 
-### Quality Assurance
+### Quality Assurance Standards
 
 - **Test Coverage**: >80% code coverage requirement
 - **Type Safety**: Full type hints with mypy checking
@@ -415,17 +584,22 @@ The project uses GitHub Actions for continuous integration and deployment:
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](docs/development/contributing.md) for details.
-
-### Quick Contribution Steps
+We welcome contributions! Please follow these steps:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
-4. Run tests and quality checks
-5. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Run tests and quality checks: `pytest tests/ && ruff check . && mypy .`
+5. Commit your changes following [conventional commits](https://www.conventionalcommits.org/):
+   - `feat:` for new features
+   - `fix:` for bug fixes
+   - `docs:` for documentation
+   - `test:` for tests
+   - `refactor:` for code refactoring
 6. Push to the branch (`git push origin feature/amazing-feature`)
 7. Open a Pull Request
+
+For detailed contribution guidelines, see our [Contributing Guide](docs/development/contributing.md).
 
 ## License
 
@@ -433,11 +607,35 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-- **Documentation**: [https://your-username.github.io/pdf-vector-system/](https://your-username.github.io/pdf-vector-system/)
-- **Issues**: [GitHub Issues](https://github.com/your-username/pdf-vector-system/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-username/pdf-vector-system/discussions)
-- **PyPI**: [https://pypi.org/project/pdf-vector-system/](https://pypi.org/project/pdf-vector-system/)
+- **Documentation**: [https://your-username.github.io/vectorflow/](https://your-username.github.io/vectorflow/)
+- **Issues**: [GitHub Issues](https://github.com/your-username/vectorflow/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/your-username/vectorflow/discussions)
+- **PyPI**: [https://pypi.org/project/vectorflow/](https://pypi.org/project/vectorflow/)
+
+## Acknowledgments
+
+- [PyMuPDF](https://pymupdf.readthedocs.io/) for robust PDF processing
+- [sentence-transformers](https://www.sbert.net/) for local embedding models
+- [ChromaDB](https://www.trychroma.com/) for vector database
+- [LangChain](https://langchain.com/) for text processing utilities
+- [OpenAI](https://openai.com/) for embeddings API
+- [Cohere](https://cohere.com/) for semantic embeddings
+- [Google](https://cloud.google.com/ai-platform) for embedding services
+- [PySide6](https://wiki.qt.io/Qt_for_Python) for desktop application framework
+- [qfluentwidgets](https://github.com/zhiyiYo/PyQt-Fluent-Widgets) for modern UI components
 
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
+
+## Roadmap
+
+### Planned Features
+- Support for additional document formats (DOCX, TXT, MD)
+- Streaming API for real-time processing
+- Advanced caching and incremental updates
+- Multi-language support
+- Custom embedding fine-tuning
+- Real-time collaboration features
+
+Stay tuned for exciting updates!

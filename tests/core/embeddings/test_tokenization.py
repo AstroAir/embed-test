@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-from pdf_vector_system.core.embeddings.tokenization import (
+from vectorflow.core.embeddings.tokenization import (
     LanguageDetector,
     TextNormalizationConfig,
     TokenizationConfig,
@@ -206,8 +206,8 @@ class TestLanguageDetector:
         # Should initialize regardless of langdetect availability
         assert detector is not None
 
-    @patch("pdf_vector_system.embeddings.tokenization.LANGDETECT_AVAILABLE", True)
-    @patch("pdf_vector_system.embeddings.tokenization.langdetect")
+    @patch("vectorflow.embeddings.tokenization.LANGDETECT_AVAILABLE", True)
+    @patch("vectorflow.embeddings.tokenization.langdetect")
     def test_detect_language_success(self, mock_langdetect):
         """Test successful language detection."""
         mock_langdetect.detect.return_value = "en"
@@ -219,7 +219,7 @@ class TestLanguageDetector:
         assert language == "en"
         mock_langdetect.detect.assert_called_once()
 
-    @patch("pdf_vector_system.embeddings.tokenization.LANGDETECT_AVAILABLE", False)
+    @patch("vectorflow.embeddings.tokenization.LANGDETECT_AVAILABLE", False)
     def test_detect_language_unavailable(self):
         """Test language detection when langdetect unavailable."""
         detector = LanguageDetector()

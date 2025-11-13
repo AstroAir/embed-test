@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.vector_db.config import (
+from vectorflow.core.vector_db.config import (
     ChromaDBConfig,
     MilvusConfig,
     PineconeConfig,
@@ -13,13 +13,9 @@ from pdf_vector_system.core.vector_db.config import (
     VectorDBType,
     WeaviateConfig,
 )
-from pdf_vector_system.core.vector_db.factory import VectorDBFactory
-from pdf_vector_system.core.vector_db.interface import VectorDBInterface
-from pdf_vector_system.core.vector_db.models import (
-    DocumentChunk,
-    SearchQuery,
-    SearchResult,
-)
+from vectorflow.core.vector_db.factory import VectorDBFactory
+from vectorflow.core.vector_db.interface import VectorDBInterface
+from vectorflow.core.vector_db.models import DocumentChunk, SearchQuery, SearchResult
 
 
 class TestBackendParity:
@@ -110,9 +106,7 @@ class TestBackendParity:
 
         # Mock the appropriate client based on backend type
         if backend_type == VectorDBType.CHROMADB:
-            with patch(
-                "pdf_vector_system.vector_db.chroma_client.chromadb.Client"
-            ) as mock:
+            with patch("vectorflow.vector_db.chroma_client.chromadb.Client") as mock:
                 mock_client_instance = Mock()
                 mock_collection = Mock()
                 mock_collection.name = "test_collection"
@@ -130,7 +124,7 @@ class TestBackendParity:
                 yield client
 
         elif backend_type == VectorDBType.PINECONE:
-            with patch("pdf_vector_system.vector_db.pinecone_client.pinecone") as mock:
+            with patch("vectorflow.vector_db.pinecone_client.pinecone") as mock:
                 mock.list_indexes.return_value = ["test-index"]
                 mock_index = Mock()
                 mock_index.describe_index_stats.return_value = Mock(
@@ -142,7 +136,7 @@ class TestBackendParity:
                 yield client
 
         elif backend_type == VectorDBType.WEAVIATE:
-            with patch("pdf_vector_system.vector_db.weaviate_client.weaviate") as mock:
+            with patch("vectorflow.vector_db.weaviate_client.weaviate") as mock:
                 mock_client_instance = Mock()
                 mock_client_instance.get_meta.return_value = {"version": "1.0.0"}
                 mock_client_instance.schema.get.return_value = {"classes": []}
@@ -152,9 +146,7 @@ class TestBackendParity:
                 yield client
 
         elif backend_type == VectorDBType.QDRANT:
-            with patch(
-                "pdf_vector_system.vector_db.qdrant_client.QdrantClient"
-            ) as mock:
+            with patch("vectorflow.vector_db.qdrant_client.QdrantClient") as mock:
                 mock_client_instance = Mock()
                 mock_collections = Mock()
                 mock_collections.collections = []
@@ -166,8 +158,8 @@ class TestBackendParity:
 
         elif backend_type == VectorDBType.MILVUS:
             with (
-                patch("pdf_vector_system.vector_db.milvus_client.connections"),
-                patch("pdf_vector_system.vector_db.milvus_client.utility") as mock_util,
+                patch("vectorflow.vector_db.milvus_client.connections"),
+                patch("vectorflow.vector_db.milvus_client.utility") as mock_util,
             ):
                 mock_util.list_collections.return_value = []
                 mock_util.has_collection.return_value = False

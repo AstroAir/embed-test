@@ -6,8 +6,8 @@ from unittest.mock import Mock, patch
 import pytest
 from PySide6.QtCore import QObject
 
-from pdf_vector_system.core.pipeline import ProcessingResult
-from pdf_vector_system.gui.controllers.processing_controller import ProcessingController
+from vectorflow.core.pipeline import ProcessingResult
+from vectorflow.gui.controllers.processing_controller import ProcessingController
 
 
 @pytest.mark.gui
@@ -20,7 +20,7 @@ class TestProcessingController:
         parent = QObject()
 
         with patch(
-            "pdf_vector_system.gui.controllers.processing_controller.PDFVectorPipeline"
+            "vectorflow.gui.controllers.processing_controller.PDFVectorPipeline"
         ) as mock_pipeline_class:
             mock_pipeline_class.return_value = mock_pipeline
 
@@ -39,7 +39,7 @@ class TestProcessingController:
         parent = QObject()
 
         with patch(
-            "pdf_vector_system.gui.controllers.processing_controller.PDFVectorPipeline"
+            "vectorflow.gui.controllers.processing_controller.PDFVectorPipeline"
         ) as mock_pipeline_class:
             mock_pipeline_class.return_value = mock_pipeline
 
@@ -51,7 +51,7 @@ class TestProcessingController:
             assert hasattr(controller, "processing_error")
             assert hasattr(controller, "status_message")
 
-    @patch("pdf_vector_system.gui.controllers.processing_controller.PDFVectorPipeline")
+    @patch("vectorflow.gui.controllers.processing_controller.PDFVectorPipeline")
     def test_process_files_success(
         self, mock_pipeline_class, mock_config, mock_pipeline
     ):
@@ -97,7 +97,7 @@ class TestProcessingController:
             assert task_id == "task_123"
             mock_run_task.assert_called_once()
 
-    @patch("pdf_vector_system.gui.controllers.processing_controller.PDFVectorPipeline")
+    @patch("vectorflow.gui.controllers.processing_controller.PDFVectorPipeline")
     def test_process_files_with_errors(
         self, mock_pipeline_class, mock_config, mock_pipeline
     ):
@@ -134,7 +134,7 @@ class TestProcessingController:
         parent = QObject()
 
         with patch(
-            "pdf_vector_system.gui.controllers.processing_controller.PDFVectorPipeline"
+            "vectorflow.gui.controllers.processing_controller.PDFVectorPipeline"
         ) as mock_pipeline_class:
             mock_pipeline_class.return_value = mock_pipeline
 
@@ -169,7 +169,7 @@ class TestProcessingController:
         parent = QObject()
 
         with patch(
-            "pdf_vector_system.gui.controllers.processing_controller.PDFVectorPipeline"
+            "vectorflow.gui.controllers.processing_controller.PDFVectorPipeline"
         ) as mock_pipeline_class:
             mock_pipeline_class.return_value = mock_pipeline
 
@@ -204,7 +204,7 @@ class TestProcessingController:
         parent = QObject()
 
         with patch(
-            "pdf_vector_system.gui.controllers.processing_controller.PDFVectorPipeline"
+            "vectorflow.gui.controllers.processing_controller.PDFVectorPipeline"
         ) as mock_pipeline_class:
             mock_pipeline_class.return_value = mock_pipeline
 
@@ -230,7 +230,7 @@ class TestProcessingController:
         parent = QObject()
 
         with patch(
-            "pdf_vector_system.gui.controllers.processing_controller.PDFVectorPipeline"
+            "vectorflow.gui.controllers.processing_controller.PDFVectorPipeline"
         ) as mock_pipeline_class:
             mock_pipeline_class.return_value = mock_pipeline
 
@@ -252,7 +252,7 @@ class TestProcessingController:
         parent = QObject()
 
         with patch(
-            "pdf_vector_system.gui.controllers.processing_controller.PDFVectorPipeline"
+            "vectorflow.gui.controllers.processing_controller.PDFVectorPipeline"
         ) as mock_pipeline_class:
             mock_pipeline_class.side_effect = Exception("Pipeline init failed")
 
@@ -266,7 +266,7 @@ class TestProcessingController:
         parent = QObject()
 
         with patch(
-            "pdf_vector_system.gui.controllers.processing_controller.PDFVectorPipeline"
+            "vectorflow.gui.controllers.processing_controller.PDFVectorPipeline"
         ) as mock_pipeline_class:
             mock_pipeline_class.return_value = mock_pipeline
 
@@ -288,7 +288,7 @@ class TestProcessingController:
         parent = QObject()
 
         with patch(
-            "pdf_vector_system.gui.controllers.processing_controller.PDFVectorPipeline"
+            "vectorflow.gui.controllers.processing_controller.PDFVectorPipeline"
         ) as mock_pipeline_class:
             mock_pipeline_class.return_value = mock_pipeline
 
@@ -311,7 +311,7 @@ class TestProcessingController:
         parent = QObject()
 
         with patch(
-            "pdf_vector_system.gui.controllers.processing_controller.PDFVectorPipeline"
+            "vectorflow.gui.controllers.processing_controller.PDFVectorPipeline"
         ) as mock_pipeline_class:
             mock_pipeline_class.return_value = mock_pipeline
 
@@ -333,7 +333,7 @@ class TestProcessingController:
         parent = QObject()
 
         with patch(
-            "pdf_vector_system.gui.controllers.processing_controller.PDFVectorPipeline"
+            "vectorflow.gui.controllers.processing_controller.PDFVectorPipeline"
         ) as mock_pipeline_class:
             mock_pipeline_class.return_value = mock_pipeline
 

@@ -4,11 +4,11 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.vector_db.chroma_client import ChromaDBClient
-from pdf_vector_system.core.vector_db.config import ChromaDBConfig
-from pdf_vector_system.core.vector_db.factory import VectorDBFactory
-from pdf_vector_system.core.vector_db.interface import VectorDBInterface
-from pdf_vector_system.core.vector_db.models import (
+from vectorflow.core.vector_db.chroma_client import ChromaDBClient
+from vectorflow.core.vector_db.config import ChromaDBConfig
+from vectorflow.core.vector_db.factory import VectorDBFactory
+from vectorflow.core.vector_db.interface import VectorDBInterface
+from vectorflow.core.vector_db.models import (
     CollectionInfo,
     DocumentChunk,
     SearchQuery,
@@ -53,7 +53,7 @@ class TestVectorDBInterfaceCompliance:
         )
 
         with patch(
-            "pdf_vector_system.vector_db.chroma_client.chromadb.Client"
+            "vectorflow.vector_db.chroma_client.chromadb.Client"
         ) as mock_client_class:
             mock_client = Mock()
             mock_collection = Mock()
@@ -266,7 +266,7 @@ class TestFactoryIntegration:
             collection_name="test_collection",
         )
 
-        with patch("pdf_vector_system.vector_db.chroma_client.chromadb.Client"):
+        with patch("vectorflow.vector_db.chroma_client.chromadb.Client"):
             client = VectorDBFactory.create_client(config)
 
             assert isinstance(client, VectorDBInterface)
@@ -280,7 +280,7 @@ class TestFactoryIntegration:
             "collection_name": "test_collection",
         }
 
-        with patch("pdf_vector_system.vector_db.chroma_client.chromadb.Client"):
+        with patch("vectorflow.vector_db.chroma_client.chromadb.Client"):
             client = VectorDBFactory.create_client(config_dict)
 
             assert isinstance(client, VectorDBInterface)

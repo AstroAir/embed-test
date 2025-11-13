@@ -13,25 +13,21 @@ import time
 import traceback
 from pathlib import Path
 
-from pdf_vector_system.embeddings.caching import (
-    CacheConfig,
-    CacheStrategy,
-    EmbeddingCache,
-)
-from pdf_vector_system.embeddings.chunking import (
+from vectorflow.embeddings.caching import CacheConfig, CacheStrategy, EmbeddingCache
+from vectorflow.embeddings.chunking import (
     ChunkerFactory,
     ChunkingConfig,
     ChunkingStrategy,
 )
-from pdf_vector_system.embeddings.preprocessing import (
+from vectorflow.embeddings.preprocessing import (
     PreprocessingLevel,
     PreprocessorFactory,
     TextType,
 )
-from pdf_vector_system.embeddings.sentence_transformers_service import (
+from vectorflow.embeddings.sentence_transformers_service import (
     SentenceTransformersService,
 )
-from pdf_vector_system.embeddings.tokenization import (
+from vectorflow.embeddings.tokenization import (
     TextNormalizationConfig,
     TokenizationConfig,
     TokenizationMethod,

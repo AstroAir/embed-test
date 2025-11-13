@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.vector_db.config import (
+from vectorflow.core.vector_db.config import (
     ChromaDBConfig,
     MilvusConfig,
     PineconeConfig,
@@ -13,15 +13,12 @@ from pdf_vector_system.core.vector_db.config import (
     VectorDBType,
     WeaviateConfig,
 )
-from pdf_vector_system.core.vector_db.factory import (
+from vectorflow.core.vector_db.factory import (
     VectorDBFactory,
     create_vector_db,
     get_available_backends,
 )
-from pdf_vector_system.core.vector_db.models import (
-    BackendNotAvailableError,
-    VectorDBError,
-)
+from vectorflow.core.vector_db.models import BackendNotAvailableError, VectorDBError
 
 
 class TestVectorDBFactory:
@@ -59,9 +56,9 @@ class TestVectorDBFactory:
 
             # Check that client_class is a valid module path
             assert "." in entry["client_class"]
-            assert entry["client_class"].startswith("pdf_vector_system.vector_db.")
+            assert entry["client_class"].startswith("vectorflow.vector_db.")
 
-    @patch("pdf_vector_system.vector_db.factory.importlib.import_module")
+    @patch("vectorflow.vector_db.factory.importlib.import_module")
     def test_import_client_class_success(self, mock_import):
         """Test successful client class import."""
         mock_module = Mock()
@@ -70,23 +67,23 @@ class TestVectorDBFactory:
         mock_import.return_value = mock_module
 
         result = VectorDBFactory._import_client_class(
-            "pdf_vector_system.vector_db.chroma_client.ChromaDBClient"
+            "vectorflow.vector_db.chroma_client.ChromaDBClient"
         )
 
         assert result == mock_client_class
-        mock_import.assert_called_once_with("pdf_vector_system.vector_db.chroma_client")
+        mock_import.assert_called_once_with("vectorflow.vector_db.chroma_client")
 
-    @patch("pdf_vector_system.vector_db.factory.importlib.import_module")
+    @patch("vectorflow.vector_db.factory.importlib.import_module")
     def test_import_client_class_failure(self, mock_import):
         """Test client class import failure."""
         mock_import.side_effect = ImportError("Module not found")
 
         with pytest.raises(ImportError):
             VectorDBFactory._import_client_class(
-                "pdf_vector_system.vector_db.nonexistent.NonexistentClient"
+                "vectorflow.vector_db.nonexistent.NonexistentClient"
             )
 
-    @patch("pdf_vector_system.vector_db.factory.importlib.util.find_spec")
+    @patch("vectorflow.vector_db.factory.importlib.util.find_spec")
     def test_check_dependencies_success(self, mock_find_spec):
         """Test successful dependency check."""
         mock_find_spec.return_value = Mock()  # Package found
@@ -94,7 +91,7 @@ class TestVectorDBFactory:
         # Should not raise any exception
         VectorDBFactory._check_dependencies(VectorDBType.CHROMADB, ["chromadb"])
 
-    @patch("pdf_vector_system.vector_db.factory.importlib.util.find_spec")
+    @patch("vectorflow.vector_db.factory.importlib.util.find_spec")
     def test_check_dependencies_failure(self, mock_find_spec):
         """Test dependency check failure."""
         mock_find_spec.return_value = None  # Package not found
@@ -104,8 +101,8 @@ class TestVectorDBFactory:
         ):
             VectorDBFactory._check_dependencies(VectorDBType.PINECONE, ["pinecone"])
 
-    @patch("pdf_vector_system.vector_db.factory.VectorDBFactory._check_dependencies")
-    @patch("pdf_vector_system.vector_db.factory.VectorDBFactory._import_client_class")
+    @patch("vectorflow.vector_db.factory.VectorDBFactory._check_dependencies")
+    @patch("vectorflow.vector_db.factory.VectorDBFactory._import_client_class")
     def test_create_client_success(self, mock_import_class, mock_check_deps):
         """Test successful client creation."""
         # Setup mocks
@@ -132,8 +129,8 @@ class TestVectorDBFactory:
         with pytest.raises(ValueError, match="Unsupported vector database type"):
             VectorDBFactory.create_client(mock_config)
 
-    @patch("pdf_vector_system.vector_db.factory.VectorDBFactory._check_dependencies")
-    @patch("pdf_vector_system.vector_db.factory.VectorDBFactory._import_client_class")
+    @patch("vectorflow.vector_db.factory.VectorDBFactory._check_dependencies")
+    @patch("vectorflow.vector_db.factory.VectorDBFactory._import_client_class")
     def test_create_client_import_failure(self, mock_import_class, mock_check_deps):
         """Test client creation with import failure."""
         mock_import_class.side_effect = ImportError("Failed to import")
@@ -176,7 +173,7 @@ class TestVectorDBFactory:
         with pytest.raises(ValueError, match="Unsupported vector database type"):
             VectorDBFactory.create_config("unsupported_db")
 
-    @patch("pdf_vector_system.vector_db.factory.importlib.util.find_spec")
+    @patch("vectorflow.vector_db.factory.importlib.util.find_spec")
     def test_get_available_backends(self, mock_find_spec):
         """Test getting available backends."""
 
@@ -242,7 +239,7 @@ class TestVectorDBFactory:
 class TestFactoryFunctions:
     """Test standalone factory functions."""
 
-    @patch("pdf_vector_system.vector_db.factory.VectorDBFactory.create_client")
+    @patch("vectorflow.vector_db.factory.VectorDBFactory.create_client")
     def test_create_vector_db_function(self, mock_create_client):
         """Test create_vector_db convenience function."""
         mock_client = Mock()
@@ -254,7 +251,7 @@ class TestFactoryFunctions:
         assert result == mock_client
         mock_create_client.assert_called_once_with(config)
 
-    @patch("pdf_vector_system.vector_db.factory.VectorDBFactory.get_available_backends")
+    @patch("vectorflow.vector_db.factory.VectorDBFactory.get_available_backends")
     def test_get_available_backends_function(self, mock_get_available):
         """Test get_available_backends convenience function."""
         mock_backends = [VectorDBType.CHROMADB, VectorDBType.PINECONE]
@@ -314,15 +311,13 @@ class TestFactoryIntegration:
         with pytest.raises(ValueError, match="Unsupported|Unknown|Invalid"):
             VectorDBFactory.create_client(invalid_config)
 
-    @patch("pdf_vector_system.vector_db.factory.logger")
+    @patch("vectorflow.vector_db.factory.logger")
     def test_factory_logging(self, mock_logger):
         """Test that factory operations are properly logged."""
         with (
+            patch("vectorflow.vector_db.factory.VectorDBFactory._check_dependencies"),
             patch(
-                "pdf_vector_system.vector_db.factory.VectorDBFactory._check_dependencies"
-            ),
-            patch(
-                "pdf_vector_system.vector_db.factory.VectorDBFactory._import_client_class"
+                "vectorflow.vector_db.factory.VectorDBFactory._import_client_class"
             ) as mock_import,
         ):
             mock_client_class = Mock()

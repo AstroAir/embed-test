@@ -102,25 +102,25 @@ install_uv() {
     fi
 }
 
-# Install PDF Vector System
+# Install VectorFlow
 install_package() {
-    print_status "Installing PDF Vector System..."
+    print_status "Installing VectorFlow..."
 
     if [ "$USE_UV" = true ]; then
-        if uv pip install pdf-vector-system; then
-            print_success "PDF Vector System installed successfully with UV"
+        if uv pip install vectorflow; then
+            print_success "VectorFlow installed successfully with UV"
         else
             print_error "Installation failed with UV, trying pip..."
-            if $PIP_CMD install pdf-vector-system; then
-                print_success "PDF Vector System installed successfully with pip"
+            if $PIP_CMD install vectorflow; then
+                print_success "VectorFlow installed successfully with pip"
             else
                 print_error "Installation failed"
                 exit 1
             fi
         fi
     else
-        if $PIP_CMD install pdf-vector-system; then
-            print_success "PDF Vector System installed successfully"
+        if $PIP_CMD install vectorflow; then
+            print_success "VectorFlow installed successfully"
         else
             print_error "Installation failed"
             exit 1
@@ -132,15 +132,15 @@ install_package() {
 verify_installation() {
     print_status "Verifying installation..."
 
-    if command -v pdf-vector &> /dev/null; then
+    if command -v vectorflow &> /dev/null; then
         print_success "CLI command available"
-        pdf-vector --version
+        vectorflow --version
     else
         print_error "CLI command not found"
         exit 1
     fi
 
-    if $PYTHON_CMD -c "import pdf_vector_system; print(f'Version: {pdf_vector_system.__version__}')" 2>/dev/null; then
+    if $PYTHON_CMD -c "import vectorflow; print(f'Version: {vectorflow.__version__}')" 2>/dev/null; then
         print_success "Python package import successful"
     else
         print_error "Python package import failed"
@@ -150,8 +150,8 @@ verify_installation() {
 
 # Main installation process
 main() {
-    echo "PDF Vector System Installation Script"
-    echo "====================================="
+    echo "VectorFlow Installation Script"
+    echo "=============================="
     echo
 
     check_python
@@ -164,9 +164,9 @@ main() {
     print_success "Installation completed successfully!"
     echo
     echo "Next steps:"
-    echo "  1. Run 'pdf-vector --help' to see available commands"
-    echo "  2. Check the documentation at: https://your-username.github.io/pdf-vector-system/"
-    echo "  3. Try the quick start guide: https://your-username.github.io/pdf-vector-system/getting-started/quickstart/"
+    echo "  1. Run 'vectorflow --help' to see available commands"
+    echo "  2. Check the documentation at: https://your-username.github.io/vectorflow/"
+    echo "  3. Try the quick start guide: https://your-username.github.io/vectorflow/getting-started/quickstart/"
     echo
 }
 

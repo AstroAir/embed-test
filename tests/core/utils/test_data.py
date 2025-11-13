@@ -6,8 +6,8 @@ import time
 from pathlib import Path
 from typing import Any, Optional
 
-from pdf_vector_system.core.pdf.text_processor import TextChunk
-from pdf_vector_system.core.vector_db.models import DocumentChunk, SearchResult
+from vectorflow.core.pdf.text_processor import TextChunk
+from vectorflow.core.vector_db.models import DocumentChunk, SearchResult
 
 
 class DataGenerator:

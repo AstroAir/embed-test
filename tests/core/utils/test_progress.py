@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 import pytest
 
-from pdf_vector_system.core.utils.progress import (
+from vectorflow.core.utils.progress import (
     PerformanceTimer,
     ProgressTracker,
     time_operation,
@@ -165,7 +165,7 @@ class TestPerformanceTimer:
         assert timer.duration is not None
         assert timer.duration > 0
 
-    @patch("pdf_vector_system.utils.progress.logger")
+    @patch("vectorflow.utils.progress.logger")
     def test_automatic_logging(self, mock_logger):
         """Test automatic result logging."""
         with PerformanceTimer("test_operation", log_result=True):
@@ -279,7 +279,7 @@ class TestTimeOperation:
         # Default should be to log results
         assert timer.log_result is True
 
-    @patch("pdf_vector_system.utils.progress.logger")
+    @patch("vectorflow.utils.progress.logger")
     def test_time_operation_usage(self, mock_logger):
         """Test using time_operation in practice."""
         timer = time_operation("practical_test", log_result=True)

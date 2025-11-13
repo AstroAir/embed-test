@@ -41,8 +41,8 @@ from utils.example_helpers import (
     print_subsection,
 )
 
-from pdf_vector_system import Config
-from pdf_vector_system.config.settings import EmbeddingModelType, LogLevel
+from vectorflow import Config
+from vectorflow.config.settings import EmbeddingModelType, LogLevel
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))

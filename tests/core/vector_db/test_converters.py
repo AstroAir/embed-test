@@ -2,9 +2,9 @@
 
 import pytest
 
-from pdf_vector_system.core.vector_db.config import VectorDBType
-from pdf_vector_system.core.vector_db.converters import VectorDBConverter
-from pdf_vector_system.core.vector_db.models import DocumentChunk, SearchQuery
+from vectorflow.core.vector_db.config import VectorDBType
+from vectorflow.core.vector_db.converters import VectorDBConverter
+from vectorflow.core.vector_db.models import DocumentChunk, SearchQuery
 
 
 class TestVectorDBConverter:

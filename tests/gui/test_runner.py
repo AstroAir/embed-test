@@ -39,7 +39,7 @@ class GUITestRunner:
         if coverage:
             args.extend(
                 [
-                    "--cov=pdf_vector_system.gui",
+                    "--cov=vectorflow.gui",
                     "--cov-report=html:htmlcov/gui",
                     "--cov-report=term-missing",
                     "--cov-fail-under=80",

@@ -5,8 +5,8 @@ from unittest.mock import Mock, patch
 import numpy as np
 import pytest
 
-from pdf_vector_system.core.embeddings.base import EmbeddingResult
-from pdf_vector_system.core.embeddings.quality import (
+from vectorflow.core.embeddings.base import EmbeddingResult
+from vectorflow.core.embeddings.quality import (
     EmbeddingQualityValidator,
     QualityMetric,
     QualityReport,
@@ -219,8 +219,8 @@ class TestEmbeddingQualityValidator:
         assert "outlier_ratio" in score.details
         assert score.details["outlier_count"] >= 1  # Should detect the outlier
 
-    @patch("pdf_vector_system.embeddings.quality.SKLEARN_AVAILABLE", True)
-    @patch("pdf_vector_system.embeddings.quality.KMeans")
+    @patch("vectorflow.embeddings.quality.SKLEARN_AVAILABLE", True)
+    @patch("vectorflow.embeddings.quality.KMeans")
     def test_calculate_clustering_metrics(self, mock_kmeans):
         """Test clustering metrics calculation."""
         validator = EmbeddingQualityValidator(enable_advanced_metrics=True)
@@ -327,7 +327,7 @@ class TestEmbeddingQualityValidator:
         assert "model_name" in report.metadata
         assert report.metadata["model_name"] == "test-model"
 
-    @patch("pdf_vector_system.embeddings.quality.SKLEARN_AVAILABLE", True)
+    @patch("vectorflow.embeddings.quality.SKLEARN_AVAILABLE", True)
     def test_validate_embeddings_advanced(self):
         """Test advanced embedding validation."""
         validator = EmbeddingQualityValidator(enable_advanced_metrics=True)

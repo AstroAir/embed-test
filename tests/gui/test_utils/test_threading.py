@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.utils.threading import TaskRunner
+from vectorflow.gui.utils.threading import TaskRunner
 
 
 class TestTaskRunner:

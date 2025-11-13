@@ -6,18 +6,18 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.config.settings import (
+from tests.mocks.chromadb_mocks import MockChromaDBClient
+from tests.mocks.embedding_mocks import MockEmbeddingService
+from tests.mocks.pdf_mocks import create_mock_pdf_document
+from vectorflow.core.config.settings import (
     ChromaDBConfig,
     Config,
     EmbeddingConfig,
     PDFConfig,
     TextProcessingConfig,
 )
-from pdf_vector_system.core.pipeline import PDFVectorPipeline
-from pdf_vector_system.core.vector_db.models import SearchQuery
-from tests.mocks.chromadb_mocks import MockChromaDBClient
-from tests.mocks.embedding_mocks import MockEmbeddingService
-from tests.mocks.pdf_mocks import create_mock_pdf_document
+from vectorflow.core.pipeline import PDFVectorPipeline
+from vectorflow.core.vector_db.models import SearchQuery
 
 
 @pytest.mark.integration
@@ -52,7 +52,7 @@ class TestPDFToVectorIntegration:
             "extraction_timestamp": time.time(),
         }
 
-        with patch("pdf_vector_system.pdf.processor.fitz.open") as mock_fitz:
+        with patch("vectorflow.pdf.processor.fitz.open") as mock_fitz:
             # Mock PDF document
             mock_doc = create_mock_pdf_document(
                 page_count=2,
@@ -65,10 +65,10 @@ class TestPDFToVectorIntegration:
 
             with (
                 patch(
-                    "pdf_vector_system.embeddings.factory.SentenceTransformersService"
+                    "vectorflow.embeddings.factory.SentenceTransformersService"
                 ) as mock_st_service,
                 patch(
-                    "pdf_vector_system.vector_db.chromadb_client.chromadb.PersistentClient"
+                    "vectorflow.vector_db.chromadb_client.chromadb.PersistentClient"
                 ) as mock_chroma_client,
             ):
                 # Set up embedding service mock
@@ -113,12 +113,12 @@ class TestPDFToVectorIntegration:
         pdf1_path.write_text("Mock PDF 1")
         pdf2_path.write_text("Mock PDF 2")
 
-        with patch("pdf_vector_system.pdf.processor.fitz.open") as mock_fitz:
+        with patch("vectorflow.pdf.processor.fitz.open") as mock_fitz:
             with patch(
-                "pdf_vector_system.embeddings.factory.SentenceTransformersService"
+                "vectorflow.embeddings.factory.SentenceTransformersService"
             ) as mock_st_service:
                 with patch(
-                    "pdf_vector_system.vector_db.chromadb_client.chromadb.PersistentClient"
+                    "vectorflow.vector_db.chromadb_client.chromadb.PersistentClient"
                 ) as mock_chroma_client:
                     # Set up mocks
                     def mock_fitz_side_effect(path):
@@ -190,12 +190,12 @@ class TestConfigurationIntegration:
         )
 
         with (
-            patch("pdf_vector_system.pdf.processor.fitz.open"),
+            patch("vectorflow.pdf.processor.fitz.open"),
             patch(
-                "pdf_vector_system.embeddings.factory.SentenceTransformersService"
+                "vectorflow.embeddings.factory.SentenceTransformersService"
             ) as mock_st_service,
             patch(
-                "pdf_vector_system.vector_db.chromadb_client.chromadb.PersistentClient"
+                "vectorflow.vector_db.chromadb_client.chromadb.PersistentClient"
             ) as mock_chroma_client,
         ):
             mock_embedding_service = MockEmbeddingService("test-model")
@@ -241,12 +241,12 @@ class TestErrorHandlingIntegration:
         pdf_path = temp_dir / "error_test.pdf"
         pdf_path.write_text("Mock PDF content")
 
-        with patch("pdf_vector_system.pdf.processor.fitz.open") as mock_fitz:
+        with patch("vectorflow.pdf.processor.fitz.open") as mock_fitz:
             with patch(
-                "pdf_vector_system.embeddings.factory.SentenceTransformersService"
+                "vectorflow.embeddings.factory.SentenceTransformersService"
             ) as mock_st_service:
                 with patch(
-                    "pdf_vector_system.vector_db.chromadb_client.chromadb.PersistentClient"
+                    "vectorflow.vector_db.chromadb_client.chromadb.PersistentClient"
                 ) as mock_chroma_client:
                     # Mock PDF processor to raise error
                     mock_fitz.side_effect = Exception("PDF processing error")
@@ -276,12 +276,12 @@ class TestErrorHandlingIntegration:
         pdf_path = temp_dir / "test.pdf"
         pdf_path.write_text("Mock PDF content")
 
-        with patch("pdf_vector_system.pdf.processor.fitz.open") as mock_fitz:
+        with patch("vectorflow.pdf.processor.fitz.open") as mock_fitz:
             with patch(
-                "pdf_vector_system.embeddings.factory.SentenceTransformersService"
+                "vectorflow.embeddings.factory.SentenceTransformersService"
             ) as mock_st_service:
                 with patch(
-                    "pdf_vector_system.vector_db.chromadb_client.chromadb.PersistentClient"
+                    "vectorflow.vector_db.chromadb_client.chromadb.PersistentClient"
                 ) as mock_chroma_client:
                     # Set up PDF processing to succeed
                     mock_doc = create_mock_pdf_document(
@@ -331,12 +331,12 @@ class TestPerformanceIntegration:
             [f"This is sentence {i} in a large document." for i in range(50)]
         )
 
-        with patch("pdf_vector_system.pdf.processor.fitz.open") as mock_fitz:
+        with patch("vectorflow.pdf.processor.fitz.open") as mock_fitz:
             with patch(
-                "pdf_vector_system.embeddings.factory.SentenceTransformersService"
+                "vectorflow.embeddings.factory.SentenceTransformersService"
             ) as mock_st_service:
                 with patch(
-                    "pdf_vector_system.vector_db.chromadb_client.chromadb.PersistentClient"
+                    "vectorflow.vector_db.chromadb_client.chromadb.PersistentClient"
                 ) as mock_chroma_client:
                     # Set up PDF processing
                     mock_doc = create_mock_pdf_document(
@@ -387,12 +387,12 @@ class TestPerformanceIntegration:
             pdf_path.write_text(f"Mock PDF content {i}")
             pdf_paths.append(pdf_path)
 
-        with patch("pdf_vector_system.pdf.processor.fitz.open") as mock_fitz:
+        with patch("vectorflow.pdf.processor.fitz.open") as mock_fitz:
             with patch(
-                "pdf_vector_system.embeddings.factory.SentenceTransformersService"
+                "vectorflow.embeddings.factory.SentenceTransformersService"
             ) as mock_st_service:
                 with patch(
-                    "pdf_vector_system.vector_db.chromadb_client.chromadb.PersistentClient"
+                    "vectorflow.vector_db.chromadb_client.chromadb.PersistentClient"
                 ) as mock_chroma_client:
                     # Set up mocks
                     def mock_fitz_side_effect(path):
@@ -441,10 +441,10 @@ class TestHealthCheckIntegration:
 
         with (
             patch(
-                "pdf_vector_system.embeddings.factory.SentenceTransformersService"
+                "vectorflow.embeddings.factory.SentenceTransformersService"
             ) as mock_st_service,
             patch(
-                "pdf_vector_system.vector_db.chromadb_client.chromadb.PersistentClient"
+                "vectorflow.vector_db.chromadb_client.chromadb.PersistentClient"
             ) as mock_chroma_client,
         ):
             # Set up healthy mocks
@@ -474,10 +474,10 @@ class TestHealthCheckIntegration:
 
         with (
             patch(
-                "pdf_vector_system.embeddings.factory.SentenceTransformersService"
+                "vectorflow.embeddings.factory.SentenceTransformersService"
             ) as mock_st_service,
             patch(
-                "pdf_vector_system.vector_db.chromadb_client.chromadb.PersistentClient"
+                "vectorflow.vector_db.chromadb_client.chromadb.PersistentClient"
             ) as mock_chroma_client,
         ):
             # Set up unhealthy embedding service

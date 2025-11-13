@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.dialogs.confirm_dialog import ConfirmDialog
+from vectorflow.gui.dialogs.confirm_dialog import ConfirmDialog
 
 
 class TestConfirmDialog:

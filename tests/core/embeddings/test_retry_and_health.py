@@ -4,20 +4,17 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdf_vector_system.core.config.settings import EmbeddingConfig, EmbeddingModelType
-from pdf_vector_system.core.embeddings.base import (
-    EmbeddingResult,
-    EmbeddingServiceError,
-)
-from pdf_vector_system.core.embeddings.factory import (
+from vectorflow.core.config.settings import EmbeddingConfig, EmbeddingModelType
+from vectorflow.core.embeddings.base import EmbeddingResult, EmbeddingServiceError
+from vectorflow.core.embeddings.factory import (
     EmbeddingServiceFactory,
     EnhancedBatchEmbeddingProcessor,
 )
-from pdf_vector_system.core.embeddings.health_check import (
+from vectorflow.core.embeddings.health_check import (
     HealthCheckManager,
     ProviderHealthChecker,
 )
-from pdf_vector_system.core.embeddings.retry import (
+from vectorflow.core.embeddings.retry import (
     ProviderCircuitBreaker,
     RetryConfig,
     RetryHandler,
@@ -272,7 +269,7 @@ class TestProviderAvailability:
 
     def test_get_available_providers(self):
         """Test getting available providers."""
-        from pdf_vector_system.core.embeddings import get_available_providers
+        from vectorflow.core.embeddings import get_available_providers
 
         providers = get_available_providers()
 
@@ -288,7 +285,7 @@ class TestProviderAvailability:
 
     def test_check_provider_dependencies(self):
         """Test checking provider dependencies."""
-        from pdf_vector_system.core.embeddings import check_provider_dependencies
+        from vectorflow.core.embeddings import check_provider_dependencies
 
         missing = check_provider_dependencies()
 

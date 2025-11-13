@@ -4,13 +4,13 @@ from unittest.mock import patch
 
 import pytest
 
-from pdf_vector_system.core.vector_db.config import VectorDBType
-from pdf_vector_system.core.vector_db.error_handler import (
+from vectorflow.core.vector_db.config import VectorDBType
+from vectorflow.core.vector_db.error_handler import (
     VectorDBErrorHandler,
     VectorDBLogger,
     handle_vector_db_errors,
 )
-from pdf_vector_system.core.vector_db.models import (
+from vectorflow.core.vector_db.models import (
     AuthenticationError,
     BackendNotAvailableError,
     CollectionNotFoundError,
@@ -197,7 +197,7 @@ class TestVectorDBLogger:
         assert logger.backend_type == VectorDBType.CHROMADB
         assert logger.logger is not None
 
-    @patch("pdf_vector_system.vector_db.error_handler.logger")
+    @patch("vectorflow.vector_db.error_handler.logger")
     def test_log_error(self, mock_logger):
         """Test error logging."""
         db_logger = VectorDBLogger(VectorDBType.CHROMADB)
@@ -212,7 +212,7 @@ class TestVectorDBLogger:
         assert "chromadb" in call_args.lower()
         assert "test error" in call_args.lower()
 
-    @patch("pdf_vector_system.vector_db.error_handler.logger")
+    @patch("vectorflow.vector_db.error_handler.logger")
     def test_log_warning(self, mock_logger):
         """Test warning logging."""
         db_logger = VectorDBLogger(VectorDBType.CHROMADB)
@@ -227,7 +227,7 @@ class TestVectorDBLogger:
         assert "chromadb" in call_args.lower()
         assert "test warning" in call_args.lower()
 
-    @patch("pdf_vector_system.vector_db.error_handler.logger")
+    @patch("vectorflow.vector_db.error_handler.logger")
     def test_log_info(self, mock_logger):
         """Test info logging."""
         db_logger = VectorDBLogger(VectorDBType.CHROMADB)
@@ -329,7 +329,7 @@ class TestErrorMappingIntegration:
             # Should map to appropriate error type or generic VectorDBError
             assert isinstance(mapped_error, VectorDBError)
 
-    @patch("pdf_vector_system.vector_db.error_handler.logger")
+    @patch("vectorflow.vector_db.error_handler.logger")
     def test_end_to_end_error_handling(self, mock_logger):
         """Test end-to-end error handling flow."""
 

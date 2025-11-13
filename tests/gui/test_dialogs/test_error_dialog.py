@@ -2,7 +2,7 @@
 
 import pytest
 
-from pdf_vector_system.gui.dialogs.error_dialog import ErrorDialog
+from vectorflow.gui.dialogs.error_dialog import ErrorDialog
 
 
 class TestErrorDialog:
