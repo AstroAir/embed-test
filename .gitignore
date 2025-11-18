@@ -214,3 +214,27 @@ ruff_issues.json
 test_summary.txt
 
 llmdoc/
+
+# Examples directory - Generated files and artifacts
+# Vector database directories (ChromaDB and similar)
+examples/**/*_db/
+examples/**/chroma_db/
+
+# Database files
+examples/**/*.db
+examples/**/*.sqlite3
+
+# Generated sample data files (keep templates and .env.example)
+examples/sample_data/*.txt
+examples/sample_data/*.pdf
+
+# Nested examples directories created during execution
+examples/**/examples/
+
+# Output directories from example runs
+examples/**/output/
+examples/**/results/
+
+# Environment files in examples (keep .env.example templates)
+examples/**/.env
+!examples/**/.env.example
