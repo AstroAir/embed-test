@@ -363,7 +363,9 @@ class QdrantClient(VectorDBInterface, LoggerMixin):
         collection_name = name or self.config.collection_name
         try:
             collections = self.list_collections()
-            return collection_name in collections
+            return any(
+                getattr(col, "name", None) == collection_name for col in collections
+            )
         except Exception as e:
             error_msg = (
                 f"Failed to check if collection '{collection_name}' exists: {e!s}"
@@ -434,18 +436,83 @@ class QdrantClient(VectorDBInterface, LoggerMixin):
     def get_document_info(
         self, document_id: str, collection_name: Optional[str] = None
     ) -> DocumentInfo:
-        """Get information about a document.
+        """Get information about a document."""
+        try:
+            collection = collection_name or self.config.collection_name
 
-        Note: This method is not yet implemented for Qdrant.
+            # Build filter for the document_id
+            filter_condition = qdrant_models.Filter(
+                must=[
+                    qdrant_models.FieldCondition(
+                        key="document_id",
+                        match=qdrant_models.MatchValue(value=document_id),
+                    )
+                ]
+            )
 
-        Args:
-            document_id: ID of the document
-            collection_name: Target collection name (uses default if None)
+            # Scroll all points for this document (metadata-only)
+            points, _ = self.client.scroll(
+                collection_name=collection,
+                scroll_filter=filter_condition,
+                limit=10000,
+                with_payload=True,
+                with_vectors=False,
+            )
 
-        Raises:
-            NotImplementedError: This method is not yet implemented
-        """
-        raise NotImplementedError("get_document_info is not yet implemented for Qdrant")
+            if not points:
+                raise DocumentNotFoundError(f"Document {document_id} not found")
+
+            chunk_count = len(points)
+            total_characters = 0
+            page_numbers: set[int] = set()
+            created_times: list[float] = []
+            filename: Optional[str] = None
+
+            for point in points:
+                payload = getattr(point, "payload", {}) or {}
+                content = payload.get("content", "")
+                if isinstance(content, str) and content:
+                    total_characters += len(content)
+                else:
+                    # Fallback if only content_length is stored
+                    try:
+                        total_characters += int(payload.get("content_length", 0) or 0)
+                    except Exception:
+                        pass
+
+                if "page_number" in payload:
+                    try:
+                        page_numbers.add(int(payload["page_number"]))
+                    except Exception:
+                        pass
+
+                if "created_at" in payload:
+                    try:
+                        created_times.append(float(payload["created_at"]))
+                    except Exception:
+                        pass
+
+                if filename is None:
+                    filename = payload.get("filename") or payload.get("file_name")
+
+            created_at_str = str(int(min(created_times))) if created_times else None
+
+            return DocumentInfo(
+                document_id=document_id,
+                chunk_count=chunk_count,
+                total_characters=total_characters,
+                filename=filename,
+                page_count=len(page_numbers) if page_numbers else None,
+                created_at=created_at_str,
+            )
+        except DocumentNotFoundError:
+            raise
+        except Exception as e:
+            raise VectorDBError(
+                f"Failed to get document info: {e!s}",
+                backend="qdrant",
+                original_error=e,
+            )
 
     def find_similar_chunks(
         self, chunk_id: str, collection_name: Optional[str] = None, limit: int = 10

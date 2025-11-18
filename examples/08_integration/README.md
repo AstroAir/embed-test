@@ -79,7 +79,7 @@ Using message queues for asynchronous processing.
 
 ## Prerequisites
 
-- PDF Vector System installed
+- VectorFlow installed
 - Understanding of integration patterns
 - Knowledge of external systems being integrated
 - API credentials for external services

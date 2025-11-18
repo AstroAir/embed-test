@@ -37,10 +37,14 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
-from utils.example_helpers import example_context, print_section, print_subsection
+from examples.utils.example_helpers import (
+    example_context,
+    print_section,
+    print_subsection,
+)
 
 from vectorflow import Config
-from vectorflow.config.settings import EmbeddingModelType, LogLevel
+from vectorflow.core.config.settings import EmbeddingModelType, LogLevel
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -201,10 +205,28 @@ def demonstrate_environment_configs() -> None:
 
     templates = get_environment_templates()
 
-    for _env, template in templates.items():
+    for env, template in templates.items():
+        print(f"\nEnvironment: {env.value}")
+        print(f"  Name: {template.name}")
+        print(f"  Description: {template.description}")
+        print(
+            "  Embedding: "
+            f"{template.embedding_model_type.value} ({template.embedding_model_name})"
+        )
+        print(
+            f"  Batch size: {template.batch_size}, "
+            f"chunk size/overlap: {template.chunk_size}/{template.chunk_overlap}"
+        )
+        print(
+            f"  Collection suffix: {template.collection_suffix}, "
+            f"persist dir: {template.persist_directory}"
+        )
+        print(f"  Max workers: {template.max_workers}, debug: {template.debug}")
+
         if template.additional_settings:
-            for _key, _value in template.additional_settings.items():
-                pass
+            print("  Additional settings:")
+            for key, value in template.additional_settings.items():
+                print(f"    - {key} = {value}")
 
 
 def demonstrate_configuration_inheritance() -> None:
@@ -219,8 +241,9 @@ def demonstrate_configuration_inheritance() -> None:
         "embedding.timeout_seconds": 60,
     }
 
-    for _key, _value in base_config.items():
-        pass
+    print("\nBase configuration (shared across environments):")
+    for key, value in base_config.items():
+        print(f"  {key} = {value}")
 
     # Environment-specific overrides
     environment_overrides = {
@@ -246,8 +269,9 @@ def demonstrate_configuration_inheritance() -> None:
         # Combine base config with environment overrides
         combined_overrides = {**base_config, **overrides}
 
-        for _key, _value in overrides.items():
-            pass
+        print(f"\nOverrides for {env.value} environment:")
+        for key, value in overrides.items():
+            print(f"  {key} -> {value}")
 
         # Create config with inheritance
         create_config_from_template(template, combined_overrides)
@@ -269,9 +293,10 @@ def demonstrate_secrets_management() -> None:
     for var in secrets_env_vars:
         value = os.environ.get(var)
         if value:
-            f"{value[:8]}..." if len(value) > 8 else "***"
+            masked = f"{value[:8]}..." if len(value) > 8 else "***"
+            print(f"  {var}: set ({masked})")
         else:
-            pass
+            print(f"  {var}: NOT set")
 
     # Configuration file patterns
     security_practices = [
@@ -283,8 +308,9 @@ def demonstrate_secrets_management() -> None:
         "Use secret management services in production",
     ]
 
-    for _practice in security_practices:
-        pass
+    print("\nSecret management best practices:")
+    for practice in security_practices:
+        print(f"  - {practice}")
 
     # Demonstrate secure config loading
 
@@ -304,7 +330,12 @@ def demonstrate_secrets_management() -> None:
                 config.embedding.model_type = EmbeddingModelType.SENTENCE_TRANSFORMERS
                 config.embedding.model_name = "all-MiniLM-L6-v2"
             else:
-                pass
+                # API key is present; we keep OpenAI configuration
+                masked = f"{api_key[:8]}..." if len(api_key) > 8 else "***"
+                print(
+                    f"  Using OpenAI embeddings for {environment.value} "
+                    f"with key {masked}"
+                )
 
         return config
 
@@ -328,8 +359,9 @@ def demonstrate_deployment_patterns() -> None:
         "MAX_WORKERS=8",
     ]
 
-    for _var in container_env_vars:
-        pass
+    print("\nContainer deployment environment variables:")
+    for var in container_env_vars:
+        print(f"  - {var}")
 
     # Kubernetes deployment
     k8s_patterns = [
@@ -340,8 +372,9 @@ def demonstrate_deployment_patterns() -> None:
         "Implement health checks and readiness probes",
     ]
 
-    for _pattern in k8s_patterns:
-        pass
+    print("\nKubernetes deployment patterns:")
+    for pattern in k8s_patterns:
+        print(f"  - {pattern}")
 
     # Cloud deployment
     cloud_patterns = [
@@ -352,8 +385,9 @@ def demonstrate_deployment_patterns() -> None:
         "Set up monitoring and alerting",
     ]
 
-    for _pattern in cloud_patterns:
-        pass
+    print("\nCloud deployment patterns:")
+    for pattern in cloud_patterns:
+        print(f"  - {pattern}")
 
 
 def main() -> None:

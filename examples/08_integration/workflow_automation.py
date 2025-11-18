@@ -40,11 +40,15 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Callable, Optional
 
-from utils.example_helpers import example_context, print_section, print_subsection
-from utils.sample_data_generator import ensure_sample_data
+from examples.utils.example_helpers import (
+    example_context,
+    print_section,
+    print_subsection,
+)
+from examples.utils.sample_data_generator import ensure_sample_data
 
 from vectorflow import Config, PDFVectorPipeline
-from vectorflow.config.settings import EmbeddingModelType
+from vectorflow.core.config.settings import EmbeddingModelType
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -151,8 +155,8 @@ class WorkflowEngine:
                 self._handle_event(event)
             except queue.Empty:
                 continue
-            except Exception:
-                pass
+            except Exception as exc:
+                print(f"WorkflowEngine event loop error: {exc}")
 
     def _handle_event(self, event: WorkflowEvent):
         """Handle a workflow event."""
@@ -264,7 +268,7 @@ def create_document_ingestion_workflow(
             if doc.exists() and doc.suffix.lower() == ".pdf":
                 valid_docs.append(doc)
             else:
-                pass
+                print(f"  Skipping invalid document: {doc} (missing or not a PDF)")
         return valid_docs
 
     def process_document(doc_path: Path) -> dict[str, Any]:
@@ -352,8 +356,9 @@ def demonstrate_basic_workflow(
     if not pdf_files:
         return
 
-    for _pdf_file in pdf_files:
-        pass
+    print("Selected documents for workflow:")
+    for pdf_file in pdf_files:
+        print(f"  - {pdf_file.name}")
 
     # Create and submit workflow
     workflow = create_document_ingestion_workflow(pipeline, pdf_files)
@@ -370,16 +375,39 @@ def demonstrate_basic_workflow(
 
     # Report results
     if workflow.status == WorkflowStatus.COMPLETED:
-        workflow.completed_at - workflow.started_at
+        if workflow.started_at and workflow.completed_at:
+            duration = (workflow.completed_at - workflow.started_at).total_seconds()
+        else:
+            duration = 0.0
+        print(f"\nWorkflow '{workflow.name}' completed in {duration:.3f}s.")
 
         # Show task results
         for task in workflow.tasks:
-            if task.status == WorkflowStatus.COMPLETED:
-                pass
-            else:
-                pass
+            elapsed = (
+                (task.end_time - task.start_time).total_seconds()
+                if task.start_time and task.end_time
+                else 0.0
+            )
+            print(
+                f"  Task {task.task_id} ({task.name}): "
+                f"status={task.status.value}, time={elapsed:.3f}s"
+            )
+            if task.error:
+                print(f"    Error: {task.error}")
+            if task.task_id == "summarize" and isinstance(task.result, dict):
+                summary = task.result
+                print("    Summary:")
+                print(
+                    f"      total={summary.get('total_documents')}, "
+                    f"success={summary.get('successful_documents')}, "
+                    f"failed={summary.get('failed_documents')}, "
+                    f"chunks={summary.get('total_chunks')}"
+                )
     else:
-        pass
+        print(
+            f"\nWorkflow '{workflow.name}' did not complete successfully. "
+            f"Final status: {workflow.status.value}"
+        )
 
 
 def demonstrate_event_driven_processing(engine: WorkflowEngine) -> None:
@@ -392,20 +420,48 @@ def demonstrate_event_driven_processing(engine: WorkflowEngine) -> None:
         data = event.data
 
         if data.get("success", False):
-            pass
+            print(
+                f"  Document {data.get('document_id')} processed successfully, "
+                f"chunks={data.get('chunks_processed')}"
+            )
         else:
-            pass
+            print(
+                f"  Document {data.get('document_id')} failed during processing: "
+                f"{data.get('error', 'Unknown error')}"
+            )
 
     # Event handler for batch completion
     def on_batch_completed(event: WorkflowEvent):
         """Handle batch completion event."""
+        data = event.data
+        print(
+            f"  Batch completed for workflow {event.workflow_id}: "
+            f"total={data.get('total_documents')}, "
+            f"successful={data.get('successful')}, "
+            f"failed={data.get('failed')}"
+        )
+
+    # Event handler for processing failures
+    def on_processing_failed(event: WorkflowEvent):
+        """Handle document processing failure event."""
+        data = event.data
+        print(
+            f"  Processing failed for document {data.get('document_id')}: "
+            f"{data.get('error', 'Unknown error')}"
+        )
 
     # Event handler for system errors
     def on_system_error(event: WorkflowEvent):
         """Handle system error event."""
+        data = event.data
+        print(
+            f"  System error in workflow {event.workflow_id or 'N/A'}: "
+            f"{data.get('error', 'Unknown error')}"
+        )
 
     # Register event handlers
     engine.register_event_handler(EventType.DOCUMENT_PROCESSED, on_document_processed)
+    engine.register_event_handler(EventType.PROCESSING_FAILED, on_processing_failed)
     engine.register_event_handler(EventType.BATCH_COMPLETED, on_batch_completed)
     engine.register_event_handler(EventType.SYSTEM_ERROR, on_system_error)
 
@@ -479,10 +535,15 @@ def demonstrate_scheduled_workflows(engine: WorkflowEngine) -> None:
     for schedule in schedules:
         # Calculate time until next run
         time_until = schedule["next_run"] - datetime.now()
-        if time_until.total_seconds() > 0:
-            pass
+        seconds_until = int(time_until.total_seconds())
+        print(f"\nSchedule: {schedule['name']}")
+        print(f"  Description: {schedule['description']}")
+        print(f"  Frequency: {schedule['frequency']}")
+        print(f"  Next run at: {schedule['next_run']}")
+        if seconds_until > 0:
+            print(f"  Time until next run: {seconds_until} seconds")
         else:
-            pass
+            print("  Next run time has already passed (would run immediately).")
 
 
 def main() -> None:

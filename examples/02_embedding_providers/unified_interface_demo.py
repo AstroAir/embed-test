@@ -3,10 +3,34 @@ Unified Embedding Interface Demo
 
 This example demonstrates how all embedding providers implement the same unified interface,
 making it easy to switch between different providers without changing your code.
+
+Prerequisites:
+- VectorFlow installed and importable
+- Optional: API keys configured via environment variables for cloud providers
+  (for example OPENAI_API_KEY, COHERE_API_KEY, GOOGLE_GEMINI_API_KEY)
+
+Usage:
+    uv run python -m examples.02_embedding_providers.unified_interface_demo
+
+Expected Output:
+    - A printed list of all registered embedding providers and their capabilities
+    - Detailed information for the OpenAI provider (supported models, required packages, config params)
+    - Recommended configurations for several common use cases (general, semantic search, multilingual, etc.)
+    - Validation results for example configurations, including error messages for invalid configs
+    - A demonstration of creating and using a local embedding service via the unified interface
+
+Learning Objectives:
+- Understand the unified embedding service interface and how providers are registered
+- Learn how to list available providers and inspect their capabilities
+- See how to request recommended configurations for different use cases
+- Learn how to validate embedding configurations and construct provider-specific services
 """
 
-from vectorflow.config.settings import EmbeddingConfig, EmbeddingModelType
-from vectorflow.embeddings import EmbeddingProviderRegistry, EmbeddingServiceFactory
+from vectorflow.core.config.settings import EmbeddingConfig, EmbeddingModelType
+from vectorflow.core.embeddings import (
+    EmbeddingProviderRegistry,
+    EmbeddingServiceFactory,
+)
 
 
 def demonstrate_unified_interface():

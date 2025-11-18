@@ -79,6 +79,8 @@ class ExampleTester:
 
     def __init__(self):
         self.examples_dir = Path("examples")
+        # Project root is the parent of the examples directory
+        self.project_root = Path(__file__).resolve().parent.parent
         self.timeout_seconds = 120  # 2 minutes per example
 
     def test_syntax(self, file_path: Path) -> TestResult:
@@ -253,14 +255,17 @@ class ExampleTester:
             )
 
         try:
-            # Run the example with a timeout
+            # Run the example module with a timeout so that package imports
+            # (e.g. `examples.utils.example_helpers`) work consistently.
+            module_name = ".".join(file_path.with_suffix("").parts)
+
             result = subprocess.run(
-                [sys.executable, str(file_path)],
+                [sys.executable, "-m", module_name],
                 check=False,
                 capture_output=True,
                 text=True,
                 timeout=self.timeout_seconds,
-                cwd=file_path.parent,
+                cwd=self.project_root,
             )
 
             duration = time.time() - start_time
@@ -410,21 +415,43 @@ def analyze_validation_results(reports: list[ValidationReport]) -> None:
         return
 
     # Calculate metrics
-    sum(1 for r in reports if r.syntax_valid)
-    sum(1 for r in reports if r.imports_valid)
-    sum(1 for r in reports if r.documentation_complete)
-    sum(1 for r in reports if r.functionality_tested)
+    syntax_ok = sum(1 for r in reports if r.syntax_valid)
+    imports_ok = sum(1 for r in reports if r.imports_valid)
+    docs_ok = sum(1 for r in reports if r.documentation_complete)
+    func_ok = sum(1 for r in reports if r.functionality_tested)
 
-    sum(r.overall_score for r in reports) / total_files
+    avg_score = sum(r.overall_score for r in reports) / total_files
+
+    print(f"Total example files: {total_files}")
+    print(
+        f"Syntax valid: {syntax_ok}/{total_files}, "
+        f"Imports valid: {imports_ok}/{total_files}"
+    )
+    print(
+        f"Docs complete: {docs_ok}/{total_files}, "
+        f"Functionality tested: {func_ok}/{total_files}"
+    )
+    print(f"Average overall score: {avg_score * 100:.1f}%")
 
     # Show files with issues
     failed_files = [r for r in reports if r.overall_score < 1.0]
     if failed_files:
+        print("\nExamples needing attention (up to 10 shown):")
         for report in failed_files[:10]:  # Show first 10
-            report.overall_score * 100
+            score_percent = report.overall_score * 100
+            print(
+                f"  - {report.file_path}: score={score_percent:.1f}%, "
+                f"syntax={'OK' if report.syntax_valid else 'FAIL'}, "
+                f"imports={'OK' if report.imports_valid else 'FAIL'}, "
+                f"docs={'OK' if report.documentation_complete else 'FAIL'}, "
+                f"exec={'OK' if report.functionality_tested else 'FAIL'}"
+            )
 
         if len(failed_files) > 10:
-            pass
+            print(
+                f"  ... and {len(failed_files) - 10} more files with issues "
+                "not shown here."
+            )
 
 
 def display_detailed_results(
@@ -436,19 +463,47 @@ def display_detailed_results(
     failed_reports = [r for r in reports if r.overall_score < 1.0]
     failed_reports.sort(key=lambda x: x.overall_score)  # Worst first
 
-    for _i, report in enumerate(failed_reports[:max_details], 1):
-        for test_result in report.test_results:
-            if test_result.details and not test_result.success:
-                pass
+    if not failed_reports:
+        print("All examples achieved perfect validation scores.")
+        return
 
+    for i, report in enumerate(failed_reports[:max_details], 1):
+        print(f"\n[{i}] {report.file_path}")
+        print(
+            f"  Overall score: {report.overall_score * 100:.1f}% "
+            f"(syntax={'OK' if report.syntax_valid else 'FAIL'}, "
+            f"imports={'OK' if report.imports_valid else 'FAIL'}, "
+            f"docs={'OK' if report.documentation_complete else 'FAIL'}, "
+            f"exec={'OK' if report.functionality_tested else 'FAIL'})"
+        )
+
+        # Show failing test details
+        for test_result in report.test_results:
+            if not test_result.success:
+                print(
+                    f"    - {test_result.test_type}: {test_result.message} "
+                    f"(time={test_result.duration:.2f}s)"
+                )
+                if test_result.details:
+                    print("      Details:")
+                    for line in str(test_result.details).split("\n")[:5]:
+                        print(f"        {line}")
+
+        # Recommendations
         if report.recommendations:
-            for _rec in report.recommendations:
-                pass
+            print("    Recommendations:")
+            for rec in report.recommendations:
+                print(f"      - {rec}")
 
 
 def provide_testing_summary() -> None:
     """Provide summary and recommendations for testing."""
     print_subsection("Testing Best Practices")
+    print("- Run this suite after significant changes to examples.")
+    print("- Fix syntax/import issues before debugging runtime behavior.")
+    print("- Keep example docstrings aligned with the required sections.")
+    print("- Ensure each example can execute end-to-end without manual input.")
+    print("- Use the detailed results above to prioritize fixes.")
 
 
 def main() -> None:
@@ -482,15 +537,32 @@ def main() -> None:
         if total_files > 0:
             perfect_files = sum(1 for r in reports if r.overall_score == 1.0)
             success_rate = (perfect_files / total_files) * 100
-            sum(r.overall_score for r in reports) / total_files * 100
+            avg_score = sum(r.overall_score for r in reports) / total_files * 100
 
-            if success_rate >= 95 or success_rate >= 80:
-                pass
+            print(
+                f"Perfect files: {perfect_files}/{total_files} "
+                f"({success_rate:.1f}% perfect)"
+            )
+            print(f"Average score across all examples: {avg_score:.1f}%")
+
+            if success_rate >= 95:
+                print(
+                    "Overall status: EXCELLENT - examples are in very good shape "
+                    "with only minor polish needed."
+                )
+            elif success_rate >= 80:
+                print(
+                    "Overall status: GOOD - most examples pass, but some need "
+                    "improvements. Prioritize the failures above."
+                )
             else:
-                pass
+                print(
+                    "Overall status: NEEDS WORK - many examples have issues. "
+                    "Use this report to drive a focused cleanup pass."
+                )
 
         else:
-            pass
+            print("No reports generated. Check example discovery or paths.")
 
 
 if __name__ == "__main__":

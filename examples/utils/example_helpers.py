@@ -2,16 +2,39 @@
 Helper utilities for PDF Vector System examples.
 
 This module provides common functionality used across multiple examples,
-including configuration setup, logging, and utility functions.
+including configuration setup, logging, formatting helpers, and utility
+functions.
+
+Prerequisites:
+- VectorFlow installed and importable
+- Examples directory available (typically run from the project root)
+
+Usage:
+    from examples.utils.example_helpers import (
+        setup_example_environment,
+        print_section,
+        print_subsection,
+    )
+
+Expected Output:
+    - No direct output when imported
+    - When helper functions are used by examples, you'll see formatted section
+      headers, subsections, and timing information printed to the console
+
+Learning Objectives:
+- Understand the shared utilities used by multiple example scripts
+- See how to centralize configuration, logging, and formatting logic
+- Learn how to build reusable helpers for consistent example behavior
 """
 
 import os
+import time
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Optional
 
 from vectorflow import Config
-from vectorflow.config.settings import EmbeddingModelType, LogLevel
+from vectorflow.core.config.settings import EmbeddingModelType, LogLevel
 
 
 def setup_example_environment(example_name: str = "example") -> Config:
@@ -73,6 +96,10 @@ def print_section(title: str, width: int = 60) -> None:
         title: Section title
         width: Width of the header line
     """
+    line = "=" * width
+    print(f"\n{line}")
+    print(title)
+    print(line)
 
 
 def print_subsection(title: str, width: int = 40) -> None:
@@ -83,6 +110,10 @@ def print_subsection(title: str, width: int = 40) -> None:
         title: Subsection title
         width: Width of the header line
     """
+
+    line = "-" * width
+    print(f"\n{title}")
+    print(line)
 
 
 def format_bytes(bytes_value: int) -> str:
@@ -192,19 +223,22 @@ def example_context(name: str):
     Args:
         name: Example name for logging
     """
+    start_time = time.time()
     print_section(f"Running Example: {name}")
 
     try:
         yield
 
     except KeyboardInterrupt:
-        pass
+        print("\nExample interrupted by user.")
 
     except Exception:
         raise
 
     finally:
-        pass
+        duration = time.time() - start_time
+        print_section(f"Finished Example: {name}")
+        print(f"Total time: {format_duration(duration)}")
 
 
 def safe_import(module_name: str, package: Optional[str] = None) -> Optional[Any]:

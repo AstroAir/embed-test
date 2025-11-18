@@ -34,8 +34,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from utils.example_helpers import example_context, print_section, print_subsection
-from utils.sample_data_generator import ensure_sample_data
+from examples.utils.example_helpers import (
+    example_context,
+    print_section,
+    print_subsection,
+)
+from examples.utils.sample_data_generator import ensure_sample_data
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -43,35 +47,45 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 def run_cli_command(command: list[str], description: str) -> dict[str, Any]:
     """Run a CLI command and return the result."""
+    print(f"\n[CLI] {description}")
+    print("Command:", " ".join(command))
 
     try:
         result = subprocess.run(
             command, check=False, capture_output=True, text=True, timeout=60
         )
 
-        if result.stdout:
-            # Show first 10 lines
-            for _line in result.stdout.strip().split("\n")[:10]:
-                pass
-            if len(result.stdout.strip().split("\n")) > 10:
-                pass
+        stdout_lines = result.stdout.strip().split("\n") if result.stdout else []
+        stderr_lines = result.stderr.strip().split("\n") if result.stderr else []
 
-        if result.stderr and result.returncode != 0:
-            for _line in result.stderr.strip().split("\n")[
-                :5
-            ]:  # Show first 5 error lines
-                pass
+        if stdout_lines:
+            print("-- STDOUT (first 10 lines) --")
+            for line in stdout_lines[:10]:
+                print("  ", line)
+            if len(stdout_lines) > 10:
+                print("  ... (output truncated)")
+
+        if stderr_lines and result.returncode != 0:
+            print("-- STDERR (first 5 lines) --")
+            for line in stderr_lines[:5]:  # Show first 5 error lines
+                print("  ", line)
+
+        success = result.returncode == 0
+        status = "SUCCESS" if success else "FAILED"
+        print(f"Exit code: {result.returncode} ({status})")
 
         return {
-            "success": result.returncode == 0,
+            "success": success,
             "stdout": result.stdout,
             "stderr": result.stderr,
             "returncode": result.returncode,
         }
 
     except subprocess.TimeoutExpired:
+        print("Command timed out after 60 seconds.")
         return {"success": False, "error": "timeout"}
     except Exception as e:
+        print(f"Error running command: {e}")
         return {"success": False, "error": str(e)}
 
 
@@ -288,8 +302,9 @@ def demonstrate_advanced_options() -> None:
         "export DEBUG=true",
     ]
 
-    for _example in env_examples:
-        pass
+    print("\nEnvironment variable examples:")
+    for example in env_examples:
+        print(f"  {example}")
 
     # Configuration file usage
     config_examples = [
@@ -298,8 +313,9 @@ def demonstrate_advanced_options() -> None:
         "pdf-vector-system --config-dir ./configs process *.pdf",
     ]
 
-    for _example in config_examples:
-        pass
+    print("\nConfiguration file examples:")
+    for example in config_examples:
+        print(f"  {example}")
 
     # Batch processing patterns
     batch_examples = [
@@ -313,8 +329,9 @@ def demonstrate_advanced_options() -> None:
         "pdf-vector-system process doc.pdf && pdf-vector-system search 'query'",
     ]
 
-    for _example in batch_examples:
-        pass
+    print("\nBatch processing patterns:")
+    for example in batch_examples:
+        print(f"  {example}")
 
     # Output formatting
     format_examples = [
@@ -324,8 +341,9 @@ def demonstrate_advanced_options() -> None:
         "pdf-vector-system collection stats --format yaml",
     ]
 
-    for _example in format_examples:
-        pass
+    print("\nOutput formatting examples:")
+    for example in format_examples:
+        print(f"  {example}")
 
 
 def demonstrate_automation_patterns() -> None:
@@ -356,9 +374,9 @@ pdf-vector-system search "machine learning" --limit 3
 pdf-vector-system search "artificial intelligence" --limit 3
 
 echo "Automation complete!"'''
-
-    for _line in shell_script.split("\n"):
-        pass
+    print("\nShell script automation example:")
+    for line in shell_script.split("\n"):
+        print(f"  {line}")
 
     # Python automation
 
@@ -391,9 +409,9 @@ def process_and_search(pdf_path, queries):
 # Usage
 queries = ["machine learning", "data analysis"]
 results = process_and_search("document.pdf", queries)'''
-
-    for _line in python_automation.split("\n"):
-        pass
+    print("\nPython automation example:")
+    for line in python_automation.split("\n"):
+        print(f"  {line}")
 
     # CI/CD integration
 
@@ -409,8 +427,9 @@ results = process_and_search("document.pdf", queries)'''
         "  process /data --collection production",
     ]
 
-    for _example in cicd_examples:
-        pass
+    print("\nCI/CD integration examples:")
+    for example in cicd_examples:
+        print(f"  {example}")
 
 
 def main() -> None:

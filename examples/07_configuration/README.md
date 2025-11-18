@@ -74,7 +74,7 @@ export DEBUG=false
 
 ## Prerequisites
 
-- PDF Vector System installed
+- VectorFlow installed
 - Understanding of environment variables
 - Basic security awareness
 - Configuration management concepts

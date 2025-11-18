@@ -34,7 +34,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-from utils.example_helpers import (
+from examples.utils.example_helpers import (
     example_context,
     get_available_providers,
     print_section,
@@ -42,7 +42,7 @@ from utils.example_helpers import (
 )
 
 from vectorflow import Config
-from vectorflow.config.settings import EmbeddingModelType, LogLevel
+from vectorflow.core.config.settings import EmbeddingModelType, LogLevel
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))

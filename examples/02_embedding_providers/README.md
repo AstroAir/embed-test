@@ -43,7 +43,7 @@ Batch processing with adaptive sizing and performance optimization.
 ## Prerequisites
 
 - Python 3.9+
-- PDF Vector System installed
+- VectorFlow installed
 - Provider-specific dependencies (install as needed)
 - API keys for cloud providers (set as environment variables)
 

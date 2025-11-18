@@ -1,6 +1,6 @@
 # Basic Usage Examples
 
-This directory contains fundamental examples demonstrating the core functionality of the PDF Vector System.
+This directory contains fundamental examples demonstrating the core functionality of VectorFlow.
 
 ## Examples
 
@@ -23,7 +23,7 @@ Demonstrates system health checking and component status monitoring.
 ## Prerequisites
 
 - Python 3.9+
-- PDF Vector System installed
+- VectorFlow installed
 - Sample PDF files (will be created automatically if not present)
 
 ## Running Examples
@@ -41,7 +41,7 @@ python health_check.py
 
 ## What You'll Learn
 
-- How to initialize the PDF Vector System
+- How to initialize VectorFlow
 - Basic configuration patterns
 - PDF processing workflow
 - Simple search operations

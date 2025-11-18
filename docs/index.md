@@ -1,48 +1,66 @@
-# PDF Vector System
+<!-- markdownlint-disable MD046 -->
 
-A comprehensive PDF content processing and vector storage system with ChromaDB integration.
+# VectorFlow
+
+Streamlined PDF-to-vector processing pipeline with multi-provider embeddings and multi-backend vector storage.
+
+!!! note "New to VectorFlow?"
+    Start with the **Getting Started** section to install VectorFlow, configure your environment and run your first search.
 
 ## Overview
 
-The PDF Vector System is a powerful Python library designed to process PDF documents, extract meaningful content, generate embeddings, and store them in vector databases for efficient similarity search and retrieval.
+VectorFlow is a production-ready system for extracting text from PDF documents, generating embeddings using multiple AI providers, and storing vectors in scalable databases for semantic search and retrieval.
 
 ## Key Features
 
-- **PDF Processing**: Extract text and metadata from PDF documents
-- **Multiple Embedding Providers**: Support for OpenAI, Sentence Transformers, HuggingFace, and more
-- **Vector Database Integration**: ChromaDB, Pinecone, Weaviate, Qdrant, and Milvus support
-- **Flexible Configuration**: Comprehensive configuration system with validation
-- **CLI Interface**: Command-line tools for batch processing
-- **GUI Application**: User-friendly graphical interface
-- **High Performance**: Optimized for large-scale document processing
+- **PDF Processing**: Robust text and metadata extraction from PDFs
+- **Multiple Embedding Providers**: Sentence Transformers, OpenAI, Cohere, HuggingFace, Google Gemini, Google USE, Azure OpenAI
+- **Vector Database Backends**: ChromaDB, Pinecone, Weaviate, Qdrant, Milvus (via a unified interface)
+- **Flexible Configuration**: Pydantic-based configuration with environment variables and `.env` support
+- **CLI Interface**: `vectorflow` command for batch processing, search, stats, health checks, etc.
+- **GUI Application**: `vectorflow-gui` desktop app for interactive processing and search
 
 ## Quick Start
 
-```python
-from pdf_vector_system import PDFVectorPipeline
+=== "Python"
 
-# Initialize the pipeline
-pipeline = PDFVectorPipeline()
+    ```python
+    from vectorflow import Config, PDFVectorPipeline
+    from vectorflow.core.config.settings import EmbeddingModelType
 
-# Process a PDF document
-result = pipeline.process_pdf("document.pdf")
+    # Configure local Sentence Transformers embeddings
+    config = Config()
+    config.embedding.model_type = EmbeddingModelType.SENTENCE_TRANSFORMERS
+    config.embedding.model_name = "all-MiniLM-L6-v2"
 
-# Search for similar content
-results = pipeline.search("query text", top_k=5)
-```
+    pipeline = PDFVectorPipeline(config)
+
+    # Process a PDF document
+    result = pipeline.process_pdf("document.pdf")
+
+    # Search for similar content
+    results = pipeline.search("query text", n_results=5)
+    ```
+
+=== "CLI"
+
+    ```bash
+    vectorflow process docs/*.pdf --model all-MiniLM-L6-v2
+    vectorflow search "query text" --results 5
+    ```
 
 ## Installation
 
 ```bash
-pip install pdf-vector-system
+pip install vectorflow
 ```
 
 ## Documentation Structure
 
 - **Getting Started**: Installation, configuration, and basic usage
-- **User Guide**: Detailed guides for CLI and Python API usage
-- **API Reference**: Complete API documentation
-- **Development**: Contributing guidelines and development setup
+- **User Guide**: CLI, GUI and Python API usage patterns
+- **API Reference**: Core pipeline, configuration, embeddings, and vector DB APIs
+- **Development**: Contributing, testing and release process
 
 ## License
 

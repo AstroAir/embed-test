@@ -2,7 +2,7 @@
 
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import typer
 from rich.console import Console
@@ -42,6 +42,41 @@ def format_file_size(size_bytes: int) -> str:
             return f"{size_bytes:.1f} {unit}"
         size_bytes /= 1024.0
     return f"{size_bytes:.1f} TB"
+
+
+def _compute_collection_stats(pipeline: PDFVectorPipeline) -> dict[str, Any]:
+    """Compute collection stats in a backend-agnostic way using core APIs."""
+    # Try backend-specific fast path if available (e.g., Chroma)
+    get_stats = getattr(pipeline.vector_db, "get_collection_stats", None)
+    if callable(get_stats):
+        try:
+            return get_stats()  # type: ignore[misc]
+        except Exception:
+            pass
+
+    # Generic fallback using core interface
+    try:
+        total_chunks = pipeline.vector_db.count_chunks()
+    except Exception:
+        total_chunks = 0
+
+    try:
+        documents = pipeline.get_documents()
+    except Exception:
+        documents = []
+
+    unique_documents = len(documents)
+    total_characters = sum(d.get("total_characters", 0) for d in documents)
+    average_chunk_size = (total_characters / total_chunks) if total_chunks > 0 else 0.0
+
+    return {
+        "total_chunks": total_chunks,
+        "unique_documents": unique_documents,
+        "total_characters": total_characters,
+        "average_chunk_size": average_chunk_size,
+        "sampled": False,
+        "sample_size": unique_documents,
+    }
 
 
 def get_pipeline(
@@ -454,7 +489,7 @@ def stats(
         )
 
         with Status("[bold green]Calculating statistics...", console=console):
-            stats = pipeline.get_collection_stats()
+            stats = _compute_collection_stats(pipeline)
 
         # Create statistics table
         table = Table(
@@ -467,10 +502,13 @@ def stats(
         table.add_column("Value", justify="right", style="green")
 
         # Add rows
-        table.add_row("Total Chunks", f"{stats['total_chunks']:,}")
-        table.add_row("Unique Documents", f"{stats['unique_documents']:,}")
-        table.add_row("Total Characters", f"{stats['total_characters']:,}")
-        table.add_row("Average Chunk Size", f"{stats['average_chunk_size']:.0f} chars")
+        table.add_row("Total Chunks", f"{stats.get('total_chunks', 0):,}")
+        table.add_row("Unique Documents", f"{stats.get('unique_documents', 0):,}")
+        table.add_row("Total Characters", f"{stats.get('total_characters', 0):,}")
+        table.add_row(
+            "Average Chunk Size",
+            f"{stats.get('average_chunk_size', 0.0):.0f} chars",
+        )
 
         if stats.get("sampled", False):
             table.add_row("", "")  # Separator
@@ -518,41 +556,25 @@ def list_docs(
             f"[dim]Collection: {pipeline.config.chroma_db.collection_name}[/dim]\n"
         )
 
-        # Get documents
+        # Get documents via backend-agnostic pipeline API
         with Status("[bold green]Fetching documents...", console=console):
-            collection = pipeline.vector_db.get_collection()
-            results = collection.get(
-                limit=limit * 10, include=["metadatas"]
-            )  # Get more to find unique docs
+            docs = pipeline.get_documents()
 
-        if not results["ids"]:
+        if not docs:
             console.print("[yellow]❌ No documents found in collection[/yellow]")
             console.print("\n[dim]💡 Process some PDFs first:[/dim]")
             console.print("   [cyan]pdf-vector process document.pdf[/cyan]")
             return
 
-        # Extract unique document IDs
-        document_ids = set()
-        if results["metadatas"]:
-            for metadata in results["metadatas"]:
-                if metadata and "document_id" in metadata:
-                    doc_id = metadata["document_id"]
-                    if isinstance(doc_id, str):
-                        document_ids.add(doc_id)
-
-        if not document_ids:
-            console.print("[yellow]⚠ No document metadata found[/yellow]")
-            return
-
-        # Limit documents
-        document_ids = sorted(document_ids)[:limit]
+        # Apply limit and sort by document_id
+        docs = sorted(docs, key=lambda d: d.get("document_id", ""))[:limit]
 
         # Create documents table
         table = Table(
             show_header=True,
             header_style="bold magenta",
             border_style="blue",
-            title=f"Documents (showing {len(document_ids)})",
+            title=f"Documents (showing {len(docs)})",
             title_style="bold cyan",
         )
         table.add_column("Document ID", style="cyan", no_wrap=False)
@@ -560,43 +582,306 @@ def list_docs(
         table.add_column("Characters", justify="right", style="yellow")
         table.add_column("Avg Size", justify="right", style="blue")
 
-        # Fetch document info
-        with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            console=console,
-            transient=True,
-        ) as progress:
-            task = progress.add_task(
-                "Loading document info...", total=len(document_ids)
+        # Render document rows
+        for d in docs:
+            doc_id = d.get("document_id", "—")
+            chunks_count = int(d.get("chunks_count", 0))
+            total_chars = int(d.get("total_characters", 0))
+            avg_size = (total_chars / chunks_count) if chunks_count > 0 else 0
+            table.add_row(
+                doc_id,
+                f"{chunks_count:,}",
+                f"{total_chars:,}",
+                f"{avg_size:.0f}",
             )
-
-            for doc_id in document_ids:
-                try:
-                    doc_info = pipeline.get_document_info(doc_id)
-                    table.add_row(
-                        doc_id,
-                        f"{doc_info['chunk_count']:,}",
-                        f"{doc_info['total_characters']:,}",
-                        f"{doc_info['average_chunk_size']:.0f}",
-                    )
-                except Exception as e:
-                    table.add_row(
-                        doc_id, "[red]Error[/red]", "[red]—[/red]", "[red]—[/red]"
-                    )
-
-                progress.advance(task)
 
         console.print(table)
         console.print()
 
-        if len(document_ids) >= limit:
+        if len(docs) >= limit:
             console.print(
                 f"[dim]Showing first {limit} documents. Use --limit to see more.[/dim]"
             )
 
     except Exception as e:
         console.print(f"\n[red]✗ List error: {e}[/red]")
+        if debug:
+            console.print_exception()
+        raise typer.Exit(1)
+
+
+@app.command(
+    name="doc-info", help="Show detailed information about a document by its ID."
+)
+def doc_info(
+    document_id: str = typer.Argument(..., help="Document ID to inspect"),
+    collection_name: Optional[str] = typer.Option(
+        None, "--collection", "-c", help="Collection name"
+    ),
+    debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
+) -> None:
+    """Display document statistics from the vector database."""
+    try:
+        pipeline = get_pipeline(collection_name=collection_name, debug=debug)
+        with Status("[bold green]Fetching document info...", console=console):
+            info = pipeline.get_document_info(document_id)
+
+        table = Table(show_header=False, box=None, padding=(0, 2))
+        table.add_column(style="cyan")
+        table.add_column(style="white")
+        table.add_row("Document ID", document_id)
+        table.add_row("Chunks", f"{info.get('chunk_count', 0):,}")
+        table.add_row("Total Characters", f"{info.get('total_characters', 0):,}")
+        table.add_row(
+            "Average Chunk Size", f"{info.get('average_chunk_size', 0.0):.0f}"
+        )
+        if info.get("page_count") is not None:
+            table.add_row("Page Count", str(info["page_count"]))
+        if info.get("filename"):
+            table.add_row("Filename", str(info["filename"]))
+        console.print(table)
+    except Exception as e:
+        console.print(f"\n[red]✗ Doc info error: {e}[/red]")
+        if debug:
+            console.print_exception()
+        raise typer.Exit(1)
+
+
+@app.command(name="similar", help="Find chunks similar to a given chunk ID.")
+def similar_chunks(
+    chunk_id: str = typer.Argument(..., help="Reference chunk ID"),
+    limit: int = typer.Option(10, "--limit", "-n", help="Number of results"),
+    collection_name: Optional[str] = typer.Option(
+        None, "--collection", "-c", help="Collection name"
+    ),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show full content"),
+    debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
+) -> None:
+    try:
+        pipeline = get_pipeline(collection_name=collection_name, debug=debug)
+        with Status("[bold green]Searching similar chunks...", console=console):
+            results = pipeline.vector_db.find_similar_chunks(
+                chunk_id=chunk_id, collection_name=collection_name, limit=limit
+            )
+
+        if not results:
+            console.print("[yellow]❌ No similar chunks found[/yellow]")
+            raise typer.Exit(0)
+
+        console.print(f"\n[bold green]✓ Found {len(results)} result(s)[/bold green]\n")
+        for i, r in enumerate(results, 1):
+            content = (
+                r.content
+                if verbose
+                else (r.content[:300] + "..." if len(r.content) > 300 else r.content)
+            )
+            meta_parts = []
+            if r.metadata.get("document_id"):
+                meta_parts.append(f"📄 {r.metadata['document_id']}")
+            if r.metadata.get("page_number") is not None:
+                meta_parts.append(f"📖 Page {r.metadata['page_number']}")
+            meta = " | ".join(meta_parts)
+            panel = Panel(
+                Text.from_markup(
+                    f"Score: [bold]{r.score:.4f}[/bold]\n"
+                    + (f"{meta}\n" if meta else "")
+                    + f"\n{content}"
+                ),
+                title=f"Result {i}/{len(results)}",
+                border_style="blue" if r.score >= 0.7 else "dim",
+                padding=(1, 2),
+            )
+            console.print(panel)
+    except Exception as e:
+        console.print(f"\n[red]✗ Similar error: {e}[/red]")
+        if debug:
+            console.print_exception()
+        raise typer.Exit(1)
+
+
+@app.command(
+    name="search-meta",
+    help="Search by metadata filters (key=value pairs).",
+)
+def search_by_metadata(
+    filters: list[str] = typer.Argument(..., help="Metadata filters as key=value"),
+    limit: int = typer.Option(10, "--limit", "-n", help="Max results"),
+    collection_name: Optional[str] = typer.Option(
+        None, "--collection", "-c", help="Collection name"
+    ),
+    debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
+) -> None:
+    try:
+        filt: dict[str, Any] = {}
+        for item in filters:
+            if "=" not in item:
+                raise ValueError(f"Invalid filter '{item}', expected key=value")
+            k, v = item.split("=", 1)
+            k = k.strip()
+            v = v.strip()
+            # attempt int conversion
+            try:
+                v_cast: Any = int(v)
+            except Exception:
+                v_cast = v
+            filt[k] = v_cast
+
+        pipeline = get_pipeline(collection_name=collection_name, debug=debug)
+        with Status("[bold green]Searching by metadata...", console=console):
+            results = pipeline.vector_db.search_by_metadata(
+                metadata_filter=filt, collection_name=collection_name, limit=limit
+            )
+
+        if not results:
+            console.print("[yellow]❌ No results found[/yellow]")
+            return
+
+        table = Table(
+            show_header=True, header_style="bold magenta", border_style="blue"
+        )
+        table.add_column("ID", style="cyan")
+        table.add_column("Score", justify="right")
+        table.add_column("Content")
+        table.add_column("Document", style="dim")
+        for r in results:
+            doc_id = r.metadata.get("document_id", "")
+            content = r.content if len(r.content) <= 120 else r.content[:120] + "..."
+            table.add_row(str(r.id), f"{r.score:.4f}", content, str(doc_id))
+        console.print(table)
+    except Exception as e:
+        console.print(f"\n[red]✗ Search-meta error: {e}[/red]")
+        if debug:
+            console.print_exception()
+        raise typer.Exit(1)
+
+
+@app.command(name="backend", help="Display current vector database backend info.")
+def backend_info(
+    collection_name: Optional[str] = typer.Option(
+        None, "--collection", "-c", help="Collection name"
+    ),
+    debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
+) -> None:
+    try:
+        pipeline = get_pipeline(collection_name=collection_name, debug=debug)
+        info = pipeline.get_vector_db_info()
+        table = Table(show_header=False, box=None, padding=(0, 2))
+        table.add_column(style="cyan")
+        table.add_column(style="white")
+        for k in [
+            "backend",
+            "type",
+            "index_name",
+            "collection_name",
+            "dimension",
+            "metric",
+        ]:
+            if k in info:
+                table.add_row(k.replace("_", " ").title(), str(info[k]))
+        if info.get("capabilities"):
+            table.add_row("Capabilities", ", ".join(info["capabilities"]))
+        if info.get("error"):
+            table.add_row("Error", str(info["error"]))
+        console.print(table)
+    except Exception as e:
+        console.print(f"\n[red]✗ Backend info error: {e}[/red]")
+        if debug:
+            console.print_exception()
+        raise typer.Exit(1)
+
+
+@app.command(
+    name="clear-collection", help="Remove all chunks from the current collection."
+)
+def clear_collection(
+    collection_name: Optional[str] = typer.Option(
+        None, "--collection", "-c", help="Collection name"
+    ),
+    yes: bool = typer.Option(False, "--yes", "-y", help="Skip confirmation"),
+    debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
+) -> None:
+    try:
+        pipeline = get_pipeline(collection_name=collection_name, debug=debug)
+        name = pipeline.config.chroma_db.collection_name
+        if not yes and not typer.confirm(
+            f"This will remove all chunks from '{name}'. Continue?"
+        ):
+            console.print("[dim]Cancelled[/dim]")
+            return
+        with Status("[bold red]Clearing collection...", console=console):
+            pipeline.vector_db.clear_collection(collection_name)
+        console.print(f"[bold green]✓ Cleared collection '{name}'[/bold green]")
+    except Exception as e:
+        console.print(f"\n[red]✗ Clear-collection error: {e}[/red]")
+        if debug:
+            console.print_exception()
+        raise typer.Exit(1)
+
+
+@app.command(
+    name="create-collection", help="Create the collection if it doesn't exist."
+)
+def create_collection_cmd(
+    collection_name: Optional[str] = typer.Option(
+        None, "--collection", "-c", help="Collection name to create"
+    ),
+    debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
+) -> None:
+    try:
+        pipeline = get_pipeline(collection_name=collection_name, debug=debug)
+        created = pipeline.vector_db.create_collection(
+            name=collection_name, get_or_create=True
+        )
+        if created:
+            console.print("[bold green]✓ Collection is ready[/bold green]")
+        else:
+            console.print("[yellow]Collection not created[/yellow]")
+    except Exception as e:
+        console.print(f"\n[red]✗ Create-collection error: {e}[/red]")
+        if debug:
+            console.print_exception()
+        raise typer.Exit(1)
+
+
+@app.command(name="delete-collection", help="Delete a collection.")
+def delete_collection_cmd(
+    collection_name: str = typer.Argument(..., help="Collection name to delete"),
+    yes: bool = typer.Option(False, "--yes", "-y", help="Skip confirmation"),
+    debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
+) -> None:
+    try:
+        if not yes and not typer.confirm(
+            f"This will delete collection '{collection_name}'. Continue?"
+        ):
+            console.print("[dim]Cancelled[/dim]")
+            return
+        pipeline = get_pipeline(collection_name=collection_name, debug=debug)
+        with Status("[bold red]Deleting collection...", console=console):
+            pipeline.vector_db.delete_collection(collection_name)
+        console.print(
+            f"[bold green]✓ Deleted collection '{collection_name}'[/bold green]"
+        )
+    except Exception as e:
+        console.print(f"\n[red]✗ Delete-collection error: {e}[/red]")
+        if debug:
+            console.print_exception()
+        raise typer.Exit(1)
+
+
+@app.command(name="count", help="Count total number of chunks in the collection.")
+def count_chunks_cmd(
+    collection_name: Optional[str] = typer.Option(
+        None, "--collection", "-c", help="Collection name"
+    ),
+    debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
+) -> None:
+    try:
+        pipeline = get_pipeline(collection_name=collection_name, debug=debug)
+        with Status("[bold green]Counting chunks...", console=console):
+            count = pipeline.vector_db.count_chunks(collection_name)
+        console.print(f"[bold cyan]Total Chunks:[/bold cyan] [green]{count:,}[/green]")
+    except Exception as e:
+        console.print(f"\n[red]✗ Count error: {e}[/red]")
         if debug:
             console.print_exception()
         raise typer.Exit(1)
@@ -883,18 +1168,17 @@ def collections(
         table.add_column("Name", style="cyan")
         table.add_column("Status", justify="center")
 
-        for i, collection_name in enumerate(sorted(collection_list), 1):
-            # Try to get stats for each collection
+        for i, info in enumerate(collection_list, 1):
+            # Normalize name across backends
+            name = getattr(info, "name", str(info))
+            # Try to get count for each collection
             try:
-                temp_pipeline = get_pipeline(
-                    collection_name=collection_name, debug=debug
-                )
-                stats = temp_pipeline.get_collection_stats()
-                status = f"[green]{stats['total_chunks']:,} chunks[/green]"
+                col_info = pipeline.vector_db.get_collection_info(name)
+                status = f"[green]{col_info.chunk_count:,} chunks[/green]"
             except Exception:
                 status = "[dim]—[/dim]"
 
-            table.add_row(str(i), collection_name, status)
+            table.add_row(str(i), name, status)
 
         console.print(table)
         console.print()

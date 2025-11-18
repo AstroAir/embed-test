@@ -31,7 +31,7 @@ import os
 import sys
 from pathlib import Path
 
-from utils.example_helpers import (
+from examples.utils.example_helpers import (
     example_context,
     get_available_providers,
     print_section,
@@ -39,7 +39,7 @@ from utils.example_helpers import (
 )
 
 from vectorflow import Config
-from vectorflow.config.settings import (
+from vectorflow.core.config.settings import (
     EmbeddingConfig,
     EmbeddingModelType,
     LogLevel,
@@ -55,7 +55,15 @@ def demonstrate_basic_configuration() -> None:
     print_subsection("Basic Configuration")
 
     # Create default configuration
-    Config()
+    config = Config()
+
+    print("Created default configuration with:")
+    print(
+        f"  Embedding model: {config.embedding.model_type} ({config.embedding.model_name})"
+    )
+    print(f"  Chroma collection: {config.chroma_db.collection_name}")
+    print(f"  Persist directory: {config.chroma_db.persist_directory}")
+    print(f"  Debug mode: {config.debug}")
 
 
 def demonstrate_programmatic_configuration() -> None:
@@ -89,6 +97,19 @@ def demonstrate_programmatic_configuration() -> None:
     config.debug = False
     config.max_workers = 4
 
+    print("Created programmatic configuration with:")
+    print(
+        f"  Embedding model: {config.embedding.model_type} ({config.embedding.model_name})"
+    )
+    print(f"  Batch size: {config.embedding.batch_size}")
+    print(
+        "  Chunk size/overlap: "
+        f"{config.text_processing.chunk_size}/{config.text_processing.chunk_overlap}"
+    )
+    print(f"  Collection: {config.chroma_db.collection_name}")
+    print(f"  Log level: {config.logging.level}")
+    print(f"  Debug: {config.debug}, max_workers: {config.max_workers}")
+
 
 def demonstrate_environment_configuration() -> None:
     """Demonstrate environment variable configuration."""
@@ -114,7 +135,23 @@ def demonstrate_environment_configuration() -> None:
 
     try:
         # Create configuration (will read from environment)
-        Config()
+        config = Config()
+
+        print("Loaded configuration from environment variables:")
+        for key, value in env_vars.items():
+            print(f"  {key}={value}")
+
+        print(
+            "  Effective embedding model: "
+            f"{config.embedding.model_type} ({config.embedding.model_name})"
+        )
+        print(f"  Batch size: {config.embedding.batch_size}")
+        print(
+            "  Chunk size/overlap: "
+            f"{config.text_processing.chunk_size}/{config.text_processing.chunk_overlap}"
+        )
+        print(f"  Collection: {config.chroma_db.collection_name}")
+        print(f"  Debug: {config.debug}, max_workers: {config.max_workers}")
 
     finally:
         # Restore original environment
@@ -155,9 +192,14 @@ MAX_WORKERS=3
 
     for line in env_content.split("\n"):
         if line.strip() and not line.startswith("#"):
-            pass
+            key, _, value = line.partition("=")
+            print(f"  {key.strip()}={value.strip()}")
 
     # Clean up
+    print(f"Created sample .env file at: {env_file}")
+    print(
+        "In real projects you would keep this file and load it via your configuration system."
+    )
     env_file.unlink()
 
 
@@ -168,29 +210,49 @@ def demonstrate_provider_specific_configuration() -> None:
     providers = get_available_providers()
 
     # Sentence Transformers (always available)
-    EmbeddingConfig(
+    st_config = EmbeddingConfig(
         model_type=EmbeddingModelType.SENTENCE_TRANSFORMERS,
         model_name="all-MiniLM-L6-v2",
         batch_size=32,
     )
+    print("Sentence Transformers (local) configuration:")
+    print(f"  Model: {st_config.model_name}, batch_size={st_config.batch_size}")
 
     # OpenAI (if API key available)
     if providers.get("openai"):
-        EmbeddingConfig(
+        openai_config = EmbeddingConfig(
             model_type=EmbeddingModelType.OPENAI,
             model_name="text-embedding-3-small",
             batch_size=100,
             max_retries=3,
             timeout_seconds=60,
         )
+        print("OpenAI configuration:")
+        print(
+            f"  Model: {openai_config.model_name}, "
+            f"batch_size={openai_config.batch_size}"
+        )
     else:
-        pass
+        print(
+            "OpenAI provider not available (OPENAI_API_KEY not set). Skipping OpenAI example."
+        )
 
     # Cohere (if API key available)
     if providers.get("cohere"):
-        pass
+        cohere_config = EmbeddingConfig(
+            model_type=EmbeddingModelType.COHERE,
+            model_name="embed-english-v3.0",
+            batch_size=48,
+        )
+        print("Cohere configuration:")
+        print(
+            f"  Model: {cohere_config.model_name}, "
+            f"batch_size={cohere_config.batch_size}"
+        )
     else:
-        pass
+        print(
+            "Cohere provider not available (COHERE_API_KEY not set). Skipping Cohere example."
+        )
 
 
 def demonstrate_configuration_validation() -> None:
@@ -198,13 +260,16 @@ def demonstrate_configuration_validation() -> None:
     print_subsection("Configuration Validation")
 
     # Valid configuration
-    with contextlib.suppress(Exception):
+    try:
         EmbeddingConfig(
             model_type=EmbeddingModelType.SENTENCE_TRANSFORMERS,
             model_name="all-MiniLM-L6-v2",
             batch_size=32,
             max_retries=3,
         )
+        print("Valid configuration created successfully.")
+    except Exception as e:
+        print(f"Unexpected error for valid configuration: {e}")
 
     # Invalid batch size
     try:
@@ -213,14 +278,16 @@ def demonstrate_configuration_validation() -> None:
             model_name="all-MiniLM-L6-v2",
             batch_size=0,  # Invalid: must be positive
         )
-    except Exception:
-        pass
+        print("Error: invalid batch size configuration unexpectedly succeeded.")
+    except Exception as e:
+        print(f"Correctly failed invalid batch size: {e}")
 
     # Invalid chunk size
     try:
         TextProcessingConfig(chunk_size=0)  # Invalid: must be positive
-    except Exception:
-        pass
+        print("Error: invalid chunk size configuration unexpectedly succeeded.")
+    except Exception as e:
+        print(f"Correctly failed invalid chunk size: {e}")
 
 
 def demonstrate_environment_specific_patterns() -> None:
@@ -254,8 +321,18 @@ def demonstrate_environment_specific_patterns() -> None:
         },
     }
 
-    for _env_name, _env_config in environments.items():
-        pass
+    for env_name, env_config in environments.items():
+        print(f"\nEnvironment: {env_name}")
+        print(
+            "  Embedding model: "
+            f"{env_config['embedding_model']} ({env_config['model_name']})"
+        )
+        print(
+            f"  Batch size: {env_config['batch_size']}, "
+            f"workers: {env_config['workers']}"
+        )
+        print(f"  Debug: {env_config['debug']}")
+        print(f"  Description: {env_config['description']}")
 
 
 def main() -> None:

@@ -1,6 +1,25 @@
 """
 Quick Test Script for Examples Functions
-Tests basic logic without requiring model downloads
+
+This helper script runs lightweight logic tests for parts of the examples
+without requiring external model downloads or API keys.
+
+Prerequisites:
+- Python environment with this project installed
+- No external embedding models or third-party APIs required
+
+Usage:
+    uv run python -m examples.test_functions
+
+Expected Output:
+    - Printed results for tokenization, caching speedup, dynamic configuration,
+      and benchmark comparison logic tests
+    - Assertions will raise errors if any of the logic checks fail
+
+Learning Objectives:
+- Quickly validate core example logic without downloading large models
+- See how to structure small, focused test helpers for example code
+- Provide a fast sanity check before running full embedding examples
 """
 
 import sys

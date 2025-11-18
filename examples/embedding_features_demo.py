@@ -7,27 +7,54 @@ This example showcases the features of the embedding system including:
 - Chunking strategies
 - Embedding quality validation
 - Performance optimization and caching
+
+Prerequisites:
+- VectorFlow installed and importable
+- Local SentenceTransformers model "all-MiniLM-L6-v2" available (it will be
+  downloaded automatically if internet access is available)
+- Optional: GPU and optimized libraries for faster inference (not required)
+
+Usage:
+    uv run python -m examples.embedding_features_demo
+
+Expected Output:
+    - Printed demonstrations of different tokenization configurations
+    - Preprocessing statistics and cleaned text previews for messy input
+    - Chunking summaries including number of chunks, sizes, and previews
+    - Embedding quality validation scores and human-readable recommendations
+    - Caching performance comparison between cache miss and cache hit runs
+    - Chunking-with-embeddings statistics and sample chunk metadata
+
+Learning Objectives:
+- Understand how tokenization, preprocessing, and chunking work together
+- Learn how to configure and evaluate embedding quality
+- See how caching can accelerate repeated embedding calls
+- Understand how chunking integrates with embedding services in practice
 """
 
 import time
 import traceback
 from pathlib import Path
 
-from vectorflow.embeddings.caching import CacheConfig, CacheStrategy, EmbeddingCache
-from vectorflow.embeddings.chunking import (
+from vectorflow.core.embeddings.caching import (
+    CacheConfig,
+    CacheStrategy,
+    EmbeddingCache,
+)
+from vectorflow.core.embeddings.chunking import (
     ChunkerFactory,
     ChunkingConfig,
     ChunkingStrategy,
 )
-from vectorflow.embeddings.preprocessing import (
+from vectorflow.core.embeddings.preprocessing import (
     PreprocessingLevel,
     PreprocessorFactory,
     TextType,
 )
-from vectorflow.embeddings.sentence_transformers_service import (
+from vectorflow.core.embeddings.sentence_transformers_service import (
     SentenceTransformersService,
 )
-from vectorflow.embeddings.tokenization import (
+from vectorflow.core.embeddings.tokenization import (
     TextNormalizationConfig,
     TokenizationConfig,
     TokenizationMethod,
@@ -76,8 +103,9 @@ def demonstrate_tokenization():
     for name, config in configs:
         print(f"\n{name} Tokenization:")
         tokenizer = TokenizerFactory.create_tokenizer(config)
-        tokens = tokenizer.tokenize(sample_text)
-        print(f"  Token count: {len(tokens)}")
+        result = tokenizer.tokenize(sample_text)
+        tokens = result.tokens
+        print(f"  Token count: {result.token_count}")
         print(f"  First 10 tokens: {tokens[:10]}")
 
 
@@ -123,9 +151,12 @@ def demonstrate_preprocessing():
     for level in levels:
         print(f"\n{level.value} Preprocessing:")
         preprocessor = PreprocessorFactory.create_preprocessor(level, TextType.GENERAL)
-        cleaned = preprocessor.preprocess(messy_text)
+        result = preprocessor.preprocess(messy_text)
+        cleaned = result.processed_text
+
         print(f"  Original length: {len(messy_text)}")
         print(f"  Cleaned length: {len(cleaned)}")
+        print(f"  Compression ratio: {result.compression_ratio:.3f}")
         print(f"  Preview: {cleaned[:100]}...")
 
 
@@ -178,12 +209,12 @@ def demonstrate_chunking():
         chunks = chunker.chunk_text(long_text, "demo_doc")
 
         print(f"  Total chunks: {len(chunks)}")
-        print(f"  Chunk sizes: {[len(chunk.text) for chunk in chunks]}")
+        print(f"  Chunk sizes: {[chunk.length for chunk in chunks]}")
 
         for i, chunk in enumerate(chunks[:3]):  # Show first 3 chunks
             print(f"\n  Chunk {i+1}:")
-            print(f"    Length: {len(chunk.text)}")
-            print(f"    Preview: {chunk.text[:80]}...")
+            print(f"    Length: {chunk.length}")
+            print(f"    Preview: {chunk.content[:80]}...")
 
 
 def demonstrate_quality_validation():
@@ -217,8 +248,8 @@ def demonstrate_quality_validation():
     print(f"\nEmbedding completed in {elapsed_time:.3f} seconds")
 
     if result.embeddings is not None:
-        print(f"Embedding shape: {result.embeddings.shape}")
-        print(f"Generated {len(result.embeddings)} embeddings")
+        print(f"Embedding shape: ({result.count}, {result.embedding_dimension})")
+        print(f"Generated {result.count} embeddings")
     else:
         print("Warning: No embeddings generated")
         return
@@ -227,11 +258,26 @@ def demonstrate_quality_validation():
     if "quality_validation" in result.metadata:
         quality_data = result.metadata["quality_validation"]
         print("\nQuality Validation Results:")
-        print(f"  Average score: {quality_data.get('average_score', 'N/A')}")
 
-        print("\n  Individual text scores:")
-        for i, score in enumerate(quality_data["individual_scores"]):
-            print(f"    Text {i+1}: {score:.3f} - {texts[i][:50]}...")
+        overall_score = quality_data.get("overall_score")
+        overall_pct = quality_data.get("overall_percentage")
+        if overall_score is not None and overall_pct is not None:
+            print(f"  Overall score: {overall_score:.3f} ({overall_pct:.1f}%)")
+        elif overall_score is not None:
+            print(f"  Overall score: {overall_score:.3f}")
+        else:
+            print("  Overall score: N/A")
+
+        # Individual metric scores
+        if "individual_scores" in quality_data:
+            print("\n  Individual metric scores:")
+            for metric_info in quality_data["individual_scores"]:
+                metric_name = metric_info.get("metric", "unknown")
+                percentage = metric_info.get("percentage")
+                if percentage is not None:
+                    print(f"    {metric_name}: {percentage:.1f}%")
+                else:
+                    print(f"    {metric_name}: N/A")
 
         if quality_data.get("recommendations"):
             print("\n  Recommendations:")
@@ -365,7 +411,7 @@ def demonstrate_chunking_with_embeddings():
     print("\n=== Chunking with Embeddings Demonstration ===")
 
     print(f"\nDocument processed into chunks")
-    print(f"Embedding shape: {result.embeddings.shape}")
+    print(f"Embedding shape: ({result.count}, {result.embedding_dimension})")
 
     # Display chunking metadata
     if "chunking" in result.metadata:

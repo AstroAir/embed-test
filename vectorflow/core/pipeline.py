@@ -161,6 +161,7 @@ class PDFVectorPipeline(LoggerMixin):
         progress: ProgressTracker,
     ) -> ProcessingResult:
         """Process PDF with progress tracking."""
+        start_time = time.time()
 
         # Step 1: Extract text
         progress.add_task("extract", "Extracting text from PDF")
@@ -198,7 +199,7 @@ class PDFVectorPipeline(LoggerMixin):
         self.vector_db.add_chunks(document_chunks)
         progress.complete_task("store")
 
-        processing_time = time.time() - time.time()  # This will be updated by caller
+        processing_time = time.time() - start_time
 
         return ProcessingResult(
             document_id=document_id,

@@ -34,7 +34,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
 
-from utils.example_helpers import (
+from examples.utils.example_helpers import (
     check_api_key,
     example_context,
     print_section,
@@ -42,7 +42,7 @@ from utils.example_helpers import (
 )
 
 from vectorflow import Config, PDFVectorPipeline
-from vectorflow.config.settings import EmbeddingModelType
+from vectorflow.core.config.settings import EmbeddingModelType
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -101,10 +101,12 @@ def check_openai_availability() -> bool:
     api_key = os.environ.get("OPENAI_API_KEY")
 
     if not api_key:
+        print("OPENAI_API_KEY is not set. Live API calls will be skipped.")
         return False
 
     # Mask the API key for display
-    f"{api_key[:8]}...{api_key[-4:]}" if len(api_key) > 12 else "***"
+    masked = f"{api_key[:8]}...{api_key[-4:]}" if len(api_key) > 12 else "***"
+    print("OpenAI API key detected:", masked)
 
     return True
 
@@ -115,9 +117,19 @@ def demonstrate_model_characteristics() -> None:
 
     models = get_openai_models()
 
-    for _model_name, info in models.items():
-        if info.performance_tier == "Legacy":
-            pass
+    for model_name, info in models.items():
+        legacy_note = (
+            " (LEGACY - consider migrating to text-embedding-3-small)"
+            if info.performance_tier == "Legacy"
+            else ""
+        )
+        print(f"\nModel: {info.name}{legacy_note}")
+        print(f"  Description: {info.description}")
+        print(f"  Dimensions: {info.dimensions}")
+        print(f"  Max tokens: {info.max_tokens}")
+        print(f"  Cost per 1K tokens: ${info.cost_per_1k_tokens:.5f}")
+        print(f"  Recommended use: {info.use_case}")
+        print(f"  Tier: {info.performance_tier}")
 
 
 def benchmark_openai_model(
@@ -184,7 +196,9 @@ def run_openai_benchmarks() -> list[dict[str, Any]]:
     """Run benchmarks for available OpenAI models."""
     print_subsection("OpenAI Performance Benchmarks")
 
-    if not check_api_key("OPENAI_API_KEY"):
+    # Use helper to check provider availability
+    if not check_api_key("openai"):
+        print("OpenAI provider not available. Skipping benchmarks.")
         return []
 
     models = get_openai_models()
@@ -196,10 +210,41 @@ def run_openai_benchmarks() -> list[dict[str, Any]]:
     for model_name in test_models:
         if model_name in models:
             model_info = models[model_name]
+            print(f"\nRunning benchmark for {model_name}...")
             benchmark = benchmark_openai_model(model_name, model_info)
 
             if benchmark:
                 benchmarks.append(benchmark)
+            else:
+                print(f"  Benchmark for {model_name} failed or returned no data.")
+
+    if not benchmarks:
+        print("\nNo successful benchmark results were collected.")
+        return benchmarks
+
+    print("\nBenchmark results:")
+    for result in benchmarks:
+        print(
+            f"  {result['model_name']}: "
+            f"{result['embeddings_per_second']:.1f} embeddings/s, "
+            f"dim={result['dimensions']}, "
+            f"est_tokens={result['estimated_tokens']}, "
+            f"est_cost=${result['estimated_cost']:.4f}"
+        )
+
+    fastest = max(benchmarks, key=lambda b: b["embeddings_per_second"])
+    slowest = min(benchmarks, key=lambda b: b["embeddings_per_second"])
+    if fastest["embeddings_per_second"] > 0 and slowest["embeddings_per_second"] > 0:
+        speedup = fastest["embeddings_per_second"] / slowest["embeddings_per_second"]
+        print(
+            f"\nFastest model: {fastest['model_name']} "
+            f"({fastest['embeddings_per_second']:.1f} emb/s)"
+        )
+        print(
+            f"Slowest model: {slowest['model_name']} "
+            f"({slowest['embeddings_per_second']:.1f} emb/s)"
+        )
+        print(f"Speed difference: {speedup:.2f}x")
 
     return benchmarks
 
@@ -217,8 +262,9 @@ def demonstrate_cost_optimization() -> None:
         "Use async processing for large volumes",
     ]
 
-    for _strategy in batch_strategies:
-        pass
+    print("\nBatching strategies:")
+    for strategy in batch_strategies:
+        print(f"  - {strategy}")
 
     # Model selection optimization
     model_guidance = {
@@ -234,8 +280,12 @@ def demonstrate_cost_optimization() -> None:
         },
     }
 
-    for _model, _info in model_guidance.items():
-        pass
+    print("\nModel selection guidance:")
+    for model, info in model_guidance.items():
+        print(f"  {model}:")
+        print(f"    Cost factor: {info['cost_factor']}")
+        print(f"    Quality: {info['quality']}")
+        print(f"    Recommendation: {info['recommendation']}")
 
     # Cost estimation example
 
@@ -254,8 +304,16 @@ def demonstrate_cost_optimization() -> None:
         },
     ]
 
-    for _scenario in example_scenarios:
-        pass
+    print("\nCost estimation examples:")
+    for scenario in example_scenarios:
+        small_cost = scenario["small_cost"]
+        large_cost = scenario["large_cost"]
+        diff = large_cost - small_cost
+        ratio = large_cost / small_cost if small_cost else 0
+        print(f"  {scenario['scenario']}:")
+        print(f"    text-embedding-3-small: ${small_cost:.2f}")
+        print(f"    text-embedding-3-large: ${large_cost:.2f}")
+        print(f"    Large vs small: ~{ratio:.1f}x cost (+${diff:.2f})")
 
 
 def demonstrate_error_handling() -> None:
@@ -286,8 +344,11 @@ def demonstrate_error_handling() -> None:
         },
     ]
 
-    for _scenario in error_scenarios:
-        pass
+    print("\nCommon error scenarios:")
+    for scenario in error_scenarios:
+        print(f"  - {scenario['error']}:")
+        print(f"      Cause: {scenario['cause']}")
+        print(f"      Solution: {scenario['solution']}")
 
     # Rate limiting best practices
     rate_limit_tips = [
@@ -298,8 +359,9 @@ def demonstrate_error_handling() -> None:
         "Implement request queuing for high-volume applications",
     ]
 
-    for _tip in rate_limit_tips:
-        pass
+    print("\nRate limiting best practices:")
+    for tip in rate_limit_tips:
+        print(f"  - {tip}")
 
     # Configuration example
 
@@ -317,8 +379,9 @@ def demonstrate_production_patterns() -> None:
         "Monitor API usage for anomalies",
     ]
 
-    for _practice in security_practices:
-        pass
+    print("\nSecurity practices:")
+    for practice in security_practices:
+        print(f"  - {practice}")
 
     # Monitoring and observability
     monitoring_practices = [
@@ -329,8 +392,9 @@ def demonstrate_production_patterns() -> None:
         "Implement health checks for API connectivity",
     ]
 
-    for _practice in monitoring_practices:
-        pass
+    print("\nMonitoring and observability:")
+    for practice in monitoring_practices:
+        print(f"  - {practice}")
 
     # Scalability patterns
     scalability_patterns = [
@@ -341,8 +405,9 @@ def demonstrate_production_patterns() -> None:
         "Plan for API quota management",
     ]
 
-    for _pattern in scalability_patterns:
-        pass
+    print("\nScalability patterns:")
+    for pattern in scalability_patterns:
+        print(f"  - {pattern}")
 
 
 def main() -> None:
@@ -363,9 +428,17 @@ def main() -> None:
 
         if api_available:
             # Run benchmarks if API is available
-            run_openai_benchmarks()
+            benchmarks = run_openai_benchmarks()
+            if not benchmarks:
+                print(
+                    "No benchmark data was produced. This may be due to API errors "
+                    "or connectivity issues."
+                )
         else:
-            pass
+            print(
+                "OpenAI API key not available - skipping live benchmarks. "
+                "Static model information and best practices are still shown."
+            )
 
         print_section("Optimization and Best Practices")
 

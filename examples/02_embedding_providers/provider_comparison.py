@@ -34,7 +34,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
 
-from utils.example_helpers import (
+from examples.utils.example_helpers import (
     example_context,
     get_available_providers,
     print_section,
@@ -42,7 +42,7 @@ from utils.example_helpers import (
 )
 
 from vectorflow import Config, PDFVectorPipeline
-from vectorflow.config.settings import EmbeddingModelType
+from vectorflow.core.config.settings import EmbeddingModelType
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -215,10 +215,10 @@ def demonstrate_provider_availability() -> None:
     available_providers = get_available_providers()
     provider_configs = get_provider_configs()
 
-    for _provider_key, config in provider_configs.items():
+    for provider_key, config in provider_configs.items():
         model_type = config["model_type"]
-        config["model_name"]
-        config["description"]
+        model_name = config["model_name"]
+        description = config["description"]
 
         # Check if provider is available
         provider_available = True
@@ -230,9 +230,18 @@ def demonstrate_provider_availability() -> None:
         elif model_type == EmbeddingModelType.SENTENCE_TRANSFORMERS:
             provider_available = True  # Always available
 
-        if not provider_available:
-            if model_type in (EmbeddingModelType.OPENAI, EmbeddingModelType.COHERE):
-                pass
+        status = "available" if provider_available else "unavailable"
+        print(f"\nProvider key: {provider_key}")
+        print(f"  Model: {model_name}")
+        print(f"  Type: {model_type.value}")
+        print(f"  Description: {description}")
+        print(f"  Status: {status}")
+
+        if not provider_available and model_type in (
+            EmbeddingModelType.OPENAI,
+            EmbeddingModelType.COHERE,
+        ):
+            print("  Note: API key not configured, cloud provider disabled for now.")
 
 
 def run_performance_benchmarks() -> list[ProviderBenchmark]:
@@ -260,9 +269,16 @@ def run_performance_benchmarks() -> list[ProviderBenchmark]:
         benchmarks.append(benchmark)
 
         if benchmark.available:
-            pass
+            print(
+                f"  {provider_key} ({benchmark.model_name}): "
+                f"{benchmark.embeddings_per_second:.1f} emb/s, "
+                f"dim={benchmark.embedding_dimension}"
+            )
         else:
-            pass
+            print(
+                f"  {provider_key} ({benchmark.model_name}) unavailable for benchmarking: "
+                f"{benchmark.error_message or 'unknown error'}"
+            )
 
     return benchmarks
 
@@ -270,10 +286,14 @@ def run_performance_benchmarks() -> list[ProviderBenchmark]:
 def analyze_benchmark_results(benchmarks: list[ProviderBenchmark]) -> None:
     """Analyze and display benchmark results."""
     print_subsection("Benchmark Analysis")
+    if not benchmarks:
+        print("No benchmark data available.")
+        return
 
     available_benchmarks = [b for b in benchmarks if b.available]
 
     if not available_benchmarks:
+        print("All providers failed to benchmark; check configuration and API keys.")
         return
 
     # Sort by speed
@@ -281,22 +301,38 @@ def analyze_benchmark_results(benchmarks: list[ProviderBenchmark]) -> None:
         available_benchmarks, key=lambda x: x.embeddings_per_second, reverse=True
     )
 
-    for _i, benchmark in enumerate(speed_sorted, 1):
-        pass
+    print("\nProviders sorted by throughput (embeddings/sec):")
+    for i, benchmark in enumerate(speed_sorted, 1):
+        print(
+            f"  {i}. {benchmark.provider_name} ({benchmark.model_name}) - "
+            f"{benchmark.embeddings_per_second:.1f} emb/s, "
+            f"dim={benchmark.embedding_dimension}, "
+            f"time={benchmark.embedding_time:.3f}s"
+        )
 
     # Dimension analysis
+    print("\nEmbedding dimensions by provider:")
     for benchmark in available_benchmarks:
-        pass
+        print(
+            f"  {benchmark.provider_name} ({benchmark.model_name}): "
+            f"{benchmark.embedding_dimension} dimensions"
+        )
 
     # Performance categories
-
+    print("\nPerformance tiers:")
     for benchmark in available_benchmarks:
         speed = benchmark.embeddings_per_second
 
-        if speed > 50 or speed > 20 or speed > 10:
-            pass
+        if speed > 50:
+            tier = "High throughput"
+        elif speed > 20:
+            tier = "Medium throughput"
+        elif speed > 10:
+            tier = "Low throughput"
         else:
-            pass
+            tier = "Very low throughput"
+
+        print(f"  {benchmark.provider_name} ({benchmark.model_name}): {tier}")
 
 
 def demonstrate_provider_recommendations() -> None:
@@ -351,9 +387,14 @@ def demonstrate_provider_recommendations() -> None:
         },
     }
 
-    for _use_case, recommendation in recommendations.items():
-        for _reason in recommendation["reasons"]:
-            pass
+    for use_case, recommendation in recommendations.items():
+        provider = recommendation["provider"]
+        reasons = recommendation["reasons"]
+        print(f"\n{use_case}:")
+        print(f"  Recommended provider key: {provider}")
+        print("  Reasons:")
+        for reason in reasons:
+            print(f"    - {reason}")
 
 
 def demonstrate_cost_considerations() -> None:
@@ -396,9 +437,14 @@ def demonstrate_cost_considerations() -> None:
         },
     }
 
-    for _provider, info in cost_info.items():
-        for _consideration in info["considerations"]:
-            pass
+    for provider, info in cost_info.items():
+        print(f"\nProvider: {provider}")
+        print(f"  Type: {info['type']}")
+        print(f"  Pricing: {info['cost']}")
+        print(f"  Scaling: {info['scaling']}")
+        print("  Considerations:")
+        for consideration in info["considerations"]:
+            print(f"    - {consideration}")
 
 
 def main() -> None:

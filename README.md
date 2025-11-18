@@ -135,7 +135,7 @@ python -c "import vectorflow; print(vectorflow.__version__)"
 
 ```python
 from vectorflow import Config, PDFVectorPipeline
-from vectorflow.config.settings import EmbeddingModelType
+from vectorflow.core.config.settings import EmbeddingModelType
 
 # Create configuration for local embeddings
 config = Config()
@@ -161,8 +161,10 @@ if result.success:
 
 ```python
 from pathlib import Path
+
 from vectorflow import Config, PDFVectorPipeline
-from vectorflow.config.settings import EmbeddingModelType, VectorDBType
+from vectorflow.core.config.settings import EmbeddingModelType
+from vectorflow.core.vector_db.config import PineconeConfig
 
 # Advanced configuration
 config = Config()
@@ -177,9 +179,13 @@ config.text_processing.chunk_size = 1200
 config.text_processing.chunk_overlap = 200
 
 # Use Pinecone for vector storage
-config.vector_db.type = VectorDBType.PINECONE
-config.vector_db.pinecone_config.index_name = "pdf-documents"
-config.vector_db.pinecone_config.api_key = "your-pinecone-key"
+config.vector_db = PineconeConfig(
+    api_key="your-pinecone-key",
+    environment="your-pinecone-environment",
+    index_name="pdf-documents",
+    dimension=1536,  # must match your embedding model
+    collection_name="pdf_documents",
+)
 
 # Performance tuning
 config.max_workers = 6
@@ -192,13 +198,13 @@ pipeline = PDFVectorPipeline(config)
 
 ```python
 from vectorflow import Config, PDFVectorPipeline
-from vectorflow.config.settings import EmbeddingModelType
+from vectorflow.core.config.settings import EmbeddingModelType
 
 config = Config()
 
 # Option 1: Google Gemini
 config.embedding.model_type = EmbeddingModelType.GOOGLE_GEMINI
-config.embedding.model_name = "models/embedding-001"
+config.embedding.model_name = "gemini-embedding-001"
 
 # Option 2: Cohere
 config.embedding.model_type = EmbeddingModelType.COHERE
@@ -230,13 +236,11 @@ EMBEDDING__BATCH_SIZE=32
 # OpenAI Configuration
 OPENAI_API_KEY=your_api_key_here
 
-# Vector Database Configuration
-VECTOR_DB__TYPE=pinecone
-VECTOR_DB__PINECONE_API_KEY=your_pinecone_key
-
-# ChromaDB Configuration (if using ChromaDB)
-VECTOR_DB__CHROMA_DB_PERSIST_DIRECTORY=./chroma_db
-VECTOR_DB__CHROMA_DB_COLLECTION_NAME=pdf_documents
+# ChromaDB Configuration (default local vector database)
+CHROMA_DB__PERSIST_DIRECTORY=./chroma_db
+CHROMA_DB__COLLECTION_NAME=pdf_documents
+CHROMA_DB__DISTANCE_METRIC=cosine
+CHROMA_DB__MAX_RESULTS=100
 
 # Text Processing
 TEXT_PROCESSING__CHUNK_SIZE=1000
@@ -328,13 +332,13 @@ vectorflow search "machine learning"
 vectorflow stats
 
 # List all documents
-vectorflow list
+vectorflow list-docs
 
 # Clear a collection
 vectorflow clear-collection
 
-# Export search results
-vectorflow search "query" --output results.json
+# Export search results (using shell redirection)
+vectorflow search "query" --results 20 > results.txt
 ```
 
 ### GUI Application
@@ -406,7 +410,7 @@ Main class for processing PDFs and managing the vector database.
 - `delete_document(document_id)`: Delete a document from the database
 - `get_collection_stats()`: Get collection statistics
 - `health_check()`: Perform system health check
-- `list_documents()`: List all processed documents
+- `get_documents()`: List all processed documents
 
 ### Configuration Classes
 

@@ -1,6 +1,6 @@
 # Contributing to Examples
 
-Thank you for your interest in contributing to the PDF Vector System examples! This guide will help you create high-quality examples that benefit the community.
+Thank you for your interest in contributing to the VectorFlow examples! This guide will help you create high-quality examples that benefit the community.
 
 ## Example Guidelines
 
@@ -63,8 +63,8 @@ from typing import Optional
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
 
-from pdf_vector_system import Config, PDFVectorPipeline
-from pdf_vector_system.config.settings import EmbeddingModelType
+from vectorflow import Config, PDFVectorPipeline
+from vectorflow.core.config.settings import EmbeddingModelType
 
 # Import example utilities
 from utils.example_helpers import setup_example_environment, print_section
@@ -181,4 +181,4 @@ Avoid these common issues:
 4. **Resource leaks**: Ensure proper cleanup of files, connections, etc.
 5. **Overly complex examples**: Keep examples focused and simple
 
-Thank you for contributing to the PDF Vector System examples!
+Thank you for contributing to the VectorFlow examples!

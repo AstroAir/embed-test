@@ -395,11 +395,13 @@ class PineconeClient(VectorDBInterface, LoggerMixin):
             DocumentChunk object
 
         Raises:
-            NotImplementedError: This method is not supported by Pinecone
+            DocumentNotFoundError: If chunk is not found
+            VectorDBError: If retrieval fails
         """
-        raise NotImplementedError(
-            "get_chunk is not supported by Pinecone. Use get_chunks instead."
-        )
+        chunks = self.get_chunks([chunk_id], collection_name, include_embeddings)
+        if not chunks:
+            raise DocumentNotFoundError(f"Chunk '{chunk_id}' not found")
+        return chunks[0]
 
     @handle_vector_db_errors(
         backend_type=VectorDBType.PINECONE, operation="update_chunks"
@@ -601,12 +603,84 @@ class PineconeClient(VectorDBInterface, LoggerMixin):
         Returns:
             DocumentInfo object
 
-        Raises:
-            NotImplementedError: This method is not supported by Pinecone
         """
-        raise NotImplementedError(
-            "get_document_info is not supported by Pinecone. Use search_by_metadata instead."
-        )
+        index = self._get_index(collection_name)
+
+        try:
+            # Query using metadata filter only; use a zero vector as query anchor
+            zero_vector = [0.0] * self.config.dimension
+            response = index.query(
+                vector=zero_vector,
+                top_k=10000,
+                include_metadata=True,
+                filter={"document_id": {"$eq": document_id}},
+            )
+
+            matches = (
+                getattr(response, "matches", None) or response.get("matches", [])
+                if isinstance(response, dict)
+                else []
+            )
+
+            if not matches:
+                raise DocumentNotFoundError(f"Document {document_id} not found")
+
+            chunk_count = 0
+            total_characters = 0
+            page_numbers: set[int] = set()
+            created_times: list[float] = []
+            filename: Optional[str] = None
+
+            for match in matches:
+                chunk_count += 1
+                metadata = (
+                    getattr(match, "metadata", None) or match.get("metadata", {})
+                    if isinstance(match, dict)
+                    else {}
+                )
+                content = metadata.get("content", "")
+                if isinstance(content, str) and content:
+                    total_characters += len(content)
+                else:
+                    try:
+                        total_characters += int(metadata.get("content_length", 0) or 0)
+                    except Exception:
+                        pass
+
+                if "page_number" in metadata:
+                    try:
+                        page_numbers.add(int(metadata["page_number"]))
+                    except Exception:
+                        pass
+
+                if "created_at" in metadata:
+                    try:
+                        created_times.append(float(metadata["created_at"]))
+                    except Exception:
+                        pass
+
+                if filename is None:
+                    filename = metadata.get("filename") or metadata.get("file_name")
+
+            created_at_str = str(int(min(created_times))) if created_times else None
+
+            return DocumentInfo(
+                document_id=document_id,
+                chunk_count=chunk_count,
+                total_characters=total_characters,
+                filename=filename,
+                page_count=len(page_numbers) if page_numbers else None,
+                created_at=created_at_str,
+            )
+
+        except DocumentNotFoundError:
+            raise
+        except Exception as exc:
+            raise VectorDBError(
+                f"Failed to get document info: {exc!s}",
+                backend=VectorDBType.PINECONE.value,
+                original_error=exc,
+            ) from exc
 
     def find_similar_chunks(
         self,

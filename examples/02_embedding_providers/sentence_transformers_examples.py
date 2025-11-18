@@ -33,10 +33,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
 
-from utils.example_helpers import example_context, print_section, print_subsection
+from examples.utils.example_helpers import (
+    example_context,
+    print_section,
+    print_subsection,
+)
 
 from vectorflow import Config, PDFVectorPipeline
-from vectorflow.config.settings import EmbeddingModelType
+from vectorflow.core.config.settings import EmbeddingModelType
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -116,9 +120,11 @@ def demonstrate_model_characteristics() -> None:
     for model_name, info in models.items():
         print(f"\n  {model_name}:")
         print(f"    Dimensions: {info.dimensions}")
-        print(f"    Quality: {info.quality}")
-        print(f"    Speed: {info.speed}")
+        print(f"    Max sequence length: {info.max_seq_length}")
+        print(f"    Size: {info.size_mb} MB")
+        print(f"    Performance tier: {info.performance_tier}")
         print(f"    Use case: {info.use_case}")
+        print(f"    Description: {info.description}")
 
 
 def benchmark_model(model_name: str, model_info: ModelInfo) -> Optional[dict[str, Any]]:

@@ -68,7 +68,7 @@ Assessing and improving text quality for better search results.
 
 ## Prerequisites
 
-- PDF Vector System installed
+- VectorFlow installed
 - Understanding of text processing concepts
 - Sample documents with various formats
 - LangChain text splitters knowledge

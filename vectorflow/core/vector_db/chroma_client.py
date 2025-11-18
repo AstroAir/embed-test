@@ -94,11 +94,25 @@ class ChromaDBClient(VectorDBInterface, LoggerMixin):
         collection_name = name or self.config.collection_name
 
         try:
-            collection = self.client.create_collection(
-                name=collection_name,
-                metadata=metadata or {"created_by": "vectorflow"},
-            )
-            self.logger.info(f"Created new collection: {collection_name}")
+            # When get_or_create is True, try to reuse an existing collection first
+            # using get_collection (recommended for Chroma v0.6+). If it does not
+            # exist, create it.
+            if get_or_create:
+                try:
+                    collection = self.client.get_collection(collection_name)
+                    self.logger.info(f"Using existing collection: {collection_name}")
+                except Exception:
+                    collection = self.client.create_collection(
+                        name=collection_name,
+                        metadata=metadata or {"created_by": "vectorflow"},
+                    )
+                    self.logger.info(f"Created new collection: {collection_name}")
+            else:
+                collection = self.client.create_collection(
+                    name=collection_name,
+                    metadata=metadata or {"created_by": "vectorflow"},
+                )
+                self.logger.info(f"Created new collection: {collection_name}")
 
             # Cache the collection
             self._collections[collection_name] = collection
@@ -151,14 +165,14 @@ class ChromaDBClient(VectorDBInterface, LoggerMixin):
         collection_name = name or self.config.collection_name
 
         try:
-            collections = self.client.list_collections()
-            return any(col.name == collection_name for col in collections)
-        except Exception as e:
-            error_msg = (
-                f"Failed to check if collection '{collection_name}' exists: {e!s}"
-            )
-            self.logger.error(error_msg)
-            raise VectorDBError(error_msg) from e
+            # Prefer get_collection for Chroma v0.6+ instead of relying on
+            # list_collections return types, which changed across versions.
+            self.client.get_collection(collection_name)
+            return True
+        except Exception:
+            # Treat any error as "does not exist" in this lightweight check.
+            # Callers that need strict error details can use get_collection.
+            return False
 
     def delete_collection(self, name: Optional[str] = None) -> None:
         """

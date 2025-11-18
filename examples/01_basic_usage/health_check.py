@@ -34,7 +34,7 @@ from pathlib import Path
 from typing import Any
 
 import psutil
-from utils.example_helpers import (
+from examples.utils.example_helpers import (
     example_context,
     get_available_providers,
     print_section,
@@ -42,7 +42,7 @@ from utils.example_helpers import (
 )
 
 from vectorflow import Config, PDFVectorPipeline
-from vectorflow.config.settings import EmbeddingModelType
+from vectorflow.core.config.settings import EmbeddingModelType
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -80,13 +80,22 @@ def check_system_resources() -> dict[str, Any]:
             "disk_percent": disk_percent,
         }
 
+        # Print resource summary
+        print(
+            f"CPU usage: {cpu_percent:.1f}% of {cpu_count} cores, "
+            f"Memory usage: {memory_percent:.1f}%, "
+            f"Disk usage: {disk_percent:.1f}%"
+        )
+
         # Resource warnings
         if cpu_percent > 80:
-            pass
+            print("  Warning: High CPU usage (> 80%).")
         if memory_percent > 80:
-            pass
+            print("  Warning: High memory usage (> 80%).")
         if disk_percent > 90:
-            pass
+            print(
+                "  Warning: Disk is almost full (> 90% used). Consider freeing space."
+            )
 
         return resources
 
@@ -122,8 +131,9 @@ def check_embedding_providers() -> dict[str, bool]:
 
     providers = get_available_providers()
 
-    for _provider, _available in providers.items():
-        pass
+    for provider, available in providers.items():
+        status = "available" if available else "unavailable"
+        print(f"  {provider}: {status}")
 
     return providers
 
@@ -135,12 +145,14 @@ def check_pipeline_health(pipeline: PDFVectorPipeline) -> dict[str, bool]:
     try:
         health = pipeline.health_check()
 
-        for _component, _status in health.items():
-            pass
+        for component, status in health.items():
+            label = "OK" if status else "FAILED"
+            print(f"  {component}: {label}")
 
         return health
 
-    except Exception:
+    except Exception as exc:  # pragma: no cover - defensive
+        print(f"  Pipeline health check failed: {exc}")
         return {}
 
 
@@ -237,6 +249,12 @@ def check_configuration(config: Config) -> dict[str, Any]:
 def provide_troubleshooting_tips() -> None:
     """Provide troubleshooting tips for common issues."""
     print_subsection("Troubleshooting Tips")
+    print("If you encounter issues:")
+    print("  - Verify that all required Python packages are installed.")
+    print("  - Check that embedding providers with API keys are correctly configured.")
+    print("  - Ensure the ChromaDB persist directory is writable.")
+    print("  - Reduce batch size or workers if resources are constrained.")
+    print("  - Review logs for detailed error messages.")
 
 
 def main() -> None:
@@ -297,17 +315,47 @@ def main() -> None:
             (healthy_count / total_count * 100) if total_count > 0 else 0
         )
 
-        if health_percentage >= 90 or health_percentage >= 70:
-            pass
+        print(
+            f"Overall health: {health_percentage:.1f}% "
+            f"({healthy_count}/{total_count} checks passed)"
+        )
+
+        if health_percentage >= 90:
+            print(
+                "Status: HEALTHY - all critical components are functioning as expected."
+            )
+        elif health_percentage >= 70:
+            print(
+                "Status: WARNING - some components need attention, "
+                "but the system should still operate."
+            )
         else:
-            pass
+            print(
+                "Status: CRITICAL - multiple checks are failing. "
+                "Investigate before production use."
+            )
 
         # Performance summary
         if performance:
             if "texts_per_second" in performance:
-                pass
+                tps = performance["texts_per_second"]
+                embed_time = performance["embedding_time"]
+                est_texts = int(tps * embed_time) if tps and embed_time else 0
+                if est_texts:
+                    print(
+                        f"Embedding throughput: {tps:.2f} texts/second "
+                        f"(time: {embed_time:.3f}s for ~{est_texts} texts)"
+                    )
+                else:
+                    print(
+                        f"Embedding throughput: {tps:.2f} texts/second "
+                        f"(time: {embed_time:.3f}s)"
+                    )
             if "search_time" in performance and performance["search_time"] > 0:
-                pass
+                print(
+                    f"Example search latency: {performance['search_time']:.3f}s "
+                    f"for a single query."
+                )
 
         print_section("Troubleshooting")
         provide_troubleshooting_tips()
@@ -315,11 +363,18 @@ def main() -> None:
         print_section("Next Steps")
 
         if health_percentage >= 90:
-            pass
+            print("System looks healthy. You can proceed with normal workloads.")
         else:
             failed_checks = [name for name, status in all_checks.items() if not status]
-            for _check in failed_checks[:5]:  # Show top 5 issues
-                pass
+            if failed_checks:
+                print("Focus on the following failing checks (up to 5):")
+                for check in failed_checks[:5]:  # Show top 5 issues
+                    print(f"  - {check}")
+            else:
+                print(
+                    "Some checks failed, but specific failing components "
+                    "could not be identified."
+                )
 
 
 if __name__ == "__main__":

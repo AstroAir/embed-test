@@ -40,11 +40,15 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-from utils.example_helpers import example_context, print_section, print_subsection
-from utils.sample_data_generator import ensure_sample_data
+from examples.utils.example_helpers import (
+    example_context,
+    print_section,
+    print_subsection,
+)
+from examples.utils.sample_data_generator import ensure_sample_data
 
 from vectorflow import Config, PDFVectorPipeline
-from vectorflow.config.settings import EmbeddingModelType
+from vectorflow.core.config.settings import EmbeddingModelType
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -130,9 +134,26 @@ class PipelineMonitor:
     def print_metrics(self):
         """Print current metrics."""
         metrics = self.get_metrics()
+        if metrics.total_documents == 0:
+            print("No documents have been processed yet.")
+            return
+
+        print("\nPipeline metrics:")
+        print(
+            f"  Documents: total={metrics.total_documents}, "
+            f"success={metrics.successful_documents}, "
+            f"failed={metrics.failed_documents}"
+        )
+        print(f"  Total chunks processed: {metrics.total_chunks}")
+        print(f"  Total processing time: {metrics.total_processing_time:.3f}s")
+        print(
+            "  Throughput: "
+            f"{metrics.throughput_docs_per_second:.2f} docs/s, "
+            f"{metrics.throughput_chunks_per_second:.2f} chunks/s"
+        )
 
         if metrics.failed_documents > 0:
-            pass
+            print("  Warning: Some documents failed during processing.")
 
 
 def setup_pipeline() -> PDFVectorPipeline:
@@ -225,8 +246,9 @@ def demonstrate_batch_processing(
     # Limit to first 3 files for demonstration
     pdf_files = pdf_files[:3]
 
-    for _pdf_file in pdf_files:
-        pass
+    print(f"Found {len(pdf_files)} PDF file(s) for batch processing:")
+    for pdf_file in pdf_files:
+        print(f"  - {pdf_file.name}")
 
     def process_document(pdf_file: Path) -> ProcessingResult:
         """Process a single document and return result."""
@@ -278,21 +300,29 @@ def demonstrate_batch_processing(
 
         # Collect results as they complete
         for future in as_completed(future_to_file):
-            future_to_file[future]
+            pdf_file = future_to_file[future]
 
             try:
                 result = future.result()
                 monitor.record_result(result)
 
                 if result.success:
-                    pass
+                    print(
+                        f"  Processed {result.document_id} "
+                        f"({pdf_file.name}) in {result.processing_time:.3f}s, "
+                        f"chunks={result.chunks_processed}"
+                    )
                 else:
-                    pass
+                    print(
+                        f"  Failed to process {result.document_id} "
+                        f"({pdf_file.name}): {result.error_message}"
+                    )
 
-            except Exception:
-                pass
+            except Exception as exc:
+                print(f"  Batch task for {pdf_file.name} raised an exception: {exc}")
 
-    time.time() - batch_start_time
+    batch_duration = time.time() - batch_start_time
+    print(f"\nBatch processing completed in {batch_duration:.3f}s.")
 
 
 def demonstrate_error_handling(
@@ -322,8 +352,15 @@ def demonstrate_error_handling(
                     error_message=result.error_message,
                 )
             )
+            print(
+                "  Non-existent file correctly produced an error: "
+                f"{result.error_message}"
+            )
         else:
-            pass
+            print(
+                "  Warning: processing non-existent file succeeded unexpectedly. "
+                "Check error handling."
+            )
 
     except Exception as e:
         processing_time = time.time() - start_time
@@ -356,12 +393,18 @@ def demonstrate_error_handling(
             )
 
             if not result.success:
-                pass
+                print(
+                    "  Invalid configuration produced an error as expected: "
+                    f"{result.error_message}"
+                )
             else:
-                pass
+                print(
+                    "  Warning: invalid configuration unexpectedly succeeded. "
+                    "Validation may be missing."
+                )
 
-    except Exception:
-        pass
+    except Exception as exc:
+        print(f"  Error while testing invalid configuration: {exc}")
 
     finally:
         # Restore original configuration
@@ -375,13 +418,17 @@ def demonstrate_error_handling(
 
         memory_percent = psutil.virtual_memory().percent
 
+        print(f"  Current memory usage: {memory_percent:.1f}%")
         if memory_percent > 80:
-            pass
+            print(
+                "  Warning: high memory usage detected (> 80%). "
+                "Consider reducing batch size or workers."
+            )
         else:
-            pass
+            print("  Memory usage is within normal range.")
 
     except ImportError:
-        pass
+        print("  psutil not installed; skipping resource exhaustion simulation.")
 
 
 def demonstrate_pipeline_monitoring(
@@ -394,15 +441,22 @@ def demonstrate_pipeline_monitoring(
     try:
         health = pipeline.health_check()
 
-        for _component, _status in health.items():
-            pass
+        for component, status in health.items():
+            label = "OK" if status else "FAILED"
+            print(f"  {component}: {label}")
 
-    except Exception:
-        pass
+    except Exception as exc:
+        print(f"  Pipeline health check failed: {exc}")
 
     # Collection statistics
     with contextlib.suppress(Exception):
-        pipeline.get_collection_stats()
+        stats = pipeline.get_collection_stats()
+        if isinstance(stats, dict):
+            total_chunks = stats.get("total_chunks")
+            unique_docs = stats.get("unique_documents")
+            print("\nCollection statistics:")
+            print(f"  Total chunks: {total_chunks}")
+            print(f"  Unique documents: {unique_docs}")
 
     # Performance metrics from monitor
     monitor.print_metrics()
@@ -415,13 +469,17 @@ def demonstrate_pipeline_monitoring(
         memory = psutil.virtual_memory()
 
         # Check for resource warnings
+        print(
+            f"\nResource usage: CPU={cpu_percent:.1f}%, "
+            f"Memory={memory.percent:.1f}%"
+        )
         if cpu_percent > 80:
-            pass
+            print("  Warning: high CPU usage (> 80%).")
         if memory.percent > 80:
-            pass
+            print("  Warning: high memory usage (> 80%).")
 
     except ImportError:
-        pass
+        print("  psutil not installed; skipping detailed resource usage.")
 
 
 def main() -> None:

@@ -100,7 +100,7 @@ Routine maintenance and operational procedures.
 
 ## Prerequisites
 
-- PDF Vector System installed
+- VectorFlow installed
 - Container runtime (Docker)
 - Orchestration platform (Kubernetes)
 - Monitoring tools

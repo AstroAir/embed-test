@@ -1,6 +1,6 @@
 # GUI Testing Framework
 
-This directory contains comprehensive test coverage for the PDF Vector System GUI module. The testing framework is built using pytest with Qt-specific extensions for GUI testing.
+This directory contains comprehensive test coverage for the VectorFlow GUI module. The testing framework is built using pytest with Qt-specific extensions for GUI testing.
 
 ## 📁 Directory Structure
 
@@ -159,7 +159,7 @@ python tests/gui/test_runner.py --report
 
 ```bash
 # Run all GUI tests with coverage
-pytest tests/gui/ -v --cov=pdf_vector_system.gui --cov-report=html
+pytest tests/gui/ -v --cov=vectorflow.gui --cov-report=html
 
 # Run specific test categories
 pytest tests/gui/test_widgets/ -v -m widget
@@ -333,7 +333,7 @@ Example CI configuration:
 - name: Run GUI Tests
   run: |
     export QT_QPA_PLATFORM=offscreen
-    pytest tests/gui/ --cov=pdf_vector_system.gui --cov-report=xml
+    pytest tests/gui/ --cov=vectorflow.gui --cov-report=xml
   env:
     DISPLAY: :99
 ```

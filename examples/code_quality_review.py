@@ -36,7 +36,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-from utils.example_helpers import example_context, print_section, print_subsection
+from examples.utils.example_helpers import (
+    example_context,
+    print_section,
+    print_subsection,
+)
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -371,9 +375,18 @@ def analyze_quality_reports(reports: list[QualityReport]) -> None:
     print_subsection("Quality Analysis Results")
 
     total_files = len(reports)
-    sum(1 for r in reports if r.compliant)
-    sum(len(r.issues) for r in reports)
-    (sum(r.score for r in reports) / total_files if total_files > 0 else 0)
+    if total_files == 0:
+        print("No files were analyzed.")
+        return
+
+    compliant_files = sum(1 for r in reports if r.compliant)
+    total_issues = sum(len(r.issues) for r in reports)
+    avg_score = sum(r.score for r in reports) / total_files
+
+    print(f"Total files analyzed: {total_files}")
+    print(f"Compliant files: {compliant_files}/{total_files}")
+    print(f"Total issues found: {total_issues}")
+    print(f"Average quality score: {avg_score * 100:.1f}%")
 
     # Issue breakdown by severity
     issue_counts = {"error": 0, "warning": 0, "info": 0}
@@ -388,9 +401,17 @@ def analyze_quality_reports(reports: list[QualityReport]) -> None:
             issue_types[issue.issue_type] = issue_types.get(issue.issue_type, 0) + 1
 
     if issue_types:
+        print("\nTop issue types:")
         sorted_issues = sorted(issue_types.items(), key=lambda x: x[1], reverse=True)
-        for _issue_type, _count in sorted_issues[:5]:
-            pass
+        for issue_type, count in sorted_issues[:5]:
+            print(f"  - {issue_type}: {count} occurrence(s)")
+
+    print("\nIssue severity breakdown:")
+    print(
+        f"  Errors: {issue_counts['error']} | "
+        f"Warnings: {issue_counts['warning']} | "
+        f"Info: {issue_counts['info']}"
+    )
 
 
 def display_detailed_issues(reports: list[QualityReport], max_issues: int = 20) -> None:
@@ -411,16 +432,32 @@ def display_detailed_issues(reports: list[QualityReport], max_issues: int = 20) 
         )
     )
 
-    for _i, issue in enumerate(all_issues[:max_issues], 1):
-        {"error": "❌", "warning": "⚠️", "info": "ℹ️"}.get(issue.severity, "❓")
+    if not all_issues:
+        print("No quality issues detected.")
+        return
 
+    for i, issue in enumerate(all_issues[:max_issues], 1):
+        icon = {"error": "ERROR", "warning": "WARN", "info": "INFO"}.get(
+            issue.severity, "?"
+        )
+        print(
+            f"[{i}] {icon} {issue.file_path}:{issue.line_number} "
+            f"[{issue.issue_type}] {issue.description}"
+        )
         if issue.suggestion:
-            pass
+            print(f"    Suggestion: {issue.suggestion}")
 
 
 def provide_improvement_recommendations() -> None:
     """Provide recommendations for code quality improvements."""
     print_subsection("Improvement Recommendations")
+    print("- Keep example files short and focused; split long files when needed.")
+    print("- Ensure every public function and class has a clear docstring.")
+    print("- Add type hints for function arguments and return types where possible.")
+    print("- Fix syntax or file-read errors before addressing stylistic issues.")
+    print(
+        "- Use a formatter (e.g., Black) and linter (e.g., Ruff) to keep style consistent."
+    )
 
 
 def main() -> None:
@@ -456,10 +493,26 @@ def main() -> None:
             (compliant_files / total_files * 100) if total_files > 0 else 0
         )
 
-        if compliance_rate >= 90 or compliance_rate >= 70:
-            pass
+        print(
+            f"Overall compliant files: {compliant_files}/{total_files} "
+            f"({compliance_rate:.1f}% compliant)"
+        )
+
+        if compliance_rate >= 90:
+            print(
+                "Code quality status: EXCELLENT - only minor refinements are "
+                "needed to reach full compliance."
+            )
+        elif compliance_rate >= 70:
+            print(
+                "Code quality status: GOOD - most files meet standards, but "
+                "address the highlighted issues for consistency."
+            )
         else:
-            pass
+            print(
+                "Code quality status: NEEDS IMPROVEMENT - many files violate "
+                "standards. Use the detailed report to plan cleanup work."
+            )
 
 
 if __name__ == "__main__":

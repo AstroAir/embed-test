@@ -30,11 +30,15 @@ import contextlib
 import sys
 from pathlib import Path
 
-from utils.example_helpers import example_context, print_section, print_subsection
-from utils.sample_data_generator import ensure_sample_data
+from examples.utils.example_helpers import (
+    example_context,
+    print_section,
+    print_subsection,
+)
+from examples.utils.sample_data_generator import ensure_sample_data
 
 from vectorflow import Config, PDFVectorPipeline
-from vectorflow.config.settings import EmbeddingModelType
+from vectorflow.core.config.settings import EmbeddingModelType
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -64,12 +68,20 @@ def main() -> None:
         config.chroma_db.persist_directory = Path("./simple_example_db")
         config.debug = True
 
+        # Show configuration summary
+        print("Using embedding model:", config.embedding.model_type.value)
+        print("Model name:", config.embedding.model_name)
+        print("Chroma collection:", config.chroma_db.collection_name)
+        print("Persist directory:", config.chroma_db.persist_directory)
+
         # Step 2: Initialize Pipeline
         print_subsection("Initializing Pipeline")
 
         try:
             pipeline = PDFVectorPipeline(config)
-        except Exception:
+            print("Pipeline initialized successfully.")
+        except Exception as e:
+            print(f"Failed to initialize pipeline: {e}")
             return
 
         # Step 3: Ensure Sample Data
@@ -105,7 +117,13 @@ def main() -> None:
         # Find available PDF files
         pdf_files = list(sample_dir.glob("*.pdf"))
         if not pdf_files:
+            print(
+                "No PDF files found in 'examples/sample_data'. "
+                "Please add at least one PDF and rerun the example."
+            )
             return
+
+        print(f"Found {len(pdf_files)} PDF file(s). Using '{pdf_files[0].name}'.")
 
         # Step 4: Process PDF
         print_section("Step 2: PDF Processing")
@@ -120,11 +138,16 @@ def main() -> None:
             )
 
             if result.success:
-                pass
+                print("PDF processed successfully.")
+                if hasattr(result, "chunks_processed"):
+                    print(f"Chunks processed: {result.chunks_processed}")
             else:
+                error_message = getattr(result, "error_message", "Unknown error")
+                print(f"PDF processing failed: {error_message}")
                 return
 
-        except Exception:
+        except Exception as e:
+            print(f"Error while processing PDF: {e}")
             return
 
         # Step 5: Perform Searches
@@ -146,19 +169,34 @@ def main() -> None:
                 search_results = pipeline.search(query_text=query, n_results=3)
 
                 if search_results:
-                    for _i, result in enumerate(search_results, 1):
-                        if result.page_number:
-                            pass
+                    print(f"Found {len(search_results)} result(s).")
+
+                    for i, result in enumerate(search_results, 1):
+                        page_info = (
+                            f" (page {result.page_number})"
+                            if getattr(result, "page_number", None) is not None
+                            else ""
+                        )
+                        score = getattr(result, "score", None)
+                        score_str = (
+                            f"{score:.3f}" if isinstance(score, (int, float)) else "N/A"
+                        )
 
                         # Show content preview (first 100 characters)
                         content_preview = result.content[:100]
                         if len(result.content) > 100:
                             content_preview += "..."
-                else:
-                    pass
 
-            except Exception:
-                pass
+                        print(
+                            f"  {i}. score={score_str}{page_info} - "
+                            f"document_id={getattr(result, 'document_id', 'N/A')}"
+                        )
+                        print(f"     {content_preview}")
+                else:
+                    print("No results found.")
+
+            except Exception as e:
+                print(f"Search failed for query '{query}': {e}")
 
         # Step 6: System Information
         print_section("Step 4: System Information")
@@ -166,19 +204,31 @@ def main() -> None:
         # Show collection statistics
         print_subsection("Collection Statistics")
         with contextlib.suppress(Exception):
-            pipeline.get_collection_stats()
+            stats = pipeline.get_collection_stats()
+            if isinstance(stats, dict):
+                total_chunks = stats.get("total_chunks")
+                unique_docs = stats.get("unique_documents")
+                print(f"Total chunks: {total_chunks}")
+                print(f"Unique documents: {unique_docs}")
 
         # Health check
         print_subsection("System Health Check")
         try:
             health = pipeline.health_check()
-            for _component, _status in health.items():
-                pass
-        except Exception:
-            pass
+            for component, status in health.items():
+                status_label = "OK" if status else "FAILED"
+                print(f"{component}: {status_label}")
+        except Exception as e:
+            print(f"Health check failed: {e}")
 
         # Step 7: Cleanup Information
         print_section("Step 5: Next Steps")
+        print("You can now:")
+        print("  - Adjust the configuration to try different models or batch sizes")
+        print("  - Add more PDFs to 'examples/sample_data'")
+        print(
+            "  - Explore other examples in the 'examples' directory for advanced usage"
+        )
 
 
 if __name__ == "__main__":

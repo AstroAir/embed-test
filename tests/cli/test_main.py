@@ -2,9 +2,11 @@
 
 from unittest.mock import Mock, patch
 
+import pytest
 import typer
+from typer.testing import CliRunner
 
-from vectorflow.cli.main import app, console
+from vectorflow.cli.main import app, console, main
 from vectorflow.core.pipeline import ProcessingResult
 from vectorflow.core.vector_db.models import SearchResult
 

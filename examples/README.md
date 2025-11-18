@@ -1,12 +1,12 @@
-# PDF Vector System Examples
+# VectorFlow Examples
 
-This directory contains comprehensive examples demonstrating all aspects of the PDF Vector System. Examples are organized by functional area and complexity level to help you learn and implement the system effectively.
+This directory contains comprehensive examples demonstrating all aspects of the VectorFlow project. Examples are organized by functional area and complexity level to help you learn and implement the system effectively.
 
 ## 📁 Directory Structure
 
 ### [01_basic_usage/](01_basic_usage/)
 
-Fundamental examples for getting started with the PDF Vector System.
+Fundamental examples for getting started with VectorFlow.
 
 - Simple PDF processing
 - Basic configuration
@@ -101,12 +101,12 @@ Production deployment, monitoring, and maintenance.
 
 ### Prerequisites
 
-1. **Install PDF Vector System**
+1. **Install VectorFlow**
 
    ```bash
-   pip install pdf-vector-system
+   pip install vectorflow
    # or
-   uv add pdf-vector-system
+   uv add vectorflow
    ```
 
 2. **Set up environment** (for cloud providers)
@@ -226,7 +226,7 @@ EMBEDDING__MODEL_NAME=text-embedding-3-small
 OPENAI_API_KEY=your-production-key
 CHROMA_DB__PERSIST_DIRECTORY=/data/chroma_db
 LOGGING__LEVEL=INFO
-LOGGING__FILE_PATH=/var/log/pdf-vector-system.log
+LOGGING__FILE_PATH=/var/log/vectorflow.log
 MAX_WORKERS=8
 ```
 
@@ -236,8 +236,8 @@ For contributing to examples or developing custom solutions:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/pdf-vector-system.git
-cd pdf-vector-system
+git clone https://github.com/your-username/vectorflow.git
+cd vectorflow
 
 # Install development dependencies
 uv sync --extra dev
@@ -283,7 +283,8 @@ Usage:
 
 import os
 from pathlib import Path
-from pdf_vector_system import Config, PDFVectorPipeline
+from vectorflow import Config, PDFVectorPipeline
+
 
 def main():
     """Main example function with clear documentation."""
@@ -296,6 +297,7 @@ def main():
 
     # Results and cleanup
     # ... results handling
+
 
 if __name__ == "__main__":
     main()

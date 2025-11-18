@@ -1,10 +1,10 @@
-site_name: PDF Vector System
-site_description: A comprehensive PDF content processing and vector storage system with ChromaDB integration
+site_name: VectorFlow
+site_description: Streamlined PDF-to-vector processing pipeline with multi-provider embeddings and multi-backend vector storage
 site_author: The Augster
-site_url: https://your-username.github.io/pdf-vector-system/
+site_url: https://your-username.github.io/vectorflow/
 
-repo_name: your-username/pdf-vector-system
-repo_url: https://github.com/your-username/pdf-vector-system
+repo_name: your-username/vectorflow
+repo_url: https://github.com/your-username/vectorflow
 edit_uri: edit/main/docs/
 
 copyright: Copyright &copy; 2024 The Augster
@@ -56,8 +56,11 @@ nav:
     - Configuration: getting-started/configuration.md
   - User Guide:
     - CLI Usage: user-guide/cli.md
+    - GUI Application: user-guide/gui.md
     - Python API: user-guide/api.md
     - Examples: user-guide/examples.md
+    - FAQ & Troubleshooting: user-guide/faq.md
+    - Cookbook: user-guide/cookbook.md
   - API Reference:
     - Pipeline: api/pipeline.md
     - Configuration: api/config.md
@@ -65,6 +68,7 @@ nav:
     - Embeddings: api/embeddings.md
     - Vector Database: api/vector-db.md
     - Utilities: api/utils.md
+    - Environment Variables: api/environment-variables.md
   - Development:
     - Contributing: development/contributing.md
     - Testing: development/testing.md
@@ -118,7 +122,7 @@ markdown_extensions:
   - pymdownx.magiclink:
       repo_url_shorthand: true
       user: your-username
-      repo: pdf-vector-system
+      repo: vectorflow
   - pymdownx.mark
   - pymdownx.smartsymbols
   - pymdownx.superfences:
@@ -137,9 +141,9 @@ extra:
     provider: mike
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/your-username/pdf-vector-system
+      link: https://github.com/your-username/vectorflow
     - icon: fontawesome/brands/python
-      link: https://pypi.org/project/pdf-vector-system/
+      link: https://pypi.org/project/vectorflow/
 
 extra_css:
   - stylesheets/extra.css

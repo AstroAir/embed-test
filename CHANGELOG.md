@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2024-01-XX
 
 ### Added
-- Initial release of PDF Vector System
+- Initial release of VectorFlow
 - PDF text extraction using PyMuPDF
 - Text processing and chunking capabilities
 - Embedding generation with sentence-transformers and OpenAI
@@ -54,5 +54,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Error handling and recovery mechanisms
 - Performance monitoring and timing
 
-[Unreleased]: https://github.com/your-username/pdf-vector-system/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/your-username/pdf-vector-system/releases/tag/v0.1.0
+[Unreleased]: https://github.com/your-username/vectorflow/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/your-username/vectorflow/releases/tag/v0.1.0

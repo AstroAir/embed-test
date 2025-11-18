@@ -1,6 +1,6 @@
 # CLI Usage Examples
 
-This directory contains comprehensive examples of using the PDF Vector System command-line interface.
+This directory contains comprehensive examples of using the VectorFlow command-line interface.
 
 ## Examples
 
@@ -34,41 +34,41 @@ Directory containing shell scripts for common automation tasks.
 
 ```bash
 # Process single PDF
-pdf-vector process document.pdf
+vectorflow process document.pdf
 
 # Process multiple PDFs
-pdf-vector process *.pdf
+vectorflow process *.pdf
 
 # Process with custom settings
-pdf-vector process document.pdf --model all-mpnet-base-v2 --batch-size 32
+vectorflow process document.pdf --model all-mpnet-base-v2 --batch-size 32
 ```
 
 ### Search Commands
 
 ```bash
 # Basic search
-pdf-vector search "machine learning"
+vectorflow search "machine learning"
 
 # Search with filters
-pdf-vector search "AI" --document doc1 --page 5 --results 10
+vectorflow search "AI" --document doc1 --page 5 --results 10
 ```
 
 ### Management Commands
 
 ```bash
 # Show statistics
-pdf-vector stats
+vectorflow stats
 
 # List documents
-pdf-vector list
+vectorflow list-docs
 
 # Health check
-pdf-vector health
+vectorflow health
 ```
 
 ## Prerequisites
 
-- PDF Vector System installed with CLI
+- VectorFlow installed (CLI entrypoint `vectorflow`)
 - Sample PDF files
 - Appropriate API keys for cloud providers
 

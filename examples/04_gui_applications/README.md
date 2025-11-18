@@ -1,6 +1,6 @@
 # GUI Application Examples
 
-This directory demonstrates the graphical user interface capabilities of the PDF Vector System.
+This directory demonstrates the graphical user interface capabilities of the VectorFlow project.
 
 ## Examples
 
@@ -10,7 +10,7 @@ Simple GUI application demonstrating core functionality.
 
 ### `custom_gui_integration.py`
 
-How to integrate PDF Vector System into your own GUI applications.
+How to integrate VectorFlow into your own GUI applications.
 
 ### `gui_automation.py`
 
@@ -49,18 +49,18 @@ Directory containing example GUI plugins and extensions.
 ## Prerequisites
 
 - Python 3.9+
-- PDF Vector System with GUI dependencies
+- VectorFlow installed (GUI dependencies are included in the package)
 - PySide6 and QFluentWidgets
 - Display environment (for GUI applications)
 
 ## Installation
 
 ```bash
-# Install GUI dependencies
-pip install pdf-vector-system[gui]
+# Install the package (includes GUI dependencies)
+pip install vectorflow
 
 # Or with uv
-uv add pdf-vector-system[gui]
+uv add vectorflow
 ```
 
 ## Running Examples

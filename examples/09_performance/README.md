@@ -91,7 +91,7 @@ Testing system scalability and identifying bottlenecks.
 
 ## Prerequisites
 
-- PDF Vector System installed
+- VectorFlow installed
 - Performance monitoring tools
 - Sample datasets for testing
 - Understanding of performance concepts

@@ -1,8 +1,29 @@
 """
 Sample data generator for PDF Vector System examples.
 
-This module creates sample PDF files and test data for use in examples
-when real data is not available.
+This module creates sample PDF files and test text content for use in
+examples when real data is not available.
+
+Prerequisites:
+- VectorFlow examples environment
+- Optional: PyMuPDF (fitz) installed to generate real PDF files
+
+Usage:
+    from examples.utils.sample_data_generator import (
+        create_sample_pdf,
+        get_sample_content,
+        ensure_sample_data,
+    )
+
+Expected Output:
+    - When used by examples, creates one or more sample PDFs in
+      "examples/sample_data" if real documents are missing
+    - Provides realistic sample content for different document types
+
+Learning Objectives:
+- Understand how sample documents for the examples are generated
+- See how to build reusable utilities for test data creation
+- Learn how to fall back to synthetic data when real PDFs are not available
 """
 
 from datetime import datetime

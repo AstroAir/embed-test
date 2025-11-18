@@ -56,7 +56,7 @@ Using custom distance metrics and similarity functions.
 
 ## Prerequisites
 
-- PDF Vector System installed
+- VectorFlow installed
 - ChromaDB understanding
 - Sample documents processed
 - Basic vector database concepts
