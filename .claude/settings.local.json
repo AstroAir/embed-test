@@ -35,7 +35,11 @@
       "Bash(xargs:*)",
       "Bash(pytest:*)",
       "Bash(timeout 10 bash -c \"while ! tail -1 /proc/$$fd/1 2>/dev/null | grep -q ''success\\|failed\\|Error''; do sleep 1; done\")",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(git reset:*)",
+      "Bash(cd:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
